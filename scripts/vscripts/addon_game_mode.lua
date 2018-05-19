@@ -881,7 +881,7 @@ function CTHTDGameMode:OnPlayerSay( keys )
 		end
 	end
 
-	if IsInToolsMode() then
+	if IsInToolsMode() or true then
 		if text == "-config" then
 			_CopyConfig()
 		elseif text == "-win" then

@@ -1,0 +1,89 @@
+// Dota Heroes File
+// NOTE: This is not for creating new heroes, this is for taking a currently existing hero as a template and overriding
+// the specified key-value combinations.  Use override_hero <hero_to_override> for this.
+"DOTAHeroes"
+{
+	"npc_dota_hero_reimu"
+	{
+		"override_hero"	"npc_dota_hero_lina"
+		"AbilityLayout"	"1"
+		"Ability1"		"ability_touhoutd_release_tower"
+		"Ability2"		"ability_touhoutd_blink"
+		"Ability3"		"ability_touhoutd_kill"
+		"Ability4"		"ability_touhoutd_buy_normal_card"
+		"Ability5"		"ability_touhoutd_buy_senior_card"
+		"Ability6"		"ability_touhoutd_ex_up"
+		"Ability7"		"ability_touhoutd_close_star"
+		"Ability8"		"generic_hidden"
+		"Ability9"		"generic_hidden"
+		"Ability10"		"generic_hidden"
+		"Ability11"		"generic_hidden"
+		"Ability12"		"generic_hidden"
+		"Ability13"		"generic_hidden"
+		"Ability14"		"generic_hidden"
+		"Ability15"		"generic_hidden"
+		"Ability16"		"generic_hidden"
+		"Ability17"		"generic_hidden"
+
+
+		//"Carry"			"核心"
+		//"Support"			"辅助"
+		//"Nuker"			"爆发"
+		//"Disabler"		"控制"
+		//"Jungler"			"打野"
+		//"Durable"			"耐久"
+		//"Escape"			"逃生"
+		//"LaneSupport"		"对线辅助"
+		//"Pusher"			"推进"
+		//"Initiator"		"先手"
+		//"Role"			"Carry,Support,Nuker,Disabler,Jungler,Durable,Escape,LaneSupport,Pusher,Initiator"
+
+		"Role"				"Carry,Nuker,Disabler,Jungler,Escape,Pusher,Initiator"
+		"Rolelevels"		"1,3,2,1,0,1,2"
+		"ModelScale"		"1.0"
+		"HealthBarOffset"			"320"
+
+		"Model"							"models/new_touhou_model/reimu/reimu.vmdl"
+		
+		"AttackAnimationPoint"	"0.1"
+		// 攻击前摇
+		"AttackRate"	"3.0"
+		// 攻击速度
+		"ArmorPhysical"	"0"
+		// 物理护甲
+		"AttackDamageMin"	"4"
+		// 最大攻击力
+		"AttackDamageMax"	"5"
+		// 最小攻击力
+		"AttributeBaseStrength"	"1"
+		// 基础力量
+		"AttributeStrengthGain"	"0"
+		// 每级增加的力量，力量成长
+		"AttributeBaseAgility"	"1"
+		// 基础敏捷
+		"AttributeAgilityGain"	"0"
+		// 每级增加的敏捷，敏捷成长
+		"AttributeBaseIntelligence"	"1"
+		// 基础智力
+		"AttributeIntelligenceGain"	"0"
+		// 每级增加的智力，智力成长
+		"MovementSpeed"	"550"
+		// 基础移动速度
+		"MovementTurnRate"	"1.0"
+		// 转身速度
+		"StatusHealth"	"135"
+		// 基础生命值
+		"StatusHealthRegen"	"2.0"
+		// 基础生命恢复
+		"StatusMana"	"60"
+		// 基础魔法值
+		"StatusManaRegen"	"0.9"
+		// 基础魔法恢复
+		"VisionDaytimeRange"	"1050"
+		// 白天视野大小
+		"VisionNighttimeRange"	"700"
+		// 晚上视野大小
+		"DisableWearables"	"1"
+
+	}
+}

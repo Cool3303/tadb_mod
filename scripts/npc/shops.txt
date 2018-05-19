@@ -1,0 +1,60 @@
+"dota_shops"
+{
+	"consumables"
+	{
+	}
+
+	"attributes"
+	{
+	}
+
+	"weapons_armor"
+	{
+	}
+	
+	"misc"
+	{
+	}	
+	
+	"basics"
+	{
+	}
+
+	"support"
+	{							
+	}
+	
+	"magics"
+	{
+	}
+	
+	"weapons"
+	{
+	}
+
+	"defense"
+	{
+	}
+	
+	
+	"artifacts"
+	{
+	}
+
+	"sideshop1"
+	{
+
+	}
+
+	"sideshop2"
+	}
+	
+	"secretshop"
+	{
+
+	}
+	
+	"pregame"
+	{	
+	}
+}

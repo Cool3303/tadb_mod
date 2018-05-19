@@ -1,0 +1,829 @@
+#base "units/tower.kv"
+#base "units/creeps.kv"
+
+"DOTAUnits"
+{	
+	"minoriko_shop"
+	{
+		// General
+		//----------------------------------------------------------------
+		"Model"						"models/thd_hero/minoriko/minoriko.vmdl"
+		"BaseClass"					"npc_dota_creature"
+		"Level"						"1"
+		"ModelScale" 				"1.0"
+		"IsAncient"					"1"
+
+		// Abilities
+		//----------------------------------------------------------------
+		"Ability1"					"ability_touhoutd_shop_buy_egg_level_1"
+		"Ability2"					"ability_touhoutd_shop_buy_egg_level_2"
+		"Ability3"					"ability_touhoutd_shop_buy_egg_level_3"
+		"Ability4"					"ability_touhoutd_shop_buy_normal_card"
+		"Ability5"					"ability_touhoutd_shop_buy_senior_card"
+		"Ability6"					"ability_touhoutd_shop_buy_egg_level_4"
+		"Ability7"					""
+		"Ability8"					"ability_shop"
+
+		// Armor
+		//----------------------------------------------------------------
+		"ArmorPhysical"				"0"
+
+		// Attack
+		//----------------------------------------------------------------
+		"AttackCapabilities"		"DOTA_UNIT_CAP_NO_ATTACK"
+		"AttackDamageMin"			"0"
+		"AttackDamageMax"			"0"
+		"AttackRate"				"1.6"
+		"AttackAnimationPoint"		"0.4"
+		"AttackAcquisitionRange"	"0"
+		"AttackRange"				"0"
+
+		// Bounds
+		//----------------------------------------------------------------
+		"RingRadius"				"100"
+		"HealthBarOffset"			"128"
+
+		// Movement
+		//----------------------------------------------------------------
+		"MovementCapabilities"		"DOTA_UNIT_CAP_MOVE_GROUND"
+		"MovementSpeed"				"0"	
+
+		// Status
+		//----------------------------------------------------------------
+		"StatusHealth"				"100"
+		"StatusHealthRegen"			"0.0"
+		"StatusMana"				"0"
+		"StatusManaRegen"			"0"	 
+		
+		// Vision
+		//----------------------------------------------------------------
+		"VisionDaytimeRange"		"800"
+		"VisionNighttimeRange"		"800"
+
+		// Team
+		//----------------------------------------------------------------
+		"TeamName"					"DOTA_TEAM_NEUTRALS"
+		
+		"CombatClassDefend"			"DOTA_COMBAT_CLASS_DEFEND_BASIC"
+		"UnitRelationshipClass"		"DOTA_NPC_UNIT_RELATIONSHIP_TYPE_DEFAULT"
+		
+		"ConsideredHero"			"1"
+	}
+
+	"npc_dummy_unit"
+	{
+		"BaseClass"	"npc_dota_creep_neutral"
+		"Model"	"models/development/invisiblebox.vmdl"
+		"SoundSet"	"Creep_Good_Range"
+		"Level"	"0"
+		"UnitLabel"	"healing_ward"
+		"Ability1"	"ability_dummy_unit"
+		"AttackCapabilities"	"DOTA_UNIT_CAP_NO_ATTACK"
+		"Ability2"	""
+		"Ability3"	""
+		"Ability4"	""
+		"Ability5"	""
+		"Ability6"	""
+		"Ability7"	""
+		"Ability8"	""
+		"Ability9"	""
+		"Ability10"	""
+		"Ability11"	""
+		"Ability12"	""
+		"Ability13"	""
+		"Ability14"	""
+		"Ability15"	""
+		"Ability16"	""
+	}
+	
+	"npc_dota2x_unit_marisa04_spark"
+	{
+		"model"					"models/thd2/masterspark.vmdl"
+		"ModelScale"			"1.6"
+		"BaseClass"				"npc_dota_base_additive"
+		"Ability1"				"ability_dummy_unit"
+		"AttackCapabilities"	"DOTA_UNIT_CAP_NO_ATTACK"
+		"MovementCapabilities"	"DOTA_UNIT_CAP_MOVE_NONE"
+		"VisionDaytimeRange"	"1000"
+		"VisionNighttimeRange"	"1000"
+		"HasInventory"	"0"
+		"WakesNeutrals"	"0"
+		"Ability2"	""
+		"Ability3"	""
+		"Ability4"	""
+		"Ability5"	""
+		"Ability6"	""
+		"Ability7"	""
+		"Ability8"	""
+		"Ability9"	""
+		"Ability10"	""
+		"Ability11"	""
+		"Ability12"	""
+		"Ability13"	""
+		"Ability14"	""
+		"Ability15"	""
+		"Ability16"	""
+	}
+
+	"npc_dota2x_unit_yuyuko_04"
+	{
+		"model"	"models/thd2/yuyuko_fan.vmdl"
+		"BaseClass"	"npc_dota_base_additive"
+		"Ability1"	"ability_dummy_unit"
+		"ModelScale"	"30.0"
+		"AttackCapabilities"	"DOTA_UNIT_CAP_NO_ATTACK"
+		"MovementCapabilities"	"DOTA_UNIT_CAP_MOVE_NONE"
+		"VisionDaytimeRange"	"100"
+		"VisionNighttimeRange"	"100"
+		"HasInventory"	"0"
+		"WakesNeutrals"	"0"
+		"Ability2"	""
+		"Ability3"	""
+		"Ability4"	""
+		"Ability5"	""
+		"Ability6"	""
+		"Ability7"	""
+		"Ability8"	""
+		"Ability9"	""
+		"Ability10"	""
+		"Ability11"	""
+		"Ability12"	""
+		"Ability13"	""
+		"Ability14"	""
+		"Ability15"	""
+		"Ability16"	""
+	}
+
+	"reisen_illusion"
+	{
+		// General
+		//----------------------------------------------------------------
+		"Model"						"models/thd_hero/reisen/reisen.vmdl"
+		"BaseClass"					"npc_dota_creature"
+		"Level"						"1"
+		"ModelScale" 				"1.0"
+		"IsAncient"					"1"
+		"SoundSet"					"Hero_Reisen"
+		"GameSoundsFile"			"soundevents/game_sounds/thdots_tower_attack_sounds.vsndevts"
+
+		// Abilities
+		//----------------------------------------------------------------
+		"Ability1"					""
+		"Ability2"					""
+		"Ability3"					""
+		"Ability4"					""
+		"Ability5"					""
+		"Ability6"					""
+		"Ability7"					""
+		"Ability8"					""
+
+		// Armor
+		//----------------------------------------------------------------
+		"ArmorPhysical"				"0"
+
+		// Attack
+		//----------------------------------------------------------------
+		"AttackCapabilities"		"DOTA_UNIT_CAP_RANGED_ATTACK"
+		"AttackDamageMin"			"2"
+		"AttackDamageMax"			"2"
+		"AttackRate"				"0.6"
+		"AttackAnimationPoint"		"0.55"
+		"AttackAcquisitionRange"	"1000"
+		"AttackRange"				"1000"
+		"ProjectileModel"			"particles/heroes/reisen/ability_reisen_base_attack.vpcf"
+		"ProjectileSpeed"			"3000"
+
+		// Bounds
+		//----------------------------------------------------------------
+		"RingRadius"				"100"
+		"HealthBarOffset"			"128"
+
+		// Movement
+		//----------------------------------------------------------------
+		"MovementCapabilities"		"DOTA_UNIT_CAP_MOVE_GROUND"
+		"MovementSpeed"				"0"	
+
+		// Status
+		//----------------------------------------------------------------
+		"StatusHealth"				"100"	
+		"StatusHealthRegen"			"0.0"
+		"StatusMana"				"0"
+		"StatusManaRegen"			"0"	 
+		
+		// Vision
+		//----------------------------------------------------------------
+		"VisionDaytimeRange"		"800"
+		"VisionNighttimeRange"		"800"
+
+		// Team
+		//----------------------------------------------------------------
+		"TeamName"					"DOTA_TEAM_NEUTRALS"
+		
+		"CombatClassDefend"			"DOTA_COMBAT_CLASS_DEFEND_BASIC"
+		"UnitRelationshipClass"		"DOTA_NPC_UNIT_RELATIONSHIP_TYPE_DEFAULT"
+	}
+
+	"flandre_illusion"
+	{
+		// General
+		//----------------------------------------------------------------
+		"Model"						"models/new_touhou_model/flandre/flandre.vmdl"
+		"BaseClass"					"npc_dota_creature"
+		"Level"						"1"
+		"ModelScale" 				"1.0"
+		"IsAncient"					"1"
+
+		// Abilities
+		//----------------------------------------------------------------
+		"Ability1"					""
+		"Ability2"					""
+		"Ability3"					""
+		"Ability4"					""
+		"Ability5"					""
+		"Ability6"					""
+		"Ability7"					""
+		"Ability8"					""
+
+		// Armor
+		//----------------------------------------------------------------
+		"ArmorPhysical"				"0"
+
+		// Attack
+		//----------------------------------------------------------------
+		"AttackCapabilities"		"DOTA_UNIT_CAP_NO_ATTACK"
+		"AttackDamageMin"			"2"
+		"AttackDamageMax"			"2"
+		"AttackRate"				"0.3"
+		"AttackAnimationPoint"		"0.55"
+		"AttackAcquisitionRange"	"1000"
+		"AttackRange"				"1000"
+
+		// Bounds
+		//----------------------------------------------------------------
+		"RingRadius"				"100"
+		"HealthBarOffset"			"128"
+
+		// Movement
+		//----------------------------------------------------------------
+		"MovementCapabilities"		"DOTA_UNIT_CAP_MOVE_GROUND"
+		"MovementSpeed"				"0"	
+
+		// Status
+		//----------------------------------------------------------------
+		"StatusHealth"				"100"	
+		"StatusHealthRegen"			"0.0"
+		"StatusMana"				"0"
+		"StatusManaRegen"			"0"	 
+		
+		// Vision
+		//----------------------------------------------------------------
+		"VisionDaytimeRange"		"800"
+		"VisionNighttimeRange"		"800"
+
+		// Team
+		//----------------------------------------------------------------
+		"TeamName"					"DOTA_TEAM_NEUTRALS"
+		
+		"CombatClassDefend"			"DOTA_COMBAT_CLASS_DEFEND_BASIC"
+		"UnitRelationshipClass"		"DOTA_NPC_UNIT_RELATIONSHIP_TYPE_DEFAULT"
+
+		"ConsideredHero"			"1"
+	}
+
+	"yuuka_flower"
+	{
+		// General
+		//----------------------------------------------------------------
+		"Model"						"models/heroes/enchantress/enchantress_flower.vmdl"
+		"BaseClass"					"npc_dota_creature"
+		"Level"						"1"
+		"ModelScale" 				"3.0"
+		"IsAncient"					"1"
+
+		// Abilities
+		//----------------------------------------------------------------
+		"Ability1"					""
+		"Ability2"					""
+		"Ability3"					""
+		"Ability4"					""
+		"Ability5"					""
+		"Ability6"					""
+		"Ability7"					""
+		"Ability8"					""
+
+		// Armor
+		//----------------------------------------------------------------
+		"ArmorPhysical"				"0"
+
+		// Attack
+		//----------------------------------------------------------------
+		"AttackCapabilities"		"DOTA_UNIT_CAP_RANGED_ATTACK"
+		"AttackDamageMin"			"2"
+		"AttackDamageMax"			"2"
+		"AttackRate"				"0.5"
+		"AttackAnimationPoint"		"0.55"
+		"AttackAcquisitionRange"	"400"
+		"AttackRange"				"400"
+		"ProjectileModel"			"particles/units/heroes/hero_shadowshaman/shadow_shaman_ward_base_attack.vpcf"
+		"ProjectileSpeed"			"1500"
+
+		// Bounds
+		//----------------------------------------------------------------
+		"RingRadius"				"100"
+		"HealthBarOffset"			"128"
+
+		// Movement
+		//----------------------------------------------------------------
+		"MovementCapabilities"		"DOTA_UNIT_CAP_MOVE_GROUND"
+		"MovementSpeed"				"0"	
+
+		// Status
+		//----------------------------------------------------------------
+		"StatusHealth"				"100"	
+		"StatusHealthRegen"			"0.0"
+		"StatusMana"				"0"
+		"StatusManaRegen"			"0"	 
+		
+		// Vision
+		//----------------------------------------------------------------
+		"VisionDaytimeRange"		"800"
+		"VisionNighttimeRange"		"800"
+
+		// Team
+		//----------------------------------------------------------------
+		"TeamName"					"DOTA_TEAM_NEUTRALS"
+		
+		"CombatClassDefend"			"DOTA_COMBAT_CLASS_DEFEND_BASIC"
+		"UnitRelationshipClass"		"DOTA_NPC_UNIT_RELATIONSHIP_TYPE_DEFAULT"
+	}
+
+	"npc_thdots_unit_yukari01_unit"
+	{
+		"BaseClass"	"npc_dota_base_additive"
+		"Model"	"models/thd2/yukari/yukari_mmd_w.vmdl"
+		"SoundSet"	"Creep_Good_Range"
+		"Level"	"0"
+		"UnitLabel"	"healing_ward"
+		"ModelScale"	"0.6"
+		"Ability1"	"ability_dummy_unit"
+		"Ability2"	""
+		"AttackCapabilities"	"DOTA_UNIT_CAP_NO_ATTACK"
+		"MovementCapabilities"	"DOTA_UNIT_CAP_MOVE_FLY"
+		"VisionDaytimeRange"	"100"
+		"VisionNighttimeRange"	"100"
+		"Ability3"	""
+		"Ability4"	""
+		"Ability5"	""
+		"Ability6"	""
+		"Ability7"	""
+		"Ability8"	""
+		"Ability9"	""
+		"Ability10"	""
+		"Ability11"	""
+		"Ability12"	""
+		"Ability13"	""
+		"Ability14"	""
+		"Ability15"	""
+		"Ability16"	""
+	}
+
+	"yukari_train"
+	{
+		// General
+		// ----------------------------------------------------------------
+		// Model.
+		"Model"						"models/other/tram_1/tram_1.vmdl"
+		"BaseClass"					"npc_dota_creature"
+		"Level"	"1"
+		"ModelScale"				"1.0"
+		// Abilities
+		// ----------------------------------------------------------------
+		// Ability 1
+		"Ability1"					"ability_dummy_unit"
+		// Ability 2
+		"Ability2"	""
+		// Ability 3
+		"Ability3"	""
+		// Ability 4
+		"Ability4"	""
+		// Armor
+		// ----------------------------------------------------------------
+		// Physical protection.
+		"ArmorPhysical"				"0"
+		"MagicalResistance"			"0"
+		// Attack
+		// ----------------------------------------------------------------
+		"AttackCapabilities"		"DOTA_UNIT_CAP_NO_ATTACK"
+		// Damage range min.
+		"AttackDamageMin"			"35"
+		// Damage range max.
+		"AttackDamageMax"			"35"
+		// Speed of attack.
+		"AttackRate"	"1.0"
+		// Normalized time in animation cycle to attack.
+		"AttackAnimationPoint"		"0.4"
+		// Range within a target can be acquired.
+		"AttackAcquisitionRange"	"800"
+		// Range within a target can be attacked.
+		"AttackRange"				"120"
+		// Bounds
+		// ----------------------------------------------------------------
+		"RingRadius"				"40"
+		"HealthBarOffset"			"170"
+		// Bounty
+		// ----------------------------------------------------------------
+		// Experience earn.
+		"BountyXP"					"300"
+		// Gold earned min.
+		"BountyGoldMin"				"10"
+		// Gold earned max.
+		"BountyGoldMax"				"10"
+		// Movement
+		// ----------------------------------------------------------------
+		"MovementCapabilities"		"DOTA_UNIT_CAP_MOVE_GROUND"
+		// Speed.
+		"MovementSpeed"				"2000"
+		"MovementTurnRate"			"100.0"
+		// Status
+		// ----------------------------------------------------------------
+		// Base health.
+		"StatusHealth"				"35"
+		// Health regeneration rate.
+		"StatusHealthRegen"			"0"
+		// Base mana.
+		"StatusMana"				"0"
+		// Mana regeneration rate.
+		"StatusManaRegen"			"0.0"
+		// Vision
+		// ----------------------------------------------------------------
+		// Range of vision during day light.
+		"VisionDaytimeRange"		"1800"
+		// Range of vision at night time.
+		"VisionNighttimeRange"		"1800"
+		// Team
+		// ----------------------------------------------------------------
+		// Team name.
+		"TeamName"	"DOTA_TEAM_NEUTRALS"
+		"CombatClassAttack"	"DOTA_COMBAT_CLASS_ATTACK_PIERCE"
+		"CombatClassDefend"	"DOTA_COMBAT_CLASS_DEFEND_BASIC"
+		"UnitRelationshipClass"	"DOTA_NPC_UNIT_RELATIONSHIP_TYPE_DEFAULT"
+		"Ability5"	""
+		"Ability6"	""
+		"Ability7"	""
+		"Ability8"	""
+		"Ability9"	""
+		"Ability10"	""
+		"Ability11"	""
+		"Ability12"	""
+		"Ability13"	""
+		"Ability14"	""
+		"Ability15"	""
+		"Ability16"	""
+	}
+
+	"yuuka_illusion"
+	{
+		// General
+		//----------------------------------------------------------------
+		"Model"						"models/new_touhou_model/yuuka/yuuka.vmdl"
+		"BaseClass"					"npc_dota_creature"
+		"Level"						"1"
+		"ModelScale" 				"1.0"
+		"IsAncient"					"1"
+
+		// Abilities
+		//----------------------------------------------------------------
+		"Ability1"					""
+		"Ability2"					""
+		"Ability3"					""
+		"Ability4"					""
+		"Ability5"					""
+		"Ability6"					""
+		"Ability7"					""
+		"Ability8"					""
+
+		// Armor
+		//----------------------------------------------------------------
+		"ArmorPhysical"				"0"
+
+		// Attack
+		//----------------------------------------------------------------
+		"AttackCapabilities"		"DOTA_UNIT_CAP_MELEE_ATTACK"
+		"AttackDamageMin"			"2"
+		"AttackDamageMax"			"2"
+		"AttackRate"				"1.0"
+		"AttackAnimationPoint"		"0.55"
+		"AttackAcquisitionRange"	"800"
+		"AttackRange"				"800"
+
+		// Bounds
+		//----------------------------------------------------------------
+		"RingRadius"				"100"
+		"HealthBarOffset"			"128"
+
+		// Movement
+		//----------------------------------------------------------------
+		"MovementCapabilities"		"DOTA_UNIT_CAP_MOVE_GROUND"
+		"MovementSpeed"				"0"	
+
+		// Status
+		//----------------------------------------------------------------
+		"StatusHealth"				"100"	
+		"StatusHealthRegen"			"0.0"
+		"StatusMana"				"30"
+		"StatusManaRegen"			"2"	 
+		
+		// Vision
+		//----------------------------------------------------------------
+		"VisionDaytimeRange"		"800"
+		"VisionNighttimeRange"		"800"
+
+		// Team
+		//----------------------------------------------------------------
+		"TeamName"					"DOTA_TEAM_NEUTRALS"
+	
+		"CombatClassDefend"			"DOTA_COMBAT_CLASS_DEFEND_BASIC"
+		"UnitRelationshipClass"		"DOTA_NPC_UNIT_RELATIONSHIP_TYPE_DEFAULT"
+
+		"ConsideredHero"			"1"
+	}
+
+	"npc_dota2x_unit_yuuka04_spark"
+	{
+		"model"					"models/thd2/yuukaspark.vmdl"
+		"ModelScale"			"1.6"
+		"BaseClass"				"npc_dota_base_additive"
+		"Ability1"				"ability_dummy_unit"
+		"AttackCapabilities"	"DOTA_UNIT_CAP_NO_ATTACK"
+		"MovementCapabilities"	"DOTA_UNIT_CAP_MOVE_NONE"
+		"VisionDaytimeRange"	"1000"
+		"VisionNighttimeRange"	"1000"
+		"HasInventory"	"0"
+		"WakesNeutrals"	"0"
+		"Ability2"	""
+		"Ability3"	""
+		"Ability4"	""
+		"Ability5"	""
+		"Ability6"	""
+		"Ability7"	""
+		"Ability8"	""
+		"Ability9"	""
+		"Ability10"	""
+		"Ability11"	""
+		"Ability12"	""
+		"Ability13"	""
+		"Ability14"	""
+		"Ability15"	""
+		"Ability16"	""
+	}
+
+	"kanako_gojou"
+	{
+		// General
+		//----------------------------------------------------------------
+		"Model"						"models/thd2/kanako/kanako_mmd_gojou.vmdl"
+		"BaseClass"					"npc_dota_building"
+		"Level"						"1"
+		"ModelScale" 				"1.0"
+		"IsAncient"					"1"
+
+		// Abilities
+		//----------------------------------------------------------------
+		"Ability1"					"thtd_kanako_03_unit"
+		"Ability2"					""
+		"Ability3"					""
+		"Ability4"					""
+		"Ability5"					""
+		"Ability6"					""
+		"Ability7"					""
+		"Ability8"					""
+
+		// Armor
+		//----------------------------------------------------------------
+		"ArmorPhysical"				"0"
+
+		// Attack
+		//----------------------------------------------------------------
+		"AttackCapabilities"		"DOTA_UNIT_CAP_NO_ATTACK"
+		"AttackDamageMin"			"2"
+		"AttackDamageMax"			"2"
+		"AttackRate"				"1.0"
+		"AttackAnimationPoint"		"0.55"
+		"AttackAcquisitionRange"	"800"
+		"AttackRange"				"800"
+
+		// Bounds
+		//----------------------------------------------------------------
+		"RingRadius"				"100"
+		"HealthBarOffset"			"128"
+
+		// Movement
+		//----------------------------------------------------------------
+		"MovementCapabilities"		"DOTA_UNIT_CAP_MOVE_GROUND"
+		"MovementSpeed"				"0"	
+
+		// Status
+		//----------------------------------------------------------------
+		"StatusHealth"				"100"	
+		"StatusHealthRegen"			"0.0"
+		"StatusMana"				"30"
+		"StatusManaRegen"			"2"	 
+		
+		// Vision
+		//----------------------------------------------------------------
+		"VisionDaytimeRange"		"800"
+		"VisionNighttimeRange"		"800"
+
+		// Team
+		//----------------------------------------------------------------
+		"TeamName"					"DOTA_TEAM_NEUTRALS"
+	
+		"CombatClassDefend"			"DOTA_COMBAT_CLASS_DEFEND_BASIC"
+		"UnitRelationshipClass"		"DOTA_NPC_UNIT_RELATIONSHIP_TYPE_DEFAULT"
+	}
+
+	"momiji_wolf"
+	{
+		"Model"	"models/items/lycan/wolves/icewrack_pack/icewrack_pack.vmdl"
+		"BaseClass"	"npc_dota_creature"
+		"SoundSet"	"Lycan_Wolf"
+		"GameSoundsFile"	"soundevents/game_sounds_creeps.vsndevts"
+		"Level"	"1"
+		"ModelScale"	"1.0"
+		// Abilities
+		// ----------------------------------------------------------------
+		// Ability 1
+		"Ability1"	""
+		// Ability 2
+		"Ability2"	""
+		// Ability 3
+		"Ability3"	""
+		// Ability 4
+		"Ability4"	""
+		// ----------------------------------------------------------------
+		// Physical protection.
+		"ArmorPhysical"	"1"
+		"MagicalResistance"	"0"
+		// Attack
+		// ----------------------------------------------------------------
+		"AttackCapabilities"	"DOTA_UNIT_CAP_MELEE_ATTACK"
+		// Damage range min.
+		"AttackDamageMin"	"2"
+		// Damage range max.
+		"AttackDamageMax"	"2"
+		// Speed of attack.
+		"AttackRate"	"0.3"
+		// Normalized time in animation cycle to attack.
+		"AttackAnimationPoint"	"0.3"
+		// Range within a target can be acquired.
+		"AttackAcquisitionRange"	"800"
+		// Range within a target can be attacked.
+		"AttackRange"	"100"
+		// Bounds
+		// ----------------------------------------------------------------
+		"RingRadius"	"40"
+		"HealthBarOffset"	"170"
+		// Bounty
+		// ----------------------------------------------------------------
+		// Experience earn.
+		"BountyXP"	"32"
+		// Gold earned min.
+		"BountyGoldMin"	"20"
+		// Gold earned max.
+		"BountyGoldMax"	"25"
+		// Movement
+		// ----------------------------------------------------------------
+		"MovementCapabilities"	"DOTA_UNIT_CAP_MOVE_GROUND"
+		// Speed.
+		"MovementSpeed"	"522"
+		// Status
+		// ----------------------------------------------------------------
+		// Base health.
+		"StatusHealth"	"300"
+		// Health regeneration rate.
+		"StatusHealthRegen"	"3.5"
+		// Base mana.
+		"StatusMana"	"0"
+		// Mana regeneration rate.
+		"StatusManaRegen"	"0.0"
+		// Vision
+		// ----------------------------------------------------------------
+		// Range of vision during day light.
+		"VisionDaytimeRange"	"400"
+		// Range of vision at night time.
+		"VisionNighttimeRange"	"400"
+		// Team
+		// ----------------------------------------------------------------
+		// Team name.
+		"TeamName"	"DOTA_TEAM_NEUTRALS"
+		"CombatClassAttack"	"DOTA_COMBAT_CLASS_ATTACK_BASIC"
+		"CombatClassDefend"	"DOTA_COMBAT_CLASS_DEFEND_BASIC"
+		"UnitRelationshipClass"	"DOTA_NPC_UNIT_RELATIONSHIP_TYPE_DEFAULT"
+		"Ability5"	""
+		"Ability6"	""
+		"Ability7"	""
+		"Ability8"	""
+		"Ability9"	""
+		"Ability10"	""
+		"Ability11"	""
+		"Ability12"	""
+		"Ability13"	""
+		"Ability14"	""
+		"Ability15"	""
+		"Ability16"	""
+	}
+
+	"creature_alice_ningyou"
+	{
+		// Model.
+		"Model"		"models/thd_hero/shanghainingyou/shanghainingyou.vmdl"
+		"BaseClass"	"npc_dota_creature"
+		"SoundSet"	"Creep_Good_Range"
+		"GameSoundsFile"	"soundevents/game_sounds_creeps.vsndevts"
+		"Level"	"10"
+		"ModelScale"	"0.8"
+		// Abilities
+		// ----------------------------------------------------------------
+		// Ability 1
+		"Ability1"	""
+		// Ability 2
+		"Ability2"	""
+		// Ability 3
+		"Ability3"	""
+		// Ability 4
+		"Ability4"	""
+		// Armor
+		// ----------------------------------------------------------------
+		// Physical protection.
+		"ArmorPhysical"	"60"
+		"MagicalResistance"	"60"
+		// Attack
+		// ----------------------------------------------------------------
+		"AttackCapabilities"	"DOTA_UNIT_CAP_NO_ATTACK"
+		// Damage range min.
+		"AttackDamageMin"	"130000"
+		// Damage range max.
+		"AttackDamageMax"	"130000"
+		// Speed of attack.
+		"AttackRate"	"0.6"
+		// Normalized time in animation cycle to attack.
+		"AttackAnimationPoint"	"0.2"
+		// Range within a target can be acquired.
+		"AttackAcquisitionRange"	"400"
+		// Range within a target can be attacked.
+		"AttackRange"	"120"
+		// Bounds
+		// ----------------------------------------------------------------
+		"RingRadius"	"40"
+		"HealthBarOffset"	"170"
+		// Bounty
+		// ----------------------------------------------------------------
+		// Experience earn.
+		"BountyXP"	"0"
+		// Gold earned min.
+		"BountyGoldMin"	"1"
+		// Gold earned max.
+		"BountyGoldMax"	"1"
+		// Movement
+		// ----------------------------------------------------------------
+		"MovementCapabilities"	"DOTA_UNIT_CAP_MOVE_GROUND"
+		// Speed.
+		"MovementSpeed"	"480"
+		// Status
+		// ----------------------------------------------------------------
+		// Base health.
+		"StatusHealth"	"24000"
+		// Health regeneration rate.
+		"StatusHealthRegen"	"0"
+		// Base mana.
+		"StatusMana"	"0"
+		// Mana regeneration rate.
+		"StatusManaRegen"	"0.0"
+		// Vision
+		// ----------------------------------------------------------------
+		// Range of vision during day light.
+		"VisionDaytimeRange"	"1800"
+		// Range of vision at night time.
+		"VisionNighttimeRange"	"1800"
+		// Team
+		// ----------------------------------------------------------------
+		// Team name.
+		"TeamName"	"DOTA_TEAM_NEUTRALS"
+		"CombatClassAttack"	"DOTA_COMBAT_CLASS_ATTACK_PIERCE"
+		"CombatClassDefend"	"DOTA_COMBAT_CLASS_DEFEND_BASIC"
+		"UnitRelationshipClass"	"DOTA_NPC_UNIT_RELATIONSHIP_TYPE_DEFAULT"
+		
+		"Ability5"	""
+		"Ability6"	""
+		"Ability7"	""
+		"Ability8"	""
+		"Ability9"	""
+		"Ability10"	""
+		"Ability11"	""
+		"Ability12"	""
+		"Ability13"	""
+		"Ability14"	""
+		"Ability15"	""
+		"Ability16"	""
+	}
+}

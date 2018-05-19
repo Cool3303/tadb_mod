@@ -1,0 +1,8 @@
+touhoutd
+{
+	material materials/overviews/touhoutd.vmat
+	pos_x -11840
+	pos_y 11839
+	scale 23.124
+}
+

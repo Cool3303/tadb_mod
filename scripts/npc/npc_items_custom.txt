@@ -1,0 +1,2557 @@
+"DOTAAbilities"
+{
+	
+	//-------------------------------------------------------------------------------------------------------------
+	// 破碎的符咒
+	"item_1001"
+	{
+		//-------------------------------------------------------------------------------------------------------------
+		// General
+		"ID" 								"9001"
+		"BaseClass" 						"item_datadriven"
+		"AbilityTextureName" 				"item_1001"
+		"AbilityBehavior" 					"DOTA_ABILITY_BEHAVIOR_NO_TARGET"
+		"AbilityCooldown"					"0.2"
+		"ItemStackable" 					"1"
+		"ItemInitialCharges" 				"1"
+		"ItemCost"							"500"
+		"ItemSellable"						"1"
+		"ItemShareability"					"ITEM_PARTIALLY_SHAREABLE"
+		
+		"OnSpellStart"
+		{
+			"RunScript"
+			{
+				"ScriptFile"	"scripts/vscripts/abilities/abilityCommon.lua"
+				"Function"		"DrawNormalCard"
+			}
+		}
+	}
+
+	//-------------------------------------------------------------------------------------------------------------
+	// 神秘的符咒
+	"item_1002"
+	{
+		//-------------------------------------------------------------------------------------------------------------
+		// General
+		"ID" 								"9002"
+		"BaseClass" 						"item_datadriven"
+		"AbilityTextureName" 				"item_1002"
+		"AbilityBehavior" 					"DOTA_ABILITY_BEHAVIOR_NO_TARGET"
+		"AbilityCooldown"					"0.2"
+		"ItemStackable" 					"1"
+		"ItemInitialCharges" 				"1"
+		"ItemCost"							"2500"
+		"ItemSellable"						"1"
+		"ItemShareability"					"ITEM_PARTIALLY_SHAREABLE"
+
+		"OnSpellStart"
+		{
+			"RunScript"
+			{
+				"ScriptFile"	"scripts/vscripts/abilities/abilityCommon.lua"
+				"Function"		"DrawSeniorCard"
+			}
+		}
+	}
+
+	//-------------------------------------------------------------------------------------------------------------
+	// 一星福蛋
+	"item_1003"
+	{
+		//-------------------------------------------------------------------------------------------------------------
+		// General
+		"ID" 								"9003"
+		"BaseClass" 						"item_datadriven"
+		"AbilityTextureName" 				"item_1003"
+		"AbilityBehavior" 					"DOTA_ABILITY_BEHAVIOR_PASSIVE"
+		"AbilityCooldown"					"1"
+		"ItemCost"							"1000"
+		"ItemSellable"						"1"
+		"ItemShareability"					"ITEM_PARTIALLY_SHAREABLE"
+	}
+
+	//-------------------------------------------------------------------------------------------------------------
+	// 二星福蛋
+	"item_1004"
+	{
+		//-------------------------------------------------------------------------------------------------------------
+		// General
+		"ID" 								"9004"
+		"BaseClass" 						"item_datadriven"
+		"AbilityTextureName" 				"item_1004"
+		"AbilityBehavior" 					"DOTA_ABILITY_BEHAVIOR_PASSIVE"
+		"AbilityCooldown"					"1"
+		"ItemCost"							"1800"
+		"ItemSellable"						"1"
+		"ItemShareability"					"ITEM_PARTIALLY_SHAREABLE"
+	}
+
+	//-------------------------------------------------------------------------------------------------------------
+	// 三星福蛋
+	"item_1005"
+	{
+		//-------------------------------------------------------------------------------------------------------------
+		// General
+		"ID" 								"9005"
+		"BaseClass" 						"item_datadriven"
+		"AbilityTextureName" 				"item_1005"
+		"AbilityBehavior" 					"DOTA_ABILITY_BEHAVIOR_PASSIVE"
+		"AbilityCooldown"					"1"
+		"ItemCost"							"7200"
+		"ItemSellable"						"1"
+		"ItemShareability"					"ITEM_PARTIALLY_SHAREABLE"
+	}
+
+	//-------------------------------------------------------------------------------------------------------------
+	// 四星福蛋
+	"item_1006"
+	{
+		//-------------------------------------------------------------------------------------------------------------
+		// General
+		"ID" 								"9006"
+		"BaseClass" 						"item_datadriven"
+		"AbilityTextureName" 				"item_1006"
+		"AbilityBehavior" 					"DOTA_ABILITY_BEHAVIOR_PASSIVE"
+		"AbilityCooldown"					"1"
+		"ItemCost"							"35000"
+		"ItemSellable"						"1"
+		"ItemShareability"					"ITEM_PARTIALLY_SHAREABLE"
+	}
+
+	//-------------------------------------------------------------------------------------------------------------
+	// 幻神莉莉白
+	"item_1007"
+	{
+		//-------------------------------------------------------------------------------------------------------------
+		// General
+		"ID" 								"9007"
+		"BaseClass" 						"item_datadriven"
+		"AbilityTextureName" 				"item_0001"
+		"AbilityBehavior" 					"DOTA_ABILITY_BEHAVIOR_NO_TARGET"
+		"AbilityCooldown"					"1"
+		"ItemCost"							"0"
+		"ItemSellable"						"0"
+
+		"OnSpellStart"
+		{
+			"RunScript"
+			{
+				"ScriptFile"	"scripts/vscripts/abilities/abilityCommon.lua"
+				"Function"		"ChooseIt"
+			}
+		}
+	}
+
+	//-------------------------------------------------------------------------------------------------------------
+	// 幻神纳兹琳
+	"item_1008"
+	{
+		//-------------------------------------------------------------------------------------------------------------
+		// General
+		"ID" 								"9008"
+		"BaseClass" 						"item_datadriven"
+		"AbilityTextureName" 				"item_0002"
+		"AbilityBehavior" 					"DOTA_ABILITY_BEHAVIOR_NO_TARGET"
+		"AbilityCooldown"					"1"
+		"ItemCost"							"0"
+		"ItemSellable"						"0"
+
+		"OnSpellStart"
+		{
+			"RunScript"
+			{
+				"ScriptFile"	"scripts/vscripts/abilities/abilityCommon.lua"
+				"Function"		"ChooseIt"
+			}
+		}
+	}
+
+	//-------------------------------------------------------------------------------------------------------------
+	// 幻神秋穣子
+	"item_1009"
+	{
+		//-------------------------------------------------------------------------------------------------------------
+		// General
+		"ID" 								"9009"
+		"BaseClass" 						"item_datadriven"
+		"AbilityTextureName" 				"item_0003"
+		"AbilityBehavior" 					"DOTA_ABILITY_BEHAVIOR_NO_TARGET"
+		"AbilityCooldown"					"1"
+		"ItemCost"							"0"
+		"ItemSellable"						"0"
+
+		"OnSpellStart"
+		{
+			"RunScript"
+			{
+				"ScriptFile"	"scripts/vscripts/abilities/abilityCommon.lua"
+				"Function"		"ChooseIt"
+			}
+		}
+	}
+
+	//-------------------------------------------------------------------------------------------------------------
+	// 究极召唤符
+	"item_1010"
+	{
+		//-------------------------------------------------------------------------------------------------------------
+		// General
+		"ID" 								"9010"
+		"BaseClass" 						"item_datadriven"
+		"AbilityTextureName" 				"item_1010"
+		"AbilityBehavior" 					"DOTA_ABILITY_BEHAVIOR_NO_TARGET"
+		"AbilityCooldown"					"1"
+		"ItemStackable" 					"1"
+		"ItemInitialCharges" 				"1"
+		"ItemCost"							"0"
+		"ItemSellable"						"1"
+		"ItemShareability"					"ITEM_PARTIALLY_SHAREABLE"
+
+		"OnSpellStart"
+		{
+			"RunScript"
+			{
+				"ScriptFile"	"scripts/vscripts/abilities/abilityCommon.lua"
+				"Function"		"DrawUltimaCard"
+			}
+		}
+	}
+
+	//-------------------------------------------------------------------------------------------------------------
+	// 一星僵尸
+	"item_1011"
+	{
+		//-------------------------------------------------------------------------------------------------------------
+		// General
+		"ID" 								"9011"
+		"BaseClass" 						"item_datadriven"
+		"AbilityTextureName" 				"item_0097"
+		"AbilityBehavior" 					"DOTA_ABILITY_BEHAVIOR_PASSIVE"
+		"AbilityCooldown"					"1"
+		"ItemCost"							"1000"
+		"ItemSellable"						"1"
+		"ItemShareability"					"ITEM_PARTIALLY_SHAREABLE"
+	}
+
+	//-------------------------------------------------------------------------------------------------------------
+	// 二星僵尸
+	"item_1012"
+	{
+		//-------------------------------------------------------------------------------------------------------------
+		// General
+		"ID" 								"9012"
+		"BaseClass" 						"item_datadriven"
+		"AbilityTextureName" 				"item_0097"
+		"AbilityBehavior" 					"DOTA_ABILITY_BEHAVIOR_PASSIVE"
+		"AbilityCooldown"					"1"
+		"ItemCost"							"1800"
+		"ItemSellable"						"1"
+		"ItemShareability"					"ITEM_PARTIALLY_SHAREABLE"
+	}
+
+	//-------------------------------------------------------------------------------------------------------------
+	// 三星僵尸
+	"item_1013"
+	{
+		//-------------------------------------------------------------------------------------------------------------
+		// General
+		"ID" 								"9013"
+		"BaseClass" 						"item_datadriven"
+		"AbilityTextureName" 				"item_0097"
+		"AbilityBehavior" 					"DOTA_ABILITY_BEHAVIOR_PASSIVE"
+		"AbilityCooldown"					"1"
+		"ItemCost"							"7200"
+		"ItemSellable"						"1"
+		"ItemShareability"					"ITEM_PARTIALLY_SHAREABLE"
+	}
+
+	//-------------------------------------------------------------------------------------------------------------
+	// 四星僵尸
+	"item_1014"
+	{
+		//-------------------------------------------------------------------------------------------------------------
+		// General
+		"ID" 								"9014"
+		"BaseClass" 						"item_datadriven"
+		"AbilityTextureName" 				"item_0097"
+		"AbilityBehavior" 					"DOTA_ABILITY_BEHAVIOR_PASSIVE"
+		"AbilityCooldown"					"1"
+		"ItemCost"							"35000"
+		"ItemSellable"						"1"
+		"ItemShareability"					"ITEM_PARTIALLY_SHAREABLE"
+	}
+
+	//-------------------------------------------------------------------------------------------------------------
+	// 四次元爆弹
+	"item_2001"
+	{
+		//-------------------------------------------------------------------------------------------------------------
+		// General
+		"ID" 								"7001"
+		"BaseClass" 						"item_datadriven"
+		"AbilityTextureName" 				"item_2001"
+		"AbilityBehavior" 					"DOTA_ABILITY_BEHAVIOR_NO_TARGET"
+		"AbilityCooldown"					"1"
+		"ItemCost"							"5000"
+		"ItemSellable"						"0"
+		"ItemShareability"					"ITEM_PARTIALLY_SHAREABLE"
+		
+		"OnSpellStart"
+		{
+			"RunScript"
+			{
+				"ScriptFile"	"scripts/vscripts/abilities/abilityItem.lua"
+				"Function"		"OnItem2001_SpellStart"
+			}
+		}
+	}
+
+	//-------------------------------------------------------------------------------------------------------------
+	// 博丽御币
+	"item_2002"
+	{
+		//-------------------------------------------------------------------------------------------------------------
+		// General
+		"ID" 								"7002"
+		"BaseClass" 						"item_datadriven"
+		"AbilityTextureName" 				"item_2002"
+		"AbilityBehavior" 					"DOTA_ABILITY_BEHAVIOR_NO_TARGET"
+		"AbilityCooldown"					"1"
+		"ItemCost"							"10000"
+		"ItemSellable"						"1"
+		
+		"OnSpellStart"
+		{
+			"RunScript"
+			{
+				"ScriptFile"	"scripts/vscripts/abilities/abilityItem.lua"
+				"Function"		"OnItem2002_SpellStart"
+			}
+		}
+	}
+
+	//-------------------------------------------------------------------------------------------------------------
+	// 风祝御币
+	"item_2003"
+	{
+		//-------------------------------------------------------------------------------------------------------------
+		// General
+		"ID" 								"7003"
+		"BaseClass" 						"item_datadriven"
+		"AbilityTextureName" 				"item_2003"
+		"AbilityBehavior" 					"DOTA_ABILITY_BEHAVIOR_NO_TARGET"
+		"AbilityCooldown"					"1"
+		"ItemCost"							"5000"
+		"ItemSellable"						"1"
+		
+		"OnSpellStart"
+		{
+			"RunScript"
+			{
+				"ScriptFile"	"scripts/vscripts/abilities/abilityItem.lua"
+				"Function"		"OnItem2003_SpellStart"
+			}
+		}
+	}
+
+	//-------------------------------------------------------------------------------------------------------------
+	// 御币
+	"item_2004"
+	{
+		//-------------------------------------------------------------------------------------------------------------
+		// General
+		"ID" 								"7004"
+		"BaseClass" 						"item_datadriven"
+		"AbilityTextureName" 				"item_2004"
+		"AbilityBehavior" 					"DOTA_ABILITY_BEHAVIOR_NO_TARGET"
+		"AbilityCooldown"					"1"
+		"ItemCost"							"2000"
+		"ItemSellable"						"1"
+		
+		"OnSpellStart"
+		{
+			"RunScript"
+			{
+				"ScriptFile"	"scripts/vscripts/abilities/abilityItem.lua"
+				"Function"		"OnItem2004_SpellStart"
+			}
+		}
+	}
+
+	//-------------------------------------------------------------------------------------------------------------
+	// 血染的太阳伞
+	"item_2005"
+	{
+		//-------------------------------------------------------------------------------------------------------------
+		// General
+		"ID" 								"7005"
+		"BaseClass" 						"item_datadriven"
+		"AbilityTextureName" 				"item_2005"
+		"AbilityBehavior" 					"DOTA_ABILITY_BEHAVIOR_PASSIVE"
+		"AbilityCooldown"					"1"
+		"ItemCost"							"2000"
+		"ItemSellable"						"1"
+		"ItemShareability"					"ITEM_PARTIALLY_SHAREABLE"
+	}
+
+	//-------------------------------------------------------------------------------------------------------------
+	// 月耀秘石
+	"item_2006"
+	{
+		//-------------------------------------------------------------------------------------------------------------
+		// General
+		"ID" 								"7006"
+		"BaseClass" 						"item_datadriven"
+		"AbilityTextureName" 				"item_2006"
+		"AbilityBehavior" 					"DOTA_ABILITY_BEHAVIOR_PASSIVE"
+		"AbilityCooldown"					"1"
+		"ItemCost"							"2000"
+		"ItemSellable"						"1"
+		"ItemShareability"					"ITEM_PARTIALLY_SHAREABLE"
+	}
+
+	//-------------------------------------------------------------------------------------------------------------
+	// 灾厄之主人形
+	"item_2007"
+	{
+		//-------------------------------------------------------------------------------------------------------------
+		// General
+		"ID" 								"7007"
+		"BaseClass" 						"item_datadriven"
+		"AbilityTextureName" 				"item_2007"
+		"AbilityBehavior" 					"DOTA_ABILITY_BEHAVIOR_PASSIVE"
+		"AbilityCooldown"					"1"
+		"ItemCost"							"2000"
+		"ItemSellable"						"1"
+		"ItemShareability"					"ITEM_PARTIALLY_SHAREABLE"
+	}
+
+	//-------------------------------------------------------------------------------------------------------------
+	// 死神渡河船桨
+	"item_2008"
+	{
+		//-------------------------------------------------------------------------------------------------------------
+		// General
+		"ID" 								"7008"
+		"BaseClass" 						"item_datadriven"
+		"AbilityTextureName" 				"item_2008"
+		"AbilityBehavior" 					"DOTA_ABILITY_BEHAVIOR_PASSIVE"
+		"AbilityCooldown"					"1"
+		"ItemCost"							"2000"
+		"ItemSellable"						"1"
+		"ItemShareability"					"ITEM_PARTIALLY_SHAREABLE"
+	}
+
+	//-------------------------------------------------------------------------------------------------------------
+	// 楼观剑
+	"item_2009"
+	{
+		//-------------------------------------------------------------------------------------------------------------
+		// General
+		"ID" 								"7009"
+		"BaseClass" 						"item_datadriven"
+		"AbilityTextureName" 				"item_2009"
+		"AbilityBehavior" 					"DOTA_ABILITY_BEHAVIOR_PASSIVE"
+		"AbilityCooldown"					"1"
+		"ItemCost"							"5000"
+		"ItemSellable"						"1"
+		"ItemShareability"					"ITEM_PARTIALLY_SHAREABLE"
+	}
+
+	//-------------------------------------------------------------------------------------------------------------
+	// 破魔净灵札
+	"item_2010"
+	{
+		//-------------------------------------------------------------------------------------------------------------
+		// General
+		"ID" 								"7010"
+		"BaseClass" 						"item_datadriven"
+		"AbilityTextureName" 				"item_2010"
+		"AbilityBehavior" 					"DOTA_ABILITY_BEHAVIOR_PASSIVE"
+		"AbilityCooldown"					"1"
+		"ItemCost"							"5000"
+		"ItemSellable"						"1"
+		"ItemShareability"					"ITEM_PARTIALLY_SHAREABLE"
+	}
+
+	//-------------------------------------------------------------------------------------------------------------
+	// 月兔粉碎巨刃
+	"item_2011"
+	{
+		//-------------------------------------------------------------------------------------------------------------
+		// General
+		"ID" 								"7011"
+		"BaseClass" 						"item_datadriven"
+		"AbilityTextureName" 				"item_2011"
+		"AbilityBehavior" 					"DOTA_ABILITY_BEHAVIOR_PASSIVE"
+		"AbilityCooldown"					"1"
+		"ItemCost"							"5000"
+		"ItemSellable"						"1"
+		"ItemShareability"					"ITEM_PARTIALLY_SHAREABLE"
+	}
+
+	//-------------------------------------------------------------------------------------------------------------
+	// 迷你八卦炉
+	"item_2012"
+	{
+		//-------------------------------------------------------------------------------------------------------------
+		// General
+		"ID" 								"7012"
+		"BaseClass" 						"item_datadriven"
+		"AbilityTextureName" 				"item_2012"
+		"AbilityBehavior" 					"DOTA_ABILITY_BEHAVIOR_PASSIVE"
+		"AbilityCooldown"					"1"
+		"ItemCost"							"10000"
+		"ItemSellable"						"1"
+		"ItemShareability"					"ITEM_PARTIALLY_SHAREABLE"
+	}
+
+	//-------------------------------------------------------------------------------------------------------------
+	// 莱瓦汀
+	"item_2013"
+	{
+		//-------------------------------------------------------------------------------------------------------------
+		// General
+		"ID" 								"7013"
+		"BaseClass" 						"item_datadriven"
+		"AbilityTextureName" 				"item_2013"
+		"AbilityBehavior" 					"DOTA_ABILITY_BEHAVIOR_PASSIVE"
+		"AbilityCooldown"					"1"
+		"ItemCost"							"10000"
+		"ItemSellable"						"1"
+		"ItemShareability"					"ITEM_PARTIALLY_SHAREABLE"
+	}
+
+	//-------------------------------------------------------------------------------------------------------------
+	// 神枪冈格尼尔
+	"item_2014"
+	{
+		//-------------------------------------------------------------------------------------------------------------
+		// General
+		"ID" 								"7014"
+		"BaseClass" 						"item_datadriven"
+		"AbilityTextureName" 				"item_2014"
+		"AbilityBehavior" 					"DOTA_ABILITY_BEHAVIOR_PASSIVE"
+		"AbilityCooldown"					"1"
+		"ItemCost"							"10000"
+		"ItemSellable"						"1"
+		"ItemShareability"					"ITEM_PARTIALLY_SHAREABLE"
+	}
+
+	//-------------------------------------------------------------------------------------------------------------
+	// 念缚灵的船勾
+	"item_2015"
+	{
+		//-------------------------------------------------------------------------------------------------------------
+		// General
+		"ID" 								"7015"
+		"BaseClass" 						"item_datadriven"
+		"AbilityTextureName" 				"item_2015"
+		"AbilityBehavior" 					"DOTA_ABILITY_BEHAVIOR_PASSIVE"
+		"AbilityCooldown"					"1"
+		"ItemCost"							"5000"
+		"ItemSellable"						"1"
+		"ItemShareability"					"ITEM_PARTIALLY_SHAREABLE"
+	}
+
+	//-------------------------------------------------------------------------------------------------------------
+	// 速融的核融合棒
+	"item_2016"
+	{
+		//-------------------------------------------------------------------------------------------------------------
+		// General
+		"ID" 								"7016"
+		"BaseClass" 						"item_datadriven"
+		"AbilityTextureName" 				"item_2016"
+		"AbilityBehavior" 					"DOTA_ABILITY_BEHAVIOR_PASSIVE"
+		"AbilityCooldown"					"1"
+		"ItemCost"							"5000"
+		"ItemSellable"						"1"
+		"ItemShareability"					"ITEM_PARTIALLY_SHAREABLE"
+	}
+
+	//-------------------------------------------------------------------------------------------------------------
+	// 恶魔的乳牙
+	"item_2017"
+	{
+		//-------------------------------------------------------------------------------------------------------------
+		// General
+		"ID" 								"7017"
+		"BaseClass" 						"item_datadriven"
+		"AbilityTextureName" 				"item_2017"
+		"AbilityBehavior" 					"DOTA_ABILITY_BEHAVIOR_PASSIVE"
+		"AbilityCooldown"					"1"
+		"ItemCost"							"5000"
+		"ItemSellable"						"1"
+		"ItemShareability"					"ITEM_PARTIALLY_SHAREABLE"
+	}
+
+	//-------------------------------------------------------------------------------------------------------------
+	// 月面之弩
+	"item_2018"
+	{
+		//-------------------------------------------------------------------------------------------------------------
+		// General
+		"ID" 								"7018"
+		"BaseClass" 						"item_datadriven"
+		"AbilityTextureName" 				"item_2018"
+		"AbilityBehavior" 					"DOTA_ABILITY_BEHAVIOR_PASSIVE"
+		"AbilityCooldown"					"1"
+		"ItemCost"							"2000"
+		"ItemSellable"						"1"
+		"ItemShareability"					"ITEM_PARTIALLY_SHAREABLE"
+	}
+
+	//-------------------------------------------------------------------------------------------------------------
+	// 纳税用阴阳玉
+	"item_2019"
+	{
+		//-------------------------------------------------------------------------------------------------------------
+		// General
+		"ID" 								"7019"
+		"BaseClass" 						"item_datadriven"
+		"AbilityTextureName" 				"item_2019"
+		"AbilityBehavior" 					"DOTA_ABILITY_BEHAVIOR_PASSIVE"
+		"AbilityCooldown"					"1"
+		"ItemCost"							"2000"
+		"ItemSellable"						"1"
+		"ItemShareability"					"ITEM_PARTIALLY_SHAREABLE"
+	}
+
+	//-------------------------------------------------------------------------------------------------------------
+	// 高科技相机
+	"item_2020"
+	{
+		//-------------------------------------------------------------------------------------------------------------
+		// General
+		"ID" 								"7020"
+		"BaseClass" 						"item_datadriven"
+		"AbilityTextureName" 				"item_2020"
+		"AbilityBehavior" 					"DOTA_ABILITY_BEHAVIOR_PASSIVE"
+		"AbilityCooldown"					"1"
+		"ItemCost"							"10000"
+		"ItemSellable"						"1"
+		"ItemShareability"					"ITEM_PARTIALLY_SHAREABLE"
+	}
+
+	//-------------------------------------------------------------------------------------------------------------
+	// 博丽供奉箱
+	"item_2021"
+	{
+		//-------------------------------------------------------------------------------------------------------------
+		// General
+		"ID" 								"7021"
+		"BaseClass" 						"item_datadriven"
+		"AbilityTextureName" 				"item_2021"
+		"AbilityBehavior" 					"DOTA_ABILITY_BEHAVIOR_UNIT_TARGET"
+		"AbilityUnitTargetType"				"DOTA_UNIT_TARGET_HERO | DOTA_UNIT_TARGET_BASIC"
+		"AbilityUnitTargetTeam"				"DOTA_UNIT_TARGET_TEAM_ENEMY"
+		"AbilityCooldown"					"80"
+		"ItemCost"							"2000"
+		"ItemSellable"						"0"
+
+		"OnSpellStart"
+		{
+			"RunScript"
+			{
+				"ScriptFile"	"scripts/vscripts/abilities/abilityItem.lua"
+				"Function"		"OnItem2021_SpellStart"
+				"Target"		"TARGET"
+			}
+		}
+	}
+
+	//-------------------------------------------------------------------------------------------------------------
+	// 思兼生命智慧
+	"item_2022"
+	{
+		//-------------------------------------------------------------------------------------------------------------
+		// General
+		"ID" 								"7022"
+		"BaseClass" 						"item_datadriven"
+		"AbilityTextureName" 				"item_2022"
+		"AbilityBehavior"					"DOTA_ABILITY_BEHAVIOR_IMMEDIATE | DOTA_ABILITY_BEHAVIOR_AOE | DOTA_ABILITY_BEHAVIOR_POINT"
+		"AbilityUnitTargetType"				"DOTA_UNIT_TARGET_HERO | DOTA_UNIT_TARGET_BASIC"
+		"AbilityUnitTargetTeam"				"DOTA_UNIT_TARGET_TEAM_FRIENDLY"
+		"AbilityCooldown"					"80"
+		"ItemCost"							"2000"
+		"ItemSellable"						"0"
+
+		"OnSpellStart"
+		{
+			"RunScript"
+			{
+				"ScriptFile"	"scripts/vscripts/abilities/abilityItem.lua"
+				"Function"		"OnItem2022_SpellStart"
+				"Target"		"POINT"
+			}
+		}
+	}
+
+	//-------------------------------------------------------------------------------------------------------------
+	// 博丽神社护身符
+	"item_2023"
+	{
+		//-------------------------------------------------------------------------------------------------------------
+		// General
+		"ID" 								"7023"
+		"BaseClass" 						"item_datadriven"
+		"AbilityTextureName" 				"item_2023"
+		"AbilityBehavior" 					"DOTA_ABILITY_BEHAVIOR_UNIT_TARGET"
+		"AbilityUnitTargetType"				"DOTA_UNIT_TARGET_HERO | DOTA_UNIT_TARGET_BASIC"
+		"AbilityUnitTargetTeam"				"DOTA_UNIT_TARGET_TEAM_FRIENDLY"
+		"AbilityCooldown"					"40"
+		"ItemCost"							"5000"
+		"ItemSellable"						"0"
+
+		"OnSpellStart"
+		{
+			"RunScript"
+			{
+				"ScriptFile"	"scripts/vscripts/abilities/abilityItem.lua"
+				"Function"		"OnItem2023_SpellStart"
+				"Target"		"TARGET"
+			}
+		}
+	}
+
+	//-------------------------------------------------------------------------------------------------------------
+	// 香霖的礼服
+	"item_2024"
+	{
+		//-------------------------------------------------------------------------------------------------------------
+		// General
+		"ID" 								"7024"
+		"BaseClass" 						"item_datadriven"
+		"AbilityTextureName" 				"item_2024"
+		"AbilityBehavior" 					"DOTA_ABILITY_BEHAVIOR_PASSIVE"
+		"AbilityCooldown"					"1"
+		"ItemCost"							"5000"
+		"ItemSellable"						"0"
+		"ItemShareability"					"ITEM_PARTIALLY_SHAREABLE"
+	}
+
+	//-------------------------------------------------------------------------------------------------------------
+	// 割夺真实之刃
+	"item_2025"
+	{
+		//-------------------------------------------------------------------------------------------------------------
+		// General
+		"ID" 								"7025"
+		"BaseClass" 						"item_datadriven"
+		"AbilityTextureName" 				"item_2025"
+		"AbilityBehavior" 					"DOTA_ABILITY_BEHAVIOR_PASSIVE"
+		"AbilityCooldown"					"1"
+		"ItemCost"							"5000"
+		"ItemSellable"						"1"
+		"ItemShareability"					"ITEM_PARTIALLY_SHAREABLE"
+	}
+
+	//-------------------------------------------------------------------------------------------------------------
+	// 死神的大镰刀
+	"item_2026"
+	{
+		//-------------------------------------------------------------------------------------------------------------
+		// General
+		"ID" 								"7026"
+		"BaseClass" 						"item_datadriven"
+		"AbilityTextureName" 				"item_2026"
+		"AbilityBehavior" 					"DOTA_ABILITY_BEHAVIOR_PASSIVE"
+		"AbilityCooldown"					"1"
+		"ItemCost"							"5000"
+		"ItemSellable"						"1"
+		"ItemShareability"					"ITEM_PARTIALLY_SHAREABLE"
+	}
+
+	//-------------------------------------------------------------------------------------------------------------
+	// 莉莉白
+	"item_0001"
+	{
+		//-------------------------------------------------------------------------------------------------------------
+		// General
+		"ID" 								"8001"
+		"BaseClass" 						"item_datadriven"
+		"AbilityTextureName" 				"item_0001"
+		"AbilityBehavior" 					"DOTA_ABILITY_BEHAVIOR_POINT"
+		"AbilityCastRange"					"100"
+		"ItemCost"							"2000"
+		"Model"								"models/thd_hero/lily_white/item/item_lily_white.vmdl"
+		"ItemPurchasable"				    "0"
+		"ItemShareability"					"ITEM_PARTIALLY_SHAREABLE"
+		
+		//-------------------------------------------------------------------------------------------------------------
+		// Item Info
+		
+		"OnSpellStart"
+		{
+			"RunScript"
+			{
+				"ScriptFile"	"scripts/vscripts/abilities/abilityCommon.lua"
+				"Function"		"PutTowerToPoint"
+				"Target"		"POINT"
+			}
+		}
+	}
+
+	//-------------------------------------------------------------------------------------------------------------
+	// 纳兹琳
+	"item_0002"
+	{
+		//-------------------------------------------------------------------------------------------------------------
+		// General
+		"ID" 								"8002"
+		"BaseClass" 						"item_datadriven"
+		"AbilityTextureName" 				"item_0002"
+		"AbilityBehavior" 					"DOTA_ABILITY_BEHAVIOR_POINT"
+		"AbilityCastRange"					"100"
+		"ItemCost"							"2000"
+		"Model"								"models/thd_hero/nazrin/item/item_nazrin.vmdl"
+		"ItemPurchasable"				    "0"
+		"ItemShareability"					"ITEM_PARTIALLY_SHAREABLE"
+		
+		//---------------------------------------------
+		// Item Info
+		
+		"OnSpellStart"
+		{
+			"RunScript"
+			{
+				"ScriptFile"	"scripts/vscripts/abilities/abilityCommon.lua"
+				"Function"		"PutTowerToPoint"
+				"Target"		"POINT"
+			}
+		}
+		
+	}
+
+	//-------------------------------------------------------------------------------------------------------------
+	// 秋穣子
+	"item_0003"
+	{
+		//-------------------------------------------------------------------------------------------------------------
+		// General
+		"ID" 								"8003"
+		"BaseClass" 						"item_datadriven"
+		"AbilityTextureName" 				"item_0003"
+		"AbilityBehavior" 					"DOTA_ABILITY_BEHAVIOR_POINT"
+		"AbilityCastRange"					"100"
+		"ItemCost"							"2000"
+		"Model"								"models/thd_hero/minoriko/item/item_minoriko.vmdl"
+		"ItemPurchasable"				    "0"
+		"ItemShareability"					"ITEM_PARTIALLY_SHAREABLE"
+		
+		//-------------------------------------------------------------------------------------------------------------
+		// Item Info
+		
+		"OnSpellStart"
+		{
+			"RunScript"
+			{
+				"ScriptFile"	"scripts/vscripts/abilities/abilityCommon.lua"
+				"Function"		"PutTowerToPoint"
+				"Target"		"POINT"
+			}
+		}
+		
+	}
+
+	//-------------------------------------------------------------------------------------------------------------
+	// 墓地妖精
+	"item_0004"
+	{
+		//-------------------------------------------------------------------------------------------------------------
+		// General
+		"ID" 								"8004"
+		"BaseClass" 						"item_datadriven"
+		"AbilityTextureName" 				"item_0004"
+		"AbilityBehavior" 					"DOTA_ABILITY_BEHAVIOR_POINT"
+		"AbilityCastRange"					"100"
+		"ItemCost"							"500"
+		"Model"								"models/thd_hero/mugiyousei/item/item_mujiyousei.vmdl"
+		"ItemPurchasable"				    "0"
+		"ItemShareability"					"ITEM_PARTIALLY_SHAREABLE"
+		
+		//-------------------------------------------------------------------------------------------------------------
+		// Item Info
+		
+		"OnSpellStart"
+		{
+			"RunScript"
+			{
+				"ScriptFile"	"scripts/vscripts/abilities/abilityCommon.lua"
+				"Function"		"PutTowerToPoint"
+				"Target"		"POINT"
+			}
+		}
+		
+	}
+
+	//-------------------------------------------------------------------------------------------------------------
+	// 上海人形
+	"item_0005"
+	{
+		//-------------------------------------------------------------------------------------------------------------
+		// General
+		"ID" 								"8005"
+		"BaseClass" 						"item_datadriven"
+		"AbilityTextureName" 				"item_0005"
+		"AbilityBehavior" 					"DOTA_ABILITY_BEHAVIOR_POINT"
+		"AbilityCastRange"					"100"
+		"ItemCost"							"500"
+		"Model"								"models/thd_hero/shanghainingyou/item/item_shanghainingyou.vmdl"
+		"ItemPurchasable"				    "0"
+		"ItemShareability"					"ITEM_PARTIALLY_SHAREABLE"
+		
+		//-------------------------------------------------------------------------------------------------------------
+		// Item Info
+		
+		"OnSpellStart"
+		{
+			"RunScript"
+			{
+				"ScriptFile"	"scripts/vscripts/abilities/abilityCommon.lua"
+				"Function"		"PutTowerToPoint"
+				"Target"		"POINT"
+			}
+		}
+		
+	}
+
+	//-------------------------------------------------------------------------------------------------------------
+	// 蓬莱人形
+	"item_0006"
+	{
+		//-------------------------------------------------------------------------------------------------------------
+		// General
+		"ID" 								"8006"
+		"BaseClass" 						"item_datadriven"
+		"AbilityTextureName" 				"item_0006"
+		"AbilityBehavior" 					"DOTA_ABILITY_BEHAVIOR_POINT"
+		"AbilityCastRange"					"100"
+		"ItemCost"							"500"
+		"Model"								"models/thd_hero/hourainingyou/item/item_hourainingyou.vmdl"
+		"ItemPurchasable"				    "0"
+		"ItemShareability"					"ITEM_PARTIALLY_SHAREABLE"
+		
+		//-------------------------------------------------------------------------------------------------------------
+		// Item Info
+		
+		"OnSpellStart"
+		{
+			"RunScript"
+			{
+				"ScriptFile"	"scripts/vscripts/abilities/abilityCommon.lua"
+				"Function"		"PutTowerToPoint"
+				"Target"		"POINT"
+			}
+		}
+		
+	}
+
+	//-------------------------------------------------------------------------------------------------------------
+	// 花田妖精
+	"item_0007"
+	{
+		//-------------------------------------------------------------------------------------------------------------
+		// General
+		"ID" 								"8007"
+		"BaseClass" 						"item_datadriven"
+		"AbilityTextureName" 				"item_0007"
+		"AbilityBehavior" 					"DOTA_ABILITY_BEHAVIOR_POINT"
+		"AbilityCastRange"					"100"
+		"ItemCost"							"500"
+		"Model"								"models/thd_hero/hanadayousei/item/item_hanadayousei.vmdl"
+		"ItemPurchasable"				    "0"
+		"ItemShareability"					"ITEM_PARTIALLY_SHAREABLE"
+		
+		//-------------------------------------------------------------------------------------------------------------
+		// Item Info
+		
+		"OnSpellStart"
+		{
+			"RunScript"
+			{
+				"ScriptFile"	"scripts/vscripts/abilities/abilityCommon.lua"
+				"Function"		"PutTowerToPoint"
+				"Target"		"POINT"
+			}
+		}
+		
+	}
+
+	//-------------------------------------------------------------------------------------------------------------
+	// 女仆妖精
+	"item_0008"
+	{
+		//-------------------------------------------------------------------------------------------------------------
+		// General
+		"ID" 								"8008"
+		"BaseClass" 						"item_datadriven"
+		"AbilityTextureName" 				"item_0008"
+		"AbilityBehavior" 					"DOTA_ABILITY_BEHAVIOR_POINT"
+		"AbilityCastRange"					"100"
+		"ItemCost"							"500"
+		"Model"								"models/thd_hero/maidyousei/item/item_maidyousei.vmdl"
+		"ItemPurchasable"				    "0"
+		"ItemShareability"					"ITEM_PARTIALLY_SHAREABLE"
+		
+		//-------------------------------------------------------------------------------------------------------------
+		// Item Info
+		
+		"OnSpellStart"
+		{
+			"RunScript"
+			{
+				"ScriptFile"	"scripts/vscripts/abilities/abilityCommon.lua"
+				"Function"		"PutTowerToPoint"
+				"Target"		"POINT"
+			}
+		}
+		
+	}
+
+	//-------------------------------------------------------------------------------------------------------------
+	// 琪露诺
+	"item_0009"
+	{
+		//-------------------------------------------------------------------------------------------------------------
+		// General
+		"ID" 								"8009"
+		"BaseClass" 						"item_datadriven"
+		"AbilityTextureName" 				"item_0009"
+		"AbilityBehavior" 					"DOTA_ABILITY_BEHAVIOR_POINT"
+		"AbilityCastRange"					"100"
+		"ItemCost"							"2000"
+		"Model"								"models/thd_hero/cirno/item/item_cirno.vmdl"
+		"ItemPurchasable"				    "0"
+		"ItemShareability"					"ITEM_PARTIALLY_SHAREABLE"
+		
+		//-------------------------------------------------------------------------------------------------------------
+		// Item Info
+		
+		"OnSpellStart"
+		{
+			"RunScript"
+			{
+				"ScriptFile"	"scripts/vscripts/abilities/abilityCommon.lua"
+				"Function"		"PutTowerToPoint"
+				"Target"		"POINT"
+			}
+		}
+		
+	}
+
+	//-------------------------------------------------------------------------------------------------------------
+	// 多多良小伞
+	"item_0010"
+	{
+		//-------------------------------------------------------------------------------------------------------------
+		// General
+		"ID" 								"8010"
+		"BaseClass" 						"item_datadriven"
+		"AbilityTextureName" 				"item_0010"
+		"AbilityBehavior" 					"DOTA_ABILITY_BEHAVIOR_POINT"
+		"AbilityCastRange"					"100"
+		"ItemCost"							"2000"
+		"Model"								"models/thd_hero/kogasa/item/item_kogasa.vmdl"
+		"ItemPurchasable"				    "0"
+		"ItemShareability"					"ITEM_PARTIALLY_SHAREABLE"
+		
+		//-------------------------------------------------------------------------------------------------------------
+		// Item Info
+		
+		"OnSpellStart"
+		{
+			"RunScript"
+			{
+				"ScriptFile"	"scripts/vscripts/abilities/abilityCommon.lua"
+				"Function"		"PutTowerToPoint"
+				"Target"		"POINT"
+			}
+		}
+		
+	}
+
+	//-------------------------------------------------------------------------------------------------------------
+	// 蕾蒂·霍瓦特洛克
+	"item_0011"
+	{
+		//-------------------------------------------------------------------------------------------------------------
+		// General
+		"ID" 								"8011"
+		"BaseClass" 						"item_datadriven"
+		"AbilityTextureName" 				"item_0011"
+		"AbilityBehavior" 					"DOTA_ABILITY_BEHAVIOR_POINT"
+		"AbilityCastRange"					"100"
+		"ItemCost"							"2000"
+		"Model"								"models/thd_hero/letty/item/item_letty.vmdl"
+		"ItemPurchasable"				    "0"
+		"ItemShareability"					"ITEM_PARTIALLY_SHAREABLE"
+		
+		//-------------------------------------------------------------------------------------------------------------
+		// Item Info
+		
+		"OnSpellStart"
+		{
+			"RunScript"
+			{
+				"ScriptFile"	"scripts/vscripts/abilities/abilityCommon.lua"
+				"Function"		"PutTowerToPoint"
+				"Target"		"POINT"
+			}
+		}
+		
+	}
+
+	//-------------------------------------------------------------------------------------------------------------
+	// 莉莉卡·普莉兹姆利巴
+	"item_0012"
+	{
+		//-------------------------------------------------------------------------------------------------------------
+		// General
+		"ID" 								"8012"
+		"BaseClass" 						"item_datadriven"
+		"AbilityTextureName" 				"item_0012"
+		"AbilityBehavior" 					"DOTA_ABILITY_BEHAVIOR_POINT"
+		"AbilityCastRange"					"100"
+		"ItemCost"							"2000"
+		"Model"								"models/thd_hero/lyrica_prismriver/item/item_lyrica.vmdl"
+		"ItemPurchasable"				    "0"
+		"ItemShareability"					"ITEM_PARTIALLY_SHAREABLE"
+		
+		//-------------------------------------------------------------------------------------------------------------
+		// Item Info
+		
+		"OnSpellStart"
+		{
+			"RunScript"
+			{
+				"ScriptFile"	"scripts/vscripts/abilities/abilityCommon.lua"
+				"Function"		"PutTowerToPoint"
+				"Target"		"POINT"
+			}
+		}
+		
+	}
+
+	//-------------------------------------------------------------------------------------------------------------
+	// 露娜萨·普莉兹姆利巴
+	"item_0013"
+	{
+		//-------------------------------------------------------------------------------------------------------------
+		// General
+		"ID" 								"8013"
+		"BaseClass" 						"item_datadriven"
+		"AbilityTextureName" 				"item_0013"
+		"AbilityBehavior" 					"DOTA_ABILITY_BEHAVIOR_POINT"
+		"AbilityCastRange"					"100"
+		"ItemCost"							"2000"
+		"Model"								"models/thd_hero/lunasa_prismriver/item/item_lunasa.vmdl"
+		"ItemPurchasable"				    "0"
+		"ItemShareability"					"ITEM_PARTIALLY_SHAREABLE"
+		
+		//-------------------------------------------------------------------------------------------------------------
+		// Item Info
+		
+		"OnSpellStart"
+		{
+			"RunScript"
+			{
+				"ScriptFile"	"scripts/vscripts/abilities/abilityCommon.lua"
+				"Function"		"PutTowerToPoint"
+				"Target"		"POINT"
+			}
+		}
+		
+	}
+
+	//-------------------------------------------------------------------------------------------------------------
+	// 梅露兰·普莉兹姆利巴
+	"item_0014"
+	{
+		//-------------------------------------------------------------------------------------------------------------
+		// General
+		"ID" 								"8014"
+		"BaseClass" 						"item_datadriven"
+		"AbilityTextureName" 				"item_0014"
+		"AbilityBehavior" 					"DOTA_ABILITY_BEHAVIOR_POINT"
+		"AbilityCastRange"					"100"
+		"ItemCost"							"2000"
+		"Model"								"models/thd_hero/merlin_prismriver/item/item_merlin.vmdl"
+		"ItemPurchasable"				    "0"
+		"ItemShareability"					"ITEM_PARTIALLY_SHAREABLE"
+
+		
+		//-------------------------------------------------------------------------------------------------------------
+		// Item Info
+		
+		"OnSpellStart"
+		{
+			"RunScript"
+			{
+				"ScriptFile"	"scripts/vscripts/abilities/abilityCommon.lua"
+				"Function"		"PutTowerToPoint"
+				"Target"		"POINT"
+			}
+		}
+		
+	}
+
+	//-------------------------------------------------------------------------------------------------------------
+	// 露米娅
+	"item_0015"
+	{
+		//-------------------------------------------------------------------------------------------------------------
+		// General
+		"ID" 								"8015"
+		"BaseClass" 						"item_datadriven"
+		"AbilityTextureName" 				"item_0015"
+		"AbilityBehavior" 					"DOTA_ABILITY_BEHAVIOR_POINT"
+		"AbilityCastRange"					"100"
+		"ItemCost"							"2000"
+		"Model"								"models/thd_hero/rumia/item/item_rumia.vmdl"
+		"ItemPurchasable"				    "0"
+		"ItemShareability"					"ITEM_PARTIALLY_SHAREABLE"
+		
+		//-------------------------------------------------------------------------------------------------------------
+		// Item Info
+		
+		"OnSpellStart"
+		{
+			"RunScript"
+			{
+				"ScriptFile"	"scripts/vscripts/abilities/abilityCommon.lua"
+				"Function"		"PutTowerToPoint"
+				"Target"		"POINT"
+			}
+		}
+		
+	}
+
+	//-------------------------------------------------------------------------------------------------------------
+	// 古明地觉
+	"item_0016"
+	{
+		//-------------------------------------------------------------------------------------------------------------
+		// General
+		"ID" 								"8016"
+		"BaseClass" 						"item_datadriven"
+		"AbilityTextureName" 				"item_0016"
+		"AbilityBehavior" 					"DOTA_ABILITY_BEHAVIOR_POINT"
+		"AbilityCastRange"					"100"
+		"ItemCost"							"2000"
+		"Model"								"models/thd_hero/satori/item/item_satori.vmdl"
+		"ItemPurchasable"				    "0"
+		"ItemShareability"					"ITEM_PARTIALLY_SHAREABLE"
+		
+		//-------------------------------------------------------------------------------------------------------------
+		// Item Info
+		
+		"OnSpellStart"
+		{
+			"RunScript"
+			{
+				"ScriptFile"	"scripts/vscripts/abilities/abilityCommon.lua"
+				"Function"		"PutTowerToPoint"
+				"Target"		"POINT"
+			}
+		}
+		
+	}
+
+	//-------------------------------------------------------------------------------------------------------------
+	// 永江依玖
+	"item_0017"
+	{
+		//-------------------------------------------------------------------------------------------------------------
+		// General
+		"ID" 								"8017"
+		"BaseClass" 						"item_datadriven"
+		"AbilityTextureName" 				"item_0017"
+		"AbilityBehavior" 					"DOTA_ABILITY_BEHAVIOR_POINT"
+		"AbilityCastRange"					"100"
+		"ItemCost"							"2000"
+		"Model"								"models/thd_hero/iku/item/item_iku.vmdl"
+		"ItemPurchasable"				    "0"
+		"ItemShareability"					"ITEM_PARTIALLY_SHAREABLE"
+		
+		//-------------------------------------------------------------------------------------------------------------
+		// Item Info
+		
+		"OnSpellStart"
+		{
+			"RunScript"
+			{
+				"ScriptFile"	"scripts/vscripts/abilities/abilityCommon.lua"
+				"Function"		"PutTowerToPoint"
+				"Target"		"POINT"
+			}
+		}
+		
+	}
+
+	//-------------------------------------------------------------------------------------------------------------
+	// 米斯蒂娅·萝蕾拉
+	"item_0018"
+	{
+		//-------------------------------------------------------------------------------------------------------------
+		// General
+		"ID" 								"8018"
+		"BaseClass" 						"item_datadriven"
+		"AbilityTextureName" 				"item_0018"
+		"AbilityBehavior" 					"DOTA_ABILITY_BEHAVIOR_POINT"
+		"AbilityCastRange"					"100"
+		"ItemCost"							"2000"
+		"Model"								"models/thd_hero/mystia/item/item_mystia.vmdl"
+		"ItemPurchasable"				    "0"
+		"ItemShareability"					"ITEM_PARTIALLY_SHAREABLE"
+		
+		//-------------------------------------------------------------------------------------------------------------
+		// Item Info
+		
+		"OnSpellStart"
+		{
+			"RunScript"
+			{
+				"ScriptFile"	"scripts/vscripts/abilities/abilityCommon.lua"
+				"Function"		"PutTowerToPoint"
+				"Target"		"POINT"
+			}
+		}
+		
+	}
+
+	//-------------------------------------------------------------------------------------------------------------
+	// 雾雨魔理沙
+	"item_0019"
+	{
+		//-------------------------------------------------------------------------------------------------------------
+		// General
+		"ID" 								"8019"
+		"BaseClass" 						"item_datadriven"
+		"AbilityTextureName" 				"item_0019"
+		"AbilityBehavior" 					"DOTA_ABILITY_BEHAVIOR_POINT"
+		"AbilityCastRange"					"100"
+		"ItemCost"							"5000"
+		"Model"								"models/thd_hero/marisa/item/item_marisa.vmdl"
+		"ItemPurchasable"				    "0"
+		"ItemShareability"					"ITEM_PARTIALLY_SHAREABLE"
+		
+		//-------------------------------------------------------------------------------------------------------------
+		// Item Info
+		
+		"OnSpellStart"
+		{
+			"RunScript"
+			{
+				"ScriptFile"	"scripts/vscripts/abilities/abilityCommon.lua"
+				"Function"		"PutTowerToPoint"
+				"Target"		"POINT"
+			}
+		}
+		
+	}
+
+	//-------------------------------------------------------------------------------------------------------------
+	// 比那民居天子
+	"item_0020"
+	{
+		//-------------------------------------------------------------------------------------------------------------
+		// General
+		"ID" 								"8020"
+		"BaseClass" 						"item_datadriven"
+		"AbilityTextureName" 				"item_0020"
+		"AbilityBehavior" 					"DOTA_ABILITY_BEHAVIOR_POINT"
+		"AbilityCastRange"					"100"
+		"ItemCost"							"5000"
+		"Model"								"models/thd_hero/tenshi/item/item_tenshi.vmdl"
+		"ItemPurchasable"				    "0"
+		"ItemShareability"					"ITEM_PARTIALLY_SHAREABLE"
+		
+		//-------------------------------------------------------------------------------------------------------------
+		// Item Info
+		
+		"OnSpellStart"
+		{
+			"RunScript"
+			{
+				"ScriptFile"	"scripts/vscripts/abilities/abilityCommon.lua"
+				"Function"		"PutTowerToPoint"
+				"Target"		"POINT"
+			}
+		}
+		
+	}
+
+	//-------------------------------------------------------------------------------------------------------------
+	// 帕秋莉·诺蕾姬
+	"item_0021"
+	{
+		//-------------------------------------------------------------------------------------------------------------
+		// General
+		"ID" 								"8021"
+		"BaseClass" 						"item_datadriven"
+		"AbilityTextureName" 				"item_0021"
+		"AbilityBehavior" 					"DOTA_ABILITY_BEHAVIOR_POINT"
+		"AbilityCastRange"					"100"
+		"ItemCost"							"5000"
+		"Model"								"models/thd_hero/patchouli/item/item_patchouli.vmdl"
+		"ItemPurchasable"				    "0"
+		"ItemShareability"					"ITEM_PARTIALLY_SHAREABLE"
+		
+		//-------------------------------------------------------------------------------------------------------------
+		// Item Info
+		
+		"OnSpellStart"
+		{
+			"RunScript"
+			{
+				"ScriptFile"	"scripts/vscripts/abilities/abilityCommon.lua"
+				"Function"		"PutTowerToPoint"
+				"Target"		"POINT"
+			}
+		}
+		
+	}
+
+	//-------------------------------------------------------------------------------------------------------------
+	// 十六夜咲夜
+	"item_0022"
+	{
+		//-------------------------------------------------------------------------------------------------------------
+		// General
+		"ID" 								"8022"
+		"BaseClass" 						"item_datadriven"
+		"AbilityTextureName" 				"item_0022"
+		"AbilityBehavior" 					"DOTA_ABILITY_BEHAVIOR_POINT"
+		"AbilityCastRange"					"100"
+		"ItemCost"							"5000"
+		"Model"								"models/thd_hero/sakuya/item/item_sakuya.vmdl"
+		"ItemPurchasable"				    "0"
+		"ItemShareability"					"ITEM_PARTIALLY_SHAREABLE"
+		
+		//-------------------------------------------------------------------------------------------------------------
+		// Item Info
+		
+		"OnSpellStart"
+		{
+			"RunScript"
+			{
+				"ScriptFile"	"scripts/vscripts/abilities/abilityCommon.lua"
+				"Function"		"PutTowerToPoint"
+				"Target"		"POINT"
+			}
+		}
+		
+	}
+
+	//-------------------------------------------------------------------------------------------------------------
+	// 铃仙·优昙华院·因幡
+	"item_0023"
+	{
+		//-------------------------------------------------------------------------------------------------------------
+		// General
+		"ID" 								"8023"
+		"BaseClass" 						"item_datadriven"
+		"AbilityTextureName" 				"item_0023"
+		"AbilityBehavior" 					"DOTA_ABILITY_BEHAVIOR_POINT"
+		"AbilityCastRange"					"100"
+		"ItemCost"							"5000"
+		"Model"								"models/thd_hero/reisen/item/item_reisen.vmdl"
+		"ItemPurchasable"				    "0"
+		"ItemShareability"					"ITEM_PARTIALLY_SHAREABLE"
+		
+		//-------------------------------------------------------------------------------------------------------------
+		// Item Info
+		
+		"OnSpellStart"
+		{
+			"RunScript"
+			{
+				"ScriptFile"	"scripts/vscripts/abilities/abilityCommon.lua"
+				"Function"		"PutTowerToPoint"
+				"Target"		"POINT"
+			}
+		}
+		
+	}
+
+	//-------------------------------------------------------------------------------------------------------------
+	// 西行寺幽幽子
+	"item_0024"
+	{
+		//-------------------------------------------------------------------------------------------------------------
+		// General
+		"ID" 								"8024"
+		"BaseClass" 						"item_datadriven"
+		"AbilityTextureName" 				"item_0024"
+		"AbilityBehavior" 					"DOTA_ABILITY_BEHAVIOR_POINT"
+		"AbilityCastRange"					"100"
+		"ItemCost"							"5000"
+		"Model"								"models/thd_hero/yuyuko/item/item_yuyuko.vmdl"
+		"ItemPurchasable"				    "0"
+		"ItemShareability"					"ITEM_PARTIALLY_SHAREABLE"
+		
+		//-------------------------------------------------------------------------------------------------------------
+		// Item Info
+		
+		"OnSpellStart"
+		{
+			"RunScript"
+			{
+				"ScriptFile"	"scripts/vscripts/abilities/abilityCommon.lua"
+				"Function"		"PutTowerToPoint"
+				"Target"		"POINT"
+			}
+		}
+		
+	}
+
+	//-------------------------------------------------------------------------------------------------------------
+	// 魂魄妖梦
+	"item_0025"
+	{
+		//-------------------------------------------------------------------------------------------------------------
+		// General
+		"ID" 								"8025"
+		"BaseClass" 						"item_datadriven"
+		"AbilityTextureName" 				"item_0025"
+		"AbilityBehavior" 					"DOTA_ABILITY_BEHAVIOR_POINT"
+		"AbilityCastRange"					"100"
+		"ItemCost"							"5000"
+		"Model"								"models/thd_hero/youmu/item/item_youmu.vmdl"
+		"ItemPurchasable"				    "0"
+		"ItemShareability"					"ITEM_PARTIALLY_SHAREABLE"
+		
+		//-------------------------------------------------------------------------------------------------------------
+		// Item Info
+		
+		"OnSpellStart"
+		{
+			"RunScript"
+			{
+				"ScriptFile"	"scripts/vscripts/abilities/abilityCommon.lua"
+				"Function"		"PutTowerToPoint"
+				"Target"		"POINT"
+			}
+		}
+		
+	}
+
+	//-------------------------------------------------------------------------------------------------------------
+	// 火焰猫鳞
+	"item_0026"
+	{
+		//-------------------------------------------------------------------------------------------------------------
+		// General
+		"ID" 								"8026"
+		"BaseClass" 						"item_datadriven"
+		"AbilityTextureName" 				"item_0026"
+		"AbilityBehavior" 					"DOTA_ABILITY_BEHAVIOR_POINT"
+		"AbilityCastRange"					"100"
+		"ItemCost"							"5000"
+		"Model"								"models/thd_hero/rin/item/item_rin.vmdl"
+		"ItemPurchasable"				    "0"
+		"ItemShareability"					"ITEM_PARTIALLY_SHAREABLE"
+		
+		//-------------------------------------------------------------------------------------------------------------
+		// Item Info
+		
+		"OnSpellStart"
+		{
+			"RunScript"
+			{
+				"ScriptFile"	"scripts/vscripts/abilities/abilityCommon.lua"
+				"Function"		"PutTowerToPoint"
+				"Target"		"POINT"
+			}
+		}
+		
+	}
+
+	//-------------------------------------------------------------------------------------------------------------
+	// 灵乌路空
+	"item_0027"
+	{
+		//-------------------------------------------------------------------------------------------------------------
+		// General
+		"ID" 								"8027"
+		"BaseClass" 						"item_datadriven"
+		"AbilityTextureName" 				"item_0027"
+		"AbilityBehavior" 					"DOTA_ABILITY_BEHAVIOR_POINT"
+		"AbilityCastRange"					"100"
+		"ItemCost"							"5000"
+		"Model"								"models/thd_hero/utsuho/item/item_utsuho.vmdl"
+		"ItemPurchasable"				    "0"
+		"ItemShareability"					"ITEM_PARTIALLY_SHAREABLE"
+		
+		//-------------------------------------------------------------------------------------------------------------
+		// Item Info
+		
+		"OnSpellStart"
+		{
+			"RunScript"
+			{
+				"ScriptFile"	"scripts/vscripts/abilities/abilityCommon.lua"
+				"Function"		"PutTowerToPoint"
+				"Target"		"POINT"
+			}
+		}
+		
+	}
+
+	//-------------------------------------------------------------------------------------------------------------
+	// 博丽灵梦
+	"item_0028"
+	{
+		//-------------------------------------------------------------------------------------------------------------
+		// General
+		"ID" 								"8028"
+		"BaseClass" 						"item_datadriven"
+		"AbilityTextureName" 				"item_0028"
+		"AbilityBehavior" 					"DOTA_ABILITY_BEHAVIOR_POINT"
+		"AbilityCastRange"					"100"
+		"ItemCost"							"10000"
+		"Model"								"models/thd_hero/reimu/item/item_reimu.vmdl"
+		"ItemPurchasable"				    "0"
+		"ItemShareability"					"ITEM_PARTIALLY_SHAREABLE"
+		
+		//-------------------------------------------------------------------------------------------------------------
+		// Item Info
+		
+		"OnSpellStart"
+		{
+			"RunScript"
+			{
+				"ScriptFile"	"scripts/vscripts/abilities/abilityCommon.lua"
+				"Function"		"PutTowerToPoint"
+				"Target"		"POINT"
+			}
+		}
+		
+	}
+
+	//-------------------------------------------------------------------------------------------------------------
+	// 大妖精
+	"item_0029"
+	{
+		//-------------------------------------------------------------------------------------------------------------
+		// General
+		"ID" 								"8029"
+		"BaseClass" 						"item_datadriven"
+		"AbilityTextureName" 				"item_0029"
+		"AbilityBehavior" 					"DOTA_ABILITY_BEHAVIOR_POINT"
+		"AbilityCastRange"					"100"
+		"ItemCost"							"10000"
+		"Model"								"models/thd_hero/daiyousei/item/item_daiyousei.vmdl"
+		"ItemPurchasable"				    "0"
+		"ItemShareability"					"ITEM_PARTIALLY_SHAREABLE"
+		
+		//-------------------------------------------------------------------------------------------------------------
+		// Item Info
+		
+		"OnSpellStart"
+		{
+			"RunScript"
+			{
+				"ScriptFile"	"scripts/vscripts/abilities/abilityCommon.lua"
+				"Function"		"PutTowerToPoint"
+				"Target"		"POINT"
+			}
+		}
+		
+	}
+
+	//-------------------------------------------------------------------------------------------------------------
+	// 蕾米莉亚·斯卡雷特
+	"item_0030"
+	{
+		//-------------------------------------------------------------------------------------------------------------
+		// General
+		"ID" 								"8030"
+		"BaseClass" 						"item_datadriven"
+		"AbilityTextureName" 				"item_0030"
+		"AbilityBehavior" 					"DOTA_ABILITY_BEHAVIOR_POINT"
+		"AbilityCastRange"					"100"
+		"ItemCost"							"10000"
+		"Model"								"models/thd_hero/remilia/item/item_remilia.vmdl"
+		"ItemPurchasable"				    "0"
+		"ItemShareability"					"ITEM_PARTIALLY_SHAREABLE"
+		
+		//-------------------------------------------------------------------------------------------------------------
+		// Item Info
+		
+		"OnSpellStart"
+		{
+			"RunScript"
+			{
+				"ScriptFile"	"scripts/vscripts/abilities/abilityCommon.lua"
+				"Function"		"PutTowerToPoint"
+				"Target"		"POINT"
+			}
+		}
+		
+	}
+
+	//-------------------------------------------------------------------------------------------------------------
+	// 古明地恋
+	"item_0031"
+	{
+		//-------------------------------------------------------------------------------------------------------------
+		// General
+		"ID" 								"8031"
+		"BaseClass" 						"item_datadriven"
+		"AbilityTextureName" 				"item_0031"
+		"AbilityBehavior" 					"DOTA_ABILITY_BEHAVIOR_POINT"
+		"AbilityCastRange"					"100"
+		"ItemCost"							"10000"
+		"Model"								"models/thd_hero/koishi/item/item_koishi.vmdl"
+		"ItemPurchasable"				    "0"
+		"ItemShareability"					"ITEM_PARTIALLY_SHAREABLE"
+		
+		//-------------------------------------------------------------------------------------------------------------
+		// Item Info
+		
+		"OnSpellStart"
+		{
+			"RunScript"
+			{
+				"ScriptFile"	"scripts/vscripts/abilities/abilityCommon.lua"
+				"Function"		"PutTowerToPoint"
+				"Target"		"POINT"
+			}
+		}
+	}
+
+	//-------------------------------------------------------------------------------------------------------------
+	// 芙兰朵露
+	"item_0032"
+	{
+		//-------------------------------------------------------------------------------------------------------------
+		// General
+		"ID" 								"8032"
+		"BaseClass" 						"item_datadriven"
+		"AbilityTextureName" 				"item_0032"
+		"AbilityBehavior" 					"DOTA_ABILITY_BEHAVIOR_POINT"
+		"AbilityCastRange"					"100"
+		"ItemCost"							"10000"
+		"Model"								"models/thd_hero/flandre/item/item_flandre.vmdl"
+		"ItemPurchasable"				    "0"
+		"ItemShareability"					"ITEM_PARTIALLY_SHAREABLE"
+		
+		//-------------------------------------------------------------------------------------------------------------
+		// Item Info
+		
+		"OnSpellStart"
+		{
+			"RunScript"
+			{
+				"ScriptFile"	"scripts/vscripts/abilities/abilityCommon.lua"
+				"Function"		"PutTowerToPoint"
+				"Target"		"POINT"
+			}
+		}
+	}
+
+	//-------------------------------------------------------------------------------------------------------------
+	// 小恶魔
+	"item_0033"
+	{
+		//-------------------------------------------------------------------------------------------------------------
+		// General
+		"ID" 								"8033"
+		"BaseClass" 						"item_datadriven"
+		"AbilityTextureName" 				"item_0033"
+		"AbilityBehavior" 					"DOTA_ABILITY_BEHAVIOR_POINT"
+		"AbilityCastRange"					"100"
+		"ItemCost"							"2000"
+		"Model"								"models/thd_hero/koakuma/item/item_koakuma.vmdl"
+		"ItemPurchasable"				    "0"
+		"ItemShareability"					"ITEM_PARTIALLY_SHAREABLE"
+		
+		//-------------------------------------------------------------------------------------------------------------
+		// Item Info
+		
+		"OnSpellStart"
+		{
+			"RunScript"
+			{
+				"ScriptFile"	"scripts/vscripts/abilities/abilityCommon.lua"
+				"Function"		"PutTowerToPoint"
+				"Target"		"POINT"
+			}
+		}
+	}
+
+	//-------------------------------------------------------------------------------------------------------------
+	// 红美铃
+	"item_0034"
+	{
+		//-------------------------------------------------------------------------------------------------------------
+		// General
+		"ID" 								"8034"
+		"BaseClass" 						"item_datadriven"
+		"AbilityTextureName" 				"item_0034"
+		"AbilityBehavior" 					"DOTA_ABILITY_BEHAVIOR_POINT"
+		"AbilityCastRange"					"100"
+		"ItemCost"							"2000"
+		"Model"								"models/thd_hero/meirin/item/item_meirin.vmdl"
+		"ItemPurchasable"				    "0"
+		"ItemShareability"					"ITEM_PARTIALLY_SHAREABLE"
+		
+		//-------------------------------------------------------------------------------------------------------------
+		// Item Info
+		
+		"OnSpellStart"
+		{
+			"RunScript"
+			{
+				"ScriptFile"	"scripts/vscripts/abilities/abilityCommon.lua"
+				"Function"		"PutTowerToPoint"
+				"Target"		"POINT"
+			}
+		}
+	}
+
+	//-------------------------------------------------------------------------------------------------------------
+	// 风见幽香
+	"item_0035"
+	{
+		//-------------------------------------------------------------------------------------------------------------
+		// General
+		"ID" 								"8035"
+		"BaseClass" 						"item_datadriven"
+		"AbilityTextureName" 				"item_0035"
+		"AbilityBehavior" 					"DOTA_ABILITY_BEHAVIOR_POINT"
+		"AbilityCastRange"					"100"
+		"ItemCost"							"10000"
+		"Model"								"models/thd_hero/yuuka/item/item_yuuka.vmdl"
+		"ItemPurchasable"				    "0"
+		"ItemShareability"					"ITEM_PARTIALLY_SHAREABLE"
+		
+		//-------------------------------------------------------------------------------------------------------------
+		// Item Info
+		
+		"OnSpellStart"
+		{
+			"RunScript"
+			{
+				"ScriptFile"	"scripts/vscripts/abilities/abilityCommon.lua"
+				"Function"		"PutTowerToPoint"
+				"Target"		"POINT"
+			}
+		}
+	}
+
+	//-------------------------------------------------------------------------------------------------------------
+	// 八云紫
+	"item_0036"
+	{
+		//-------------------------------------------------------------------------------------------------------------
+		// General
+		"ID" 								"8036"
+		"BaseClass" 						"item_datadriven"
+		"AbilityTextureName" 				"item_0036"
+		"AbilityBehavior" 					"DOTA_ABILITY_BEHAVIOR_POINT"
+		"AbilityCastRange"					"100"
+		"ItemCost"							"10000"
+		"Model"								"models/thd_hero/yukari/item/item_yukari.vmdl"
+		"ItemPurchasable"				    "0"
+		"ItemShareability"					"ITEM_PARTIALLY_SHAREABLE"
+		
+		//-------------------------------------------------------------------------------------------------------------
+		// Item Info
+		
+		"OnSpellStart"
+		{
+			"RunScript"
+			{
+				"ScriptFile"	"scripts/vscripts/abilities/abilityCommon.lua"
+				"Function"		"PutTowerToPoint"
+				"Target"		"POINT"
+			}
+		}
+	}
+
+	//-------------------------------------------------------------------------------------------------------------
+	// 八云蓝
+	"item_0037"
+	{
+		//-------------------------------------------------------------------------------------------------------------
+		// General
+		"ID" 								"8037"
+		"BaseClass" 						"item_datadriven"
+		"AbilityTextureName" 				"item_0037"
+		"AbilityBehavior" 					"DOTA_ABILITY_BEHAVIOR_POINT"
+		"AbilityCastRange"					"100"
+		"ItemCost"							"5000"
+		"Model"								"models/thd_hero/ran/item/item_ran.vmdl"
+		"ItemPurchasable"				    "0"
+		"ItemShareability"					"ITEM_PARTIALLY_SHAREABLE"
+		
+		//-------------------------------------------------------------------------------------------------------------
+		// Item Info
+		
+		"OnSpellStart"
+		{
+			"RunScript"
+			{
+				"ScriptFile"	"scripts/vscripts/abilities/abilityCommon.lua"
+				"Function"		"PutTowerToPoint"
+				"Target"		"POINT"
+			}
+		}
+	}
+	//-------------------------------------------------------------------------------------------------------------
+	// 橙
+	"item_0038"
+	{
+		//-------------------------------------------------------------------------------------------------------------
+		// General
+		"ID" 								"8038"
+		"BaseClass" 						"item_datadriven"
+		"AbilityTextureName" 				"item_0038"
+		"AbilityBehavior" 					"DOTA_ABILITY_BEHAVIOR_POINT"
+		"AbilityCastRange"					"100"
+		"ItemCost"							"2000"
+		"Model"								"models/thd_hero/chen/item/item_chen.vmdl"
+		"ItemPurchasable"				    "0"
+		"ItemShareability"					"ITEM_PARTIALLY_SHAREABLE"
+		
+		//-------------------------------------------------------------------------------------------------------------
+		// Item Info
+		
+		"OnSpellStart"
+		{
+			"RunScript"
+			{
+				"ScriptFile"	"scripts/vscripts/abilities/abilityCommon.lua"
+				"Function"		"PutTowerToPoint"
+				"Target"		"POINT"
+			}
+		}
+	}
+	//-------------------------------------------------------------------------------------------------------------
+	// 八意永琳
+	"item_0039"
+	{
+		//-------------------------------------------------------------------------------------------------------------
+		// General
+		"ID" 								"8039"
+		"BaseClass" 						"item_datadriven"
+		"AbilityTextureName" 				"item_0039"
+		"AbilityBehavior" 					"DOTA_ABILITY_BEHAVIOR_POINT"
+		"AbilityCastRange"					"100"
+		"ItemCost"							"10000"
+		"Model"								"models/thd_hero/eirin/item/item_eirin.vmdl"
+		"ItemPurchasable"				    "0"
+		"ItemShareability"					"ITEM_PARTIALLY_SHAREABLE"
+		
+		//-------------------------------------------------------------------------------------------------------------
+		// Item Info
+		
+		"OnSpellStart"
+		{
+			"RunScript"
+			{
+				"ScriptFile"	"scripts/vscripts/abilities/abilityCommon.lua"
+				"Function"		"PutTowerToPoint"
+				"Target"		"POINT"
+			}
+		}
+	}
+	//-------------------------------------------------------------------------------------------------------------
+	// 藤原妹红
+	"item_0040"
+	{
+		//-------------------------------------------------------------------------------------------------------------
+		// General
+		"ID" 								"8040"
+		"BaseClass" 						"item_datadriven"
+		"AbilityTextureName" 				"item_0040"
+		"AbilityBehavior" 					"DOTA_ABILITY_BEHAVIOR_POINT"
+		"AbilityCastRange"					"100"
+		"ItemCost"							"5000"
+		"Model"								"models/thd_hero/mokou/item/item_mokou.vmdl"
+		"ItemPurchasable"				    "0"
+		"ItemShareability"					"ITEM_PARTIALLY_SHAREABLE"
+		
+		//-------------------------------------------------------------------------------------------------------------
+		// Item Info
+		
+		"OnSpellStart"
+		{
+			"RunScript"
+			{
+				"ScriptFile"	"scripts/vscripts/abilities/abilityCommon.lua"
+				"Function"		"PutTowerToPoint"
+				"Target"		"POINT"
+			}
+		}
+	}
+	//-------------------------------------------------------------------------------------------------------------
+	// 蓬莱山辉夜
+	"item_0041"
+	{
+		//-------------------------------------------------------------------------------------------------------------
+		// General
+		"ID" 								"8041"
+		"BaseClass" 						"item_datadriven"
+		"AbilityTextureName" 				"item_0041"
+		"AbilityBehavior" 					"DOTA_ABILITY_BEHAVIOR_POINT"
+		"AbilityCastRange"					"100"
+		"ItemCost"							"5000"
+		"Model"								"models/thd_hero/kaguya/item/item_kaguya.vmdl"
+		"ItemPurchasable"				    "0"
+		"ItemShareability"					"ITEM_PARTIALLY_SHAREABLE"
+		
+		//-------------------------------------------------------------------------------------------------------------
+		// Item Info
+		
+		"OnSpellStart"
+		{
+			"RunScript"
+			{
+				"ScriptFile"	"scripts/vscripts/abilities/abilityCommon.lua"
+				"Function"		"PutTowerToPoint"
+				"Target"		"POINT"
+			}
+		}
+	}
+	//-------------------------------------------------------------------------------------------------------------
+	// 射命丸文
+	"item_0042"
+	{
+		//-------------------------------------------------------------------------------------------------------------
+		// General
+		"ID" 								"8042"
+		"BaseClass" 						"item_datadriven"
+		"AbilityTextureName" 				"item_0042"
+		"AbilityBehavior" 					"DOTA_ABILITY_BEHAVIOR_POINT"
+		"AbilityCastRange"					"100"
+		"ItemCost"							"5000"
+		"Model"								"models/thd_hero/aya/item/item_aya.vmdl"
+		"ItemPurchasable"				    "0"
+		"ItemShareability"					"ITEM_PARTIALLY_SHAREABLE"
+		
+		//-------------------------------------------------------------------------------------------------------------
+		// Item Info
+		
+		"OnSpellStart"
+		{
+			"RunScript"
+			{
+				"ScriptFile"	"scripts/vscripts/abilities/abilityCommon.lua"
+				"Function"		"PutTowerToPoint"
+				"Target"		"POINT"
+			}
+		}
+	}
+	//-------------------------------------------------------------------------------------------------------------
+	// 姬海棠羽立
+	"item_0043"
+	{
+		//-------------------------------------------------------------------------------------------------------------
+		// General
+		"ID" 								"8043"
+		"BaseClass" 						"item_datadriven"
+		"AbilityTextureName" 				"item_0043"
+		"AbilityBehavior" 					"DOTA_ABILITY_BEHAVIOR_POINT"
+		"AbilityCastRange"					"100"
+		"ItemCost"							"2000"
+		"Model"								"models/thd_hero/hatate/item/item_hatate.vmdl"
+		"ItemPurchasable"				    "0"
+		"ItemShareability"					"ITEM_PARTIALLY_SHAREABLE"
+		
+		//-------------------------------------------------------------------------------------------------------------
+		// Item Info
+		
+		"OnSpellStart"
+		{
+			"RunScript"
+			{
+				"ScriptFile"	"scripts/vscripts/abilities/abilityCommon.lua"
+				"Function"		"PutTowerToPoint"
+				"Target"		"POINT"
+			}
+		}
+	}
+	//-------------------------------------------------------------------------------------------------------------
+	// 犬走椛
+	"item_0044"
+	{
+		//-------------------------------------------------------------------------------------------------------------
+		// General
+		"ID" 								"8044"
+		"BaseClass" 						"item_datadriven"
+		"AbilityTextureName" 				"item_0044"
+		"AbilityBehavior" 					"DOTA_ABILITY_BEHAVIOR_POINT"
+		"AbilityCastRange"					"100"
+		"ItemCost"							"2000"
+		"Model"								"models/thd_hero/momiji/item/item_momiji.vmdl"
+		"ItemPurchasable"				    "0"
+		"ItemShareability"					"ITEM_PARTIALLY_SHAREABLE"
+		
+		//-------------------------------------------------------------------------------------------------------------
+		// Item Info
+		
+		"OnSpellStart"
+		{
+			"RunScript"
+			{
+				"ScriptFile"	"scripts/vscripts/abilities/abilityCommon.lua"
+				"Function"		"PutTowerToPoint"
+				"Target"		"POINT"
+			}
+		}
+	}
+	//-------------------------------------------------------------------------------------------------------------
+	// 东风谷早苗
+	"item_0046"
+	{
+		//-------------------------------------------------------------------------------------------------------------
+		// General
+		"ID" 								"8046"
+		"BaseClass" 						"item_datadriven"
+		"AbilityTextureName" 				"item_0046"
+		"AbilityBehavior" 					"DOTA_ABILITY_BEHAVIOR_POINT"
+		"AbilityCastRange"					"100"
+		"ItemCost"							"5000"
+		"Model"								"models/thd_hero/sanae/item/item_sanae.vmdl"
+		"ItemPurchasable"				    "0"
+		"ItemShareability"					"ITEM_PARTIALLY_SHAREABLE"
+		
+		//-------------------------------------------------------------------------------------------------------------
+		// Item Info
+		
+		"OnSpellStart"
+		{
+			"RunScript"
+			{
+				"ScriptFile"	"scripts/vscripts/abilities/abilityCommon.lua"
+				"Function"		"PutTowerToPoint"
+				"Target"		"POINT"
+			}
+		}
+	}
+	//-------------------------------------------------------------------------------------------------------------
+	// 八坂神奈子
+	"item_0047"
+	{
+		//-------------------------------------------------------------------------------------------------------------
+		// General
+		"ID" 								"8047"
+		"BaseClass" 						"item_datadriven"
+		"AbilityTextureName" 				"item_0047"
+		"AbilityBehavior" 					"DOTA_ABILITY_BEHAVIOR_POINT"
+		"AbilityCastRange"					"100"
+		"ItemCost"							"10000"
+		"Model"								"models/thd_hero/kanako/item/item_kanako.vmdl"
+		"ItemPurchasable"				    "0"
+		"ItemShareability"					"ITEM_PARTIALLY_SHAREABLE"
+		
+		//-------------------------------------------------------------------------------------------------------------
+		// Item Info
+		
+		"OnSpellStart"
+		{
+			"RunScript"
+			{
+				"ScriptFile"	"scripts/vscripts/abilities/abilityCommon.lua"
+				"Function"		"PutTowerToPoint"
+				"Target"		"POINT"
+			}
+		}
+	}
+
+	//-------------------------------------------------------------------------------------------------------------
+	// 泄矢诹访子
+	"item_0048"
+	{
+		//-------------------------------------------------------------------------------------------------------------
+		// General
+		"ID" 								"8048"
+		"BaseClass" 						"item_datadriven"
+		"AbilityTextureName" 				"item_0048"
+		"AbilityBehavior" 					"DOTA_ABILITY_BEHAVIOR_POINT"
+		"AbilityCastRange"					"100"
+		"ItemCost"							"5000"
+		"Model"								"models/thd_hero/suwako/item/item_suwako.vmdl"
+		"ItemPurchasable"				    "0"
+		"ItemShareability"					"ITEM_PARTIALLY_SHAREABLE"
+		
+		//-------------------------------------------------------------------------------------------------------------
+		// Item Info
+		
+		"OnSpellStart"
+		{
+			"RunScript"
+			{
+				"ScriptFile"	"scripts/vscripts/abilities/abilityCommon.lua"
+				"Function"		"PutTowerToPoint"
+				"Target"		"POINT"
+			}
+		}
+	}
+
+	//-------------------------------------------------------------------------------------------------------------
+	// 村纱水蜜
+	"item_0049"
+	{
+		//-------------------------------------------------------------------------------------------------------------
+		// General
+		"ID" 								"8049"
+		"BaseClass" 						"item_datadriven"
+		"AbilityTextureName" 				"item_0049"
+		"AbilityBehavior" 					"DOTA_ABILITY_BEHAVIOR_POINT"
+		"AbilityCastRange"					"100"
+		"ItemCost"							"5000"
+		"Model"								"models/thd_hero/minamitsu/item/item_minamitsu.vmdl"
+		"ItemPurchasable"				    "0"
+		"ItemShareability"					"ITEM_PARTIALLY_SHAREABLE"
+		
+		//-------------------------------------------------------------------------------------------------------------
+		// Item Info
+		
+		"OnSpellStart"
+		{
+			"RunScript"
+			{
+				"ScriptFile"	"scripts/vscripts/abilities/abilityCommon.lua"
+				"Function"		"PutTowerToPoint"
+				"Target"		"POINT"
+			}
+		}
+	}
+
+	//-------------------------------------------------------------------------------------------------------------
+	// 封兽鵺
+	"item_0050"
+	{
+		//-------------------------------------------------------------------------------------------------------------
+		// General
+		"ID" 								"8050"
+		"BaseClass" 						"item_datadriven"
+		"AbilityTextureName" 				"item_0050"
+		"AbilityBehavior" 					"DOTA_ABILITY_BEHAVIOR_POINT"
+		"AbilityCastRange"					"100"
+		"ItemCost"							"5000"
+		"Model"								"models/thd_hero/nue/item/item_nue.vmdl"
+		"ItemPurchasable"				    "0"
+		"ItemShareability"					"ITEM_PARTIALLY_SHAREABLE"
+		
+		//-------------------------------------------------------------------------------------------------------------
+		// Item Info
+		
+		"OnSpellStart"
+		{
+			"RunScript"
+			{
+				"ScriptFile"	"scripts/vscripts/abilities/abilityCommon.lua"
+				"Function"		"PutTowerToPoint"
+				"Target"		"POINT"
+			}
+		}
+	}
+
+	//-------------------------------------------------------------------------------------------------------------
+	// 圣白莲
+	"item_0051"
+	{
+		//-------------------------------------------------------------------------------------------------------------
+		// General
+		"ID" 								"8051"
+		"BaseClass" 						"item_datadriven"
+		"AbilityTextureName" 				"item_0051"
+		"AbilityBehavior" 					"DOTA_ABILITY_BEHAVIOR_POINT"
+		"AbilityCastRange"					"100"
+		"ItemCost"							"10000"
+		"Model"								"models/thd_hero/byakuren/item/item_byakuren.vmdl"
+		"ItemPurchasable"				    "0"
+		"ItemShareability"					"ITEM_PARTIALLY_SHAREABLE"
+		
+		//-------------------------------------------------------------------------------------------------------------
+		// Item Info
+		
+		"OnSpellStart"
+		{
+			"RunScript"
+			{
+				"ScriptFile"	"scripts/vscripts/abilities/abilityCommon.lua"
+				"Function"		"PutTowerToPoint"
+				"Target"		"POINT"
+			}
+		}
+	}
+
+	//-------------------------------------------------------------------------------------------------------------
+	// 丰聪耳神子
+	"item_0052"
+	{
+		//-------------------------------------------------------------------------------------------------------------
+		// General
+		"ID" 								"8052"
+		"BaseClass" 						"item_datadriven"
+		"AbilityTextureName" 				"item_0052"
+		"AbilityBehavior" 					"DOTA_ABILITY_BEHAVIOR_POINT"
+		"AbilityCastRange"					"100"
+		"ItemCost"							"10000"
+		"Model"								"models/thd_hero/miko/item/item_miko.vmdl"
+		"ItemPurchasable"				    "0"
+		"ItemShareability"					"ITEM_PARTIALLY_SHAREABLE"
+		
+		//-------------------------------------------------------------------------------------------------------------
+		// Item Info
+		
+		"OnSpellStart"
+		{
+			"RunScript"
+			{
+				"ScriptFile"	"scripts/vscripts/abilities/abilityCommon.lua"
+				"Function"		"PutTowerToPoint"
+				"Target"		"POINT"
+			}
+		}
+	}
+
+	//-------------------------------------------------------------------------------------------------------------
+	// 上白泽慧音
+	"item_0061"
+	{
+		//-------------------------------------------------------------------------------------------------------------
+		// General
+		"ID" 								"8061"
+		"BaseClass" 						"item_datadriven"
+		"AbilityTextureName" 				"item_0061"
+		"AbilityBehavior" 					"DOTA_ABILITY_BEHAVIOR_POINT"
+		"AbilityCastRange"					"100"
+		"ItemCost"							"5000"
+		"Model"								"models/thd_hero/keine/keine.vmdl"
+		"ItemPurchasable"				    "0"
+		"ItemShareability"					"ITEM_PARTIALLY_SHAREABLE"
+		
+		//-------------------------------------------------------------------------------------------------------------
+		// Item Info
+		
+		"OnSpellStart"
+		{
+			"RunScript"
+			{
+				"ScriptFile"	"scripts/vscripts/abilities/abilityCommon.lua"
+				"Function"		"PutTowerToPoint"
+				"Target"		"POINT"
+			}
+		}
+	}
+
+	//-------------------------------------------------------------------------------------------------------------
+	// 寅丸星
+	"item_0069"
+	{
+		//-------------------------------------------------------------------------------------------------------------
+		// General
+		"ID" 								"8069"
+		"BaseClass" 						"item_datadriven"
+		"AbilityTextureName" 				"item_0069"
+		"AbilityBehavior" 					"DOTA_ABILITY_BEHAVIOR_POINT"
+		"AbilityCastRange"					"100"
+		"ItemCost"							"2000"
+		"Model"								"models/thd_hero/toramarushou/item/item_toramarushou.vmdl"
+		"ItemPurchasable"				    "0"
+		"ItemShareability"					"ITEM_PARTIALLY_SHAREABLE"
+		
+		//-------------------------------------------------------------------------------------------------------------
+		// Item Info
+		
+		"OnSpellStart"
+		{
+			"RunScript"
+			{
+				"ScriptFile"	"scripts/vscripts/abilities/abilityCommon.lua"
+				"Function"		"PutTowerToPoint"
+				"Target"		"POINT"
+			}
+		}
+	}
+
+	//-------------------------------------------------------------------------------------------------------------
+	// 神绮
+	"item_0080"
+	{
+		//-------------------------------------------------------------------------------------------------------------
+		// General
+		"ID" 								"8080"
+		"BaseClass" 						"item_datadriven"
+		"AbilityTextureName" 				"item_0080"
+		"AbilityBehavior" 					"DOTA_ABILITY_BEHAVIOR_POINT"
+		"AbilityCastRange"					"100"
+		"ItemCost"							"10000"
+		"Model"								"models/thd_hero/shinki/item/item_shinki.vmdl"
+		"ItemPurchasable"				    "0"
+		"ItemShareability"					"ITEM_PARTIALLY_SHAREABLE"
+		
+		//-------------------------------------------------------------------------------------------------------------
+		// Item Info
+		
+		"OnSpellStart"
+		{
+			"RunScript"
+			{
+				"ScriptFile"	"scripts/vscripts/abilities/abilityCommon.lua"
+				"Function"		"PutTowerToPoint"
+				"Target"		"POINT"
+			}
+		}
+	}
+
+	//-------------------------------------------------------------------------------------------------------------
+	// 秋静叶
+	"item_0088"
+	{
+		//-------------------------------------------------------------------------------------------------------------
+		// General
+		"ID" 								"8088"
+		"BaseClass" 						"item_datadriven"
+		"AbilityTextureName" 				"item_0088"
+		"AbilityBehavior" 					"DOTA_ABILITY_BEHAVIOR_POINT"
+		"AbilityCastRange"					"100"
+		"ItemCost"							"2000"
+		"Model"								"models/thd_hero/sizuha/item/item_sizuha.vmdl"
+		"ItemPurchasable"				    "0"
+		"ItemShareability"					"ITEM_PARTIALLY_SHAREABLE"
+		
+		//-------------------------------------------------------------------------------------------------------------
+		// Item Info
+		
+		"OnSpellStart"
+		{
+			"RunScript"
+			{
+				"ScriptFile"	"scripts/vscripts/abilities/abilityCommon.lua"
+				"Function"		"PutTowerToPoint"
+				"Target"		"POINT"
+			}
+		}
+	}
+
+	//-------------------------------------------------------------------------------------------------------------
+	// 苏我屠自古
+	"item_0094"
+	{
+		//-------------------------------------------------------------------------------------------------------------
+		// General
+		"ID" 								"8094"
+		"BaseClass" 						"item_datadriven"
+		"AbilityTextureName" 				"item_0094"
+		"AbilityBehavior" 					"DOTA_ABILITY_BEHAVIOR_POINT"
+		"AbilityCastRange"					"100"
+		"ItemCost"							"5000"
+		"Model"								"models/thd_hero/soga/item/item_soga.vmdl"
+		"ItemPurchasable"				    "0"
+		"ItemShareability"					"ITEM_PARTIALLY_SHAREABLE"
+		
+		//-------------------------------------------------------------------------------------------------------------
+		// Item Info
+		
+		"OnSpellStart"
+		{
+			"RunScript"
+			{
+				"ScriptFile"	"scripts/vscripts/abilities/abilityCommon.lua"
+				"Function"		"PutTowerToPoint"
+				"Target"		"POINT"
+			}
+		}
+	}
+
+	//-------------------------------------------------------------------------------------------------------------
+	// 物部布都
+	"item_0095"
+	{
+		//-------------------------------------------------------------------------------------------------------------
+		// General
+		"ID" 								"8095"
+		"BaseClass" 						"item_datadriven"
+		"AbilityTextureName" 				"item_0095"
+		"AbilityBehavior" 					"DOTA_ABILITY_BEHAVIOR_POINT"
+		"AbilityCastRange"					"100"
+		"ItemCost"							"5000"
+		"Model"								"models/thd_hero/futo/item/item_futo.vmdl"
+		"ItemPurchasable"				    "0"
+		"ItemShareability"					"ITEM_PARTIALLY_SHAREABLE"
+		
+		//-------------------------------------------------------------------------------------------------------------
+		// Item Info
+		
+		"OnSpellStart"
+		{
+			"RunScript"
+			{
+				"ScriptFile"	"scripts/vscripts/abilities/abilityCommon.lua"
+				"Function"		"PutTowerToPoint"
+				"Target"		"POINT"
+			}
+		}
+	}
+
+	//-------------------------------------------------------------------------------------------------------------
+	// 霍青娥
+	"item_0096"
+	{
+		//-------------------------------------------------------------------------------------------------------------
+		// General
+		"ID" 								"8096"
+		"BaseClass" 						"item_datadriven"
+		"AbilityTextureName" 				"item_0096"
+		"AbilityBehavior" 					"DOTA_ABILITY_BEHAVIOR_POINT"
+		"AbilityCastRange"					"100"
+		"ItemCost"							"5000"
+		"Model"								"models/thd_hero/seiga/item/item_seiga.vmdl"
+		"ItemPurchasable"				    "0"
+		"ItemShareability"					"ITEM_PARTIALLY_SHAREABLE"
+		
+		//-------------------------------------------------------------------------------------------------------------
+		// Item Info
+		
+		"OnSpellStart"
+		{
+			"RunScript"
+			{
+				"ScriptFile"	"scripts/vscripts/abilities/abilityCommon.lua"
+				"Function"		"PutTowerToPoint"
+				"Target"		"POINT"
+			}
+		}
+	}
+
+	//-------------------------------------------------------------------------------------------------------------
+	// 宫古芳香
+	"item_0097"
+	{
+		//-------------------------------------------------------------------------------------------------------------
+		// General
+		"ID" 								"8097"
+		"BaseClass" 						"item_datadriven"
+		"AbilityTextureName" 				"item_0097"
+		"AbilityBehavior" 					"DOTA_ABILITY_BEHAVIOR_POINT"
+		"AbilityCastRange"					"100"
+		"ItemCost"							"2000"
+		"Model"								"models/thd_hero/yoshika/yoshika.vmdl"
+		"ItemPurchasable"				    "0"
+		"ItemShareability"					"ITEM_PARTIALLY_SHAREABLE"
+		
+		//-------------------------------------------------------------------------------------------------------------
+		// Item Info
+		
+		"OnSpellStart"
+		{
+			"RunScript"
+			{
+				"ScriptFile"	"scripts/vscripts/abilities/abilityCommon.lua"
+				"Function"		"PutTowerToPoint"
+				"Target"		"POINT"
+			}
+		}
+	}
+}

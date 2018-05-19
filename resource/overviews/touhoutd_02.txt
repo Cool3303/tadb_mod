@@ -1,0 +1,8 @@
+touhoutd_02
+{
+	material materials/overviews/touhoutd_02.vmat
+	pos_x -11838
+	pos_y 13216
+	scale 24.748
+}
+

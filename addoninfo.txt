@@ -1,0 +1,49 @@
+"AddonInfo"
+{
+	maps			"touhoutd"
+	"touhoutd"
+	{
+		"MaxPlayers"                    "4"
+	}
+	"IsPlayable"	"1"
+
+	"Default_Keys"
+	{
+		"01"
+		{
+			"Key"		"CTRL"
+			"Command"	"+CustomKeyEvent_CTRL"
+			"Name"		"CustomKeyEvent_CTRL"
+		}
+		"02"
+		{
+			"Key"		"6"
+			"Command"	"+CustomKeyEvent_6"
+			"Name"		"CustomKeyEvent_6"
+		}
+		"03"
+		{
+			"Key"		"7"
+			"Command"	"+CustomKeyEvent_7"
+			"Name"		"CustomKeyEvent_7"
+		}
+		"04"
+		{
+			"Key"		"8"
+			"Command"	"+CustomKeyEvent_8"
+			"Name"		"CustomKeyEvent_8"
+		}
+		"05"
+		{
+			"Key"		"9"
+			"Command"	"+CustomKeyEvent_9"
+			"Name"		"CustomKeyEvent_9"
+		}
+		"06"
+		{
+			"Key"		"0"
+			"Command"	"+CustomKeyEvent_0"
+			"Name"		"CustomKeyEvent_0"
+		}
+	}
+}

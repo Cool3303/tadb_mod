@@ -1,0 +1,436 @@
+#base "abilities/tower_abilities.kv"
+// Dota Heroes File
+"DOTAAbilities"
+{
+	"Version"		"1"
+
+	"ability_dummy_unit"
+	{
+		"BaseClass"				"ability_datadriven"
+		"AbilityTextureName"	"custom/rubick_empty1"
+		"Modifiers"
+		{
+			"dummy_unit"
+			{
+				"Passive"	"1"
+				"IsHidden"	"1"
+				"States"
+				{
+					"MODIFIER_STATE_ATTACK_IMMUNE"	"MODIFIER_STATE_VALUE_ENABLED"
+					"MODIFIER_STATE_MAGIC_IMMUNE"	"MODIFIER_STATE_VALUE_ENABLED"
+					"MODIFIER_STATE_UNSELECTABLE"	"MODIFIER_STATE_VALUE_ENABLED"
+					"MODIFIER_STATE_NOT_ON_MINIMAP"	"MODIFIER_STATE_VALUE_ENABLED"
+					"MODIFIER_STATE_NO_HEALTH_BAR"	"MODIFIER_STATE_VALUE_ENABLED"
+					"MODIFIER_STATE_NO_UNIT_COLLISION"	"MODIFIER_STATE_VALUE_ENABLED"
+				}
+				"Properties"
+				{
+					"MODIFIER_PROPERTY_INCOMING_DAMAGE_PERCENTAGE"	"-100"
+				}
+			}
+		}
+	}
+
+	"ability_shop"
+	{
+		"BaseClass"				"ability_datadriven"
+		"AbilityTextureName"	"custom/rubick_empty1"
+		"AbilityBehavior"		"DOTA_ABILITY_BEHAVIOR_PASSIVE | DOTA_ABILITY_BEHAVIOR_HIDDEN"
+		"AbilityType"			"DOTA_ABILITY_TYPE_HIDDEN"
+		"MaxLevel"				"1"
+
+		"Modifiers"
+		{
+			"shop_unit"
+			{
+				"Passive"	"1"
+				"IsHidden"	"1"
+				"States"
+				{
+					"MODIFIER_STATE_NOT_ON_MINIMAP"		"MODIFIER_STATE_VALUE_ENABLED"
+					"MODIFIER_STATE_NO_HEALTH_BAR"		"MODIFIER_STATE_VALUE_ENABLED"
+					"MODIFIER_STATE_NO_UNIT_COLLISION"	"MODIFIER_STATE_VALUE_ENABLED"
+					"MODIFIER_STATE_ROOTED"				"MODIFIER_STATE_VALUE_ENABLED"
+				}
+			}
+		}
+	}
+
+	//回收防御塔
+	"ability_touhoutd_release_tower"
+	{
+		"BaseClass"				"ability_datadriven"
+		"AbilityTextureName"	"touhoutd/release_tower"
+		"AbilityBehavior"		"DOTA_ABILITY_BEHAVIOR_UNIT_TARGET | DOTA_ABILITY_BEHAVIOR_IMMEDIATE"
+		"AbilityUnitTargetType"	"DOTA_UNIT_TARGET_HERO | DOTA_UNIT_TARGET_BASIC"
+		"AbilityUnitTargetTeam"	"DOTA_UNIT_TARGET_TEAM_FRIENDLY"
+		"MaxLevel"				"1"
+		"AbilityCastAnimation"	"ACT_DOTA_CAST_ABILITY_3"
+		"AbilityCooldown"		"0"
+		"AbilityManaCost"		"0"
+		// Stats
+		// ----------------------------------------------------------------
+		"AbilityCastRange"		"800"
+
+		"precache"
+		{
+			"particle"					"particles/econ/items/clockwerk/clockwerk_paraflare/clockwerk_para_rocket_flare_explosion.vpcf"
+			"particle"					"particles/heroes/alice/ability_alice_ex_release.vpcf"
+			"soundfile"					"soundevents/thdots_hero_sounds/thdots_alice_sounds.vsndevts"
+		}
+
+		"OnSpellStart"
+		{
+			"FireSound"
+			{
+				"EffectName"			"Sound_THTD.ability_touhoutd_release_tower"
+				"Target"				"CASTER"
+			}
+
+			"RunScript"
+			{
+				"ScriptFile"	"scripts/vscripts/abilities/abilityCommon.lua"
+				"Function"		"OnTouhouReleaseTowerSpellStart"
+				"Target"		"TARGET"
+			}
+		}
+
+		"Modifiers"
+		{
+			"unit_default"
+			{
+				"Passive"	"1"
+				"IsHidden"	"1"
+
+				"States"
+				{
+					"MODIFIER_STATE_NO_HEALTH_BAR"		"MODIFIER_STATE_VALUE_ENABLED"
+				}
+			}
+		}
+	}
+
+	"ability_touhoutd_blink"
+	{
+		"BaseClass"						"ability_datadriven"
+		"AbilityTextureName"			"touhoutd/blink"
+		"AbilityBehavior"			    "DOTA_ABILITY_BEHAVIOR_POINT"
+		"AbilityManaCost"				"0"
+		"MaxLevel"						"1"
+		"AbilityCooldown"				"0"
+
+		"OnSpellStart"
+		{
+			"FireSound"
+			{
+				"EffectName"			"Sound_THTD.ability_touhoutd_blink.Start"
+				"Target"				"CASTER"
+			}
+
+			"FireSound"
+			{
+				"EffectName"			"Sound_THTD.ability_touhoutd_blink"
+				"Target"				"CASTER"
+			}
+
+			"RunScript"
+			{
+				"Target"				"POINT"
+				"ScriptFile"			"scripts/vscripts/abilities/abilityCommon.lua"
+				"Function"				"BlinkToPoint"
+			}			
+		}
+	}
+
+	"ability_touhoutd_kill"
+	{
+		"BaseClass"				"ability_datadriven"
+		"AbilityTextureName"	"ability_collection_power"
+		"AbilityBehavior"		"DOTA_ABILITY_BEHAVIOR_UNIT_TARGET"
+		"AbilityUnitTargetType"	"DOTA_UNIT_TARGET_HERO | DOTA_UNIT_TARGET_BASIC"
+		"AbilityUnitTargetTeam"	"DOTA_UNIT_TARGET_TEAM_ENEMY"
+		"AbilityUnitDamageType"	"DAMAGE_TYPE_PURE"
+		"MaxLevel"				"1"
+		"AbilityCastAnimation"	"ACT_DOTA_CAST_ABILITY_3"
+		"AbilityCooldown"		"60.0"
+		"AbilityManaCost"		"0"
+
+		// Stats
+		// ----------------------------------------------------------------
+		"AbilityCastRange"		"1000"
+
+		"OnSpellStart"
+		{
+			"RunScript"
+			{
+				"ScriptFile"		"scripts/vscripts/abilities/abilityCommon.lua"
+				"Function"			"OnKillUnitSpellStart"
+				"Target"			"TARGET"
+			}
+		}
+	}
+
+	"ability_touhoutd_ex_up"
+	{
+		"BaseClass"				"ability_datadriven"
+		"AbilityTextureName"	"touhoutd/power_buff"
+		"AbilityBehavior"		"DOTA_ABILITY_BEHAVIOR_UNIT_TARGET | DOTA_ABILITY_BEHAVIOR_IMMEDIATE"
+		"AbilityUnitTargetType"	"DOTA_UNIT_TARGET_HERO | DOTA_UNIT_TARGET_BASIC"
+		"AbilityUnitTargetTeam"	"DOTA_UNIT_TARGET_TEAM_FRIENDLY"
+		"MaxLevel"				"1"
+		"AbilityCastAnimation"	"ACT_DOTA_CAST_ABILITY_3"
+		"AbilityCooldown"		"0"
+		"AbilityManaCost"		"0"
+		// Stats
+		// ----------------------------------------------------------------
+		"AbilityCastRange"		"800"
+
+		"precache"
+		{
+			"particle"					"particles/econ/items/clockwerk/clockwerk_paraflare/clockwerk_para_rocket_flare_explosion.vpcf"
+		}
+
+		"OnSpellStart"
+		{
+			"RunScript"
+			{
+				"ScriptFile"	"scripts/vscripts/abilities/abilityCommon.lua"
+				"Function"		"OnTouhoutdExUp"
+				"Target"		"TARGET"
+			}
+		}
+	}
+
+	"ability_touhoutd_buy_normal_card"
+	{
+		"BaseClass"				"ability_datadriven"
+		"AbilityTextureName"	"touhoutd/buy_normal_card"
+		"AbilityBehavior"		"DOTA_ABILITY_BEHAVIOR_NO_TARGET | DOTA_ABILITY_BEHAVIOR_IMMEDIATE"
+		"AbilityUnitTargetType"	"DOTA_UNIT_TARGET_HERO | DOTA_UNIT_TARGET_BASIC"
+		"AbilityCooldown"		"0.3"
+		"MaxLevel"				"1"
+		"AbilityManaCost"		"0"
+		"AbilityGoldCost"		"500"
+
+		"OnSpellStart"
+		{
+			"RunScript"
+			{
+				"ScriptFile"	"scripts/vscripts/abilities/abilityCommon.lua"
+				"Function"		"DrawNormalCard"
+			}
+		}
+	}
+
+	"ability_touhoutd_buy_senior_card"
+	{
+		"BaseClass"				"ability_datadriven"
+		"AbilityTextureName"	"touhoutd/buy_senior_card"
+		"AbilityBehavior"		"DOTA_ABILITY_BEHAVIOR_NO_TARGET | DOTA_ABILITY_BEHAVIOR_IMMEDIATE"
+		"AbilityUnitTargetType"	"DOTA_UNIT_TARGET_HERO | DOTA_UNIT_TARGET_BASIC"
+		"AbilityCooldown"		"0.3"
+		"MaxLevel"				"1"
+		"AbilityManaCost"		"0"
+		"AbilityGoldCost"		"2500"
+
+		"OnSpellStart"
+		{
+			"RunScript"
+			{
+				"ScriptFile"	"scripts/vscripts/abilities/abilityCommon.lua"
+				"Function"		"DrawSeniorCard"
+			}
+		}
+	}
+
+	"ability_touhoutd_shop_buy_normal_card"
+	{
+		"BaseClass"				"ability_datadriven"
+		"AbilityTextureName"	"touhoutd/buy_normal_card"
+		"AbilityBehavior"		"DOTA_ABILITY_BEHAVIOR_NO_TARGET | DOTA_ABILITY_BEHAVIOR_IMMEDIATE"
+		"AbilityUnitTargetType"	"DOTA_UNIT_TARGET_HERO | DOTA_UNIT_TARGET_BASIC"
+		"AbilityCooldown"		"0.3"
+		"MaxLevel"				"1"
+		"AbilityManaCost"		"0"
+		"AbilityGoldCost"		"500"
+
+		"OnSpellStart"
+		{
+			"RunScript"
+			{
+				"ScriptFile"	"scripts/vscripts/abilities/abilityCommon.lua"
+				"Function"		"BuyNormalCard"
+			}
+		}
+	}
+
+	"ability_touhoutd_shop_buy_senior_card"
+	{
+		"BaseClass"				"ability_datadriven"
+		"AbilityTextureName"	"touhoutd/buy_senior_card"
+		"AbilityBehavior"		"DOTA_ABILITY_BEHAVIOR_NO_TARGET | DOTA_ABILITY_BEHAVIOR_IMMEDIATE"
+		"AbilityUnitTargetType"	"DOTA_UNIT_TARGET_HERO | DOTA_UNIT_TARGET_BASIC"
+		"AbilityCooldown"		"0.3"
+		"MaxLevel"				"1"
+		"AbilityManaCost"		"0"
+		"AbilityGoldCost"		"2500"
+
+		"OnSpellStart"
+		{
+			"RunScript"
+			{
+				"ScriptFile"	"scripts/vscripts/abilities/abilityCommon.lua"
+				"Function"		"BuySeniorCard"
+			}
+		}
+	}
+
+	"ability_touhoutd_shop_buy_egg_level_1"
+	{
+		"BaseClass"				"ability_datadriven"
+		"AbilityTextureName"	"touhoutd/buy_egg_level_1"
+		"AbilityBehavior"		"DOTA_ABILITY_BEHAVIOR_NO_TARGET | DOTA_ABILITY_BEHAVIOR_IMMEDIATE"
+		"AbilityUnitTargetType"	"DOTA_UNIT_TARGET_HERO | DOTA_UNIT_TARGET_BASIC"
+		"AbilityCooldown"		"0.3"
+		"MaxLevel"				"1"
+		"AbilityManaCost"		"0"
+		"AbilityGoldCost"		"1000"
+
+		"OnSpellStart"
+		{
+			"RunScript"
+			{
+				"ScriptFile"	"scripts/vscripts/abilities/abilityCommon.lua"
+				"Function"		"BuyEggLevel1"
+			}
+		}
+	}
+
+	"ability_touhoutd_shop_buy_egg_level_2"
+	{
+		"BaseClass"				"ability_datadriven"
+		"AbilityTextureName"	"touhoutd/buy_egg_level_2"
+		"AbilityBehavior"		"DOTA_ABILITY_BEHAVIOR_NO_TARGET | DOTA_ABILITY_BEHAVIOR_IMMEDIATE"
+		"AbilityUnitTargetType"	"DOTA_UNIT_TARGET_HERO | DOTA_UNIT_TARGET_BASIC"
+		"AbilityCooldown"		"0.3"
+		"MaxLevel"				"1"
+		"AbilityManaCost"		"0"
+		"AbilityGoldCost"		"1800"
+
+		"OnSpellStart"
+		{
+			"RunScript"
+			{
+				"ScriptFile"	"scripts/vscripts/abilities/abilityCommon.lua"
+				"Function"		"BuyEggLevel2"
+			}
+		}
+	}
+
+	"ability_touhoutd_shop_buy_egg_level_3"
+	{
+		"BaseClass"				"ability_datadriven"
+		"AbilityTextureName"	"touhoutd/buy_egg_level_3"
+		"AbilityBehavior"		"DOTA_ABILITY_BEHAVIOR_NO_TARGET | DOTA_ABILITY_BEHAVIOR_IMMEDIATE"
+		"AbilityUnitTargetType"	"DOTA_UNIT_TARGET_HERO | DOTA_UNIT_TARGET_BASIC"
+		"AbilityCooldown"		"0.3"
+		"MaxLevel"				"1"
+		"AbilityManaCost"		"0"
+		"AbilityGoldCost"		"7200"
+
+		"OnSpellStart"
+		{
+			"RunScript"
+			{
+				"ScriptFile"	"scripts/vscripts/abilities/abilityCommon.lua"
+				"Function"		"BuyEggLevel3"
+			}
+		}
+	}
+
+	"ability_touhoutd_shop_buy_egg_level_4"
+	{
+		"BaseClass"				"ability_datadriven"
+		"AbilityTextureName"	"touhoutd/buy_egg_level_4"
+		"AbilityBehavior"		"DOTA_ABILITY_BEHAVIOR_NO_TARGET | DOTA_ABILITY_BEHAVIOR_IMMEDIATE"
+		"AbilityUnitTargetType"	"DOTA_UNIT_TARGET_HERO | DOTA_UNIT_TARGET_BASIC"
+		"AbilityCooldown"		"0.3"
+		"MaxLevel"				"1"
+		"AbilityManaCost"		"0"
+		"AbilityGoldCost"		"35000"
+
+		"OnSpellStart"
+		{
+			"RunScript"
+			{
+				"ScriptFile"	"scripts/vscripts/abilities/abilityCommon.lua"
+				"Function"		"BuyEggLevel4"
+			}
+		}
+	}
+
+	"ability_touhoutd_close_star"
+	{
+		"BaseClass"				"ability_datadriven"
+		"AbilityTextureName"	"touhoutd/close_star"
+		"AbilityBehavior"		"DOTA_ABILITY_BEHAVIOR_NO_TARGET | DOTA_ABILITY_BEHAVIOR_IMMEDIATE"
+		"AbilityUnitTargetType"	"DOTA_UNIT_TARGET_HERO | DOTA_UNIT_TARGET_BASIC"
+		"AbilityCooldown"		"1"
+		"MaxLevel"				"1"
+		"AbilityManaCost"		"0"
+
+		"OnSpellStart"
+		{
+			"RunScript"
+			{
+				"Target"		"TARGET"
+				"ScriptFile"	"scripts/vscripts/abilities/abilityCommon.lua"
+				"Function"		"CloseStar"
+			}
+		}
+	}
+
+	"ability_touhoutd_star_up"
+	{
+		"BaseClass"				"ability_datadriven"
+		"AbilityTextureName"	"touhoutd/star_up"
+		"AbilityBehavior"		"DOTA_ABILITY_BEHAVIOR_NO_TARGET | DOTA_ABILITY_BEHAVIOR_IMMEDIATE"
+		"AbilityUnitTargetType"	"DOTA_UNIT_TARGET_HERO | DOTA_UNIT_TARGET_BASIC"
+		"AbilityCooldown"		"1"
+		// Stats
+		// ----------------------------------------------------------------
+		"AbilityManaCost"		"0"
+
+		"OnSpellStart"
+		{
+			"RunScript"
+			{
+				"Target"		"TARGET"
+				"ScriptFile"	"scripts/vscripts/abilities/abilityCommon.lua"
+				"Function"		"StarUp"
+			}
+		}
+	}
+
+	"ability_touhoutd_exp_up"
+	{
+		"BaseClass"				"ability_datadriven"
+		"AbilityTextureName"	"touhoutd/exp_up"
+		"AbilityBehavior"		"DOTA_ABILITY_BEHAVIOR_NO_TARGET | DOTA_ABILITY_BEHAVIOR_IMMEDIATE"
+		"AbilityUnitTargetType"	"DOTA_UNIT_TARGET_HERO | DOTA_UNIT_TARGET_BASIC"
+		"AbilityCooldown"		"1"
+		// Stats
+		// ----------------------------------------------------------------
+		"AbilityManaCost"		"0"
+
+		"OnSpellStart"
+		{
+			"RunScript"
+			{
+				"Target"		"TARGET"
+				"ScriptFile"	"scripts/vscripts/abilities/abilityCommon.lua"
+				"Function"		"ExpUp"
+			}
+		}
+	}
+}

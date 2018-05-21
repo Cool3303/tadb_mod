@@ -374,8 +374,7 @@ function CTHTDGameMode:OnGameRulesStateChange(keys)
   	elseif newState == DOTA_GAMERULES_STATE_PRE_GAME then
 		self:GameSetHeroOriginPosition()
 		if GameRules:IsCheatMode() and IsInToolsMode() == false then
-			local base = Entities:FindByName(nil, "dota_goodguys_fort")
-			base:ForceKill(false)
+			
 		end
   	elseif newState == DOTA_GAMERULES_STATE_GAME_IN_PROGRESS then
   		self:THTD_InitCreepMsgEffect(PlayerResource:GetPlayerCount()*40)
@@ -595,8 +594,6 @@ function CTHTDGameMode:OnHeroSpawned(keys)
 		local last_wave = 1
 		local heroPlayerID = hero:GetPlayerOwnerID()
 		local playerConnect = true
-
-		GiveTouhouGamePoints(heroPlayerID, 80000)
 
 		hero.thtd_player_id = heroPlayerID
 

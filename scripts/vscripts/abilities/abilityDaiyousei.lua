@@ -130,10 +130,11 @@ function OnDaiyousei04SpellStart(keys)
 		target:EmitSound("Hero_Wisp.Tether")
 		caster.thtd_ability_daiyousei_04_lock = true
 		target:THTD_UpgradeEx()
-		target:SetBaseAttackTime(0.8)
+		target:SetBaseAttackTime(0.4)
 		target:SetAttackCapability(DOTA_UNIT_CAP_MELEE_ATTACK)
 		target:SetModel("models/new_touhou_model/cirno/ex/ex_cirno.vmdl")
 		target:SetOriginalModel("models/new_touhou_model/cirno/ex/ex_cirno.vmdl")
+		target:SetModelScale(1.5)
 		local mana_regen_ability =target:FindAbilityByName("ability_common_mana_regen_buff")
 
 		if mana_regen_ability ~= nil then

@@ -778,7 +778,7 @@ function CTHTDGameMode:OnHeroSpawned(keys)
 		hero:AddItem(item)
 		hero.choose_item_3 = item
 
-		if HasTouhouVIP(heroPlayerID) then
+		if HasTouhouVIP(heroPlayerID) or true then
 			item = CreateItem("item_1010", hero, hero)
 			hero:AddItem(item)
 		end

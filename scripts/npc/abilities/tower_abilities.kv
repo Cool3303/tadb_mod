@@ -1,5 +1,38 @@
 "DOTAAbilities"
 {
+	"thtd_maidyousei_01"
+	{
+		"BaseClass"				"ability_datadriven"
+		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_PASSIVE"
+		"SpellImmunityType"				"SPELL_IMMUNITY_ENEMIES_YES"
+		"AbilityTextureName"	"touhoutd/thtd_maidyousei_01"
+		"MaxLevel"				"1"
+		// Stats
+		// ----------------------------------------------------------------
+		"AbilityRange"		"500"
+		"Bounces"		"6 6 6 6"
+		"Damage_reduction_percent"	"35"
+		
+		"AbilitySpecial"
+		{
+			"01"
+			{
+				"var_type"					"FIELD_INTEGER"
+				"range"						"500"
+			}
+			"02"
+			{
+				"var_type"					"FIELD_INTEGER"
+				"bounces"					"6 6 6 6"
+			}
+			"03"
+			{
+				"var_type"					"FIELD_INTEGER"
+				"damage_reduction_percent"	"35"
+			}
+		}
+	}
+
 	"thtd_lily_01"
 	{
 		"BaseClass"				"ability_datadriven"

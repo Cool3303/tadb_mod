@@ -656,19 +656,19 @@ function CTHTDGameMode:OnHeroSpawned(keys)
 					QuestSystem:Update( heroPlayerID, {Type="finished_game",Difficulty=GameRules:GetCustomGameDifficulty()} )
 
 				elseif SpawnSystem:GetWave() >= 52 then
-
+					local winner = GameRules:IsCheatMode() and DOTA_TEAM_BADGUYS or DOTA_TEAM_GOODGUYS
 					if AcceptExtraMode == true then
 						if SpawnSystem:GetWave() > 121 then
 						 	ServerEvent( "set_can_select_free_mode", heroPlayerID, {} )
 						 	GiveTouhouGamePoints(heroPlayerID, math.floor(50+hero.thtd_game_info["creature_kill_count"]*(1+(GameRules:GetCustomGameDifficulty()-1)*0.5)))
-						 	GameRules:SetGameWinner(DOTA_TEAM_GOODGUYS)
+						 	GameRules:SetGameWinner(winner)
 						 	return nil
 						end
 					else
 						if SpawnSystem:GetWave() > (80+(GameRules:GetCustomGameDifficulty()-1)*10) then
 						 	ServerEvent( "set_can_select_free_mode", heroPlayerID, {} )
 						 	GiveTouhouGamePoints(heroPlayerID, math.floor(50+hero.thtd_game_info["creature_kill_count"]*(1+(GameRules:GetCustomGameDifficulty()-1)*0.5)))
-						 	GameRules:SetGameWinner(DOTA_TEAM_GOODGUYS)
+						 	GameRules:SetGameWinner(winner)
 						 	return nil
 						end
 					end

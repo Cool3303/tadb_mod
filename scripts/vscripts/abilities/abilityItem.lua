@@ -166,3 +166,34 @@ function OnItem2222_SpellStart(keys)
 	end
 end
 
+function OnItem6666_SpellStart(keys)
+	local caster = EntIndexToHScript(keys.caster_entindex)
+	local targetPoint = keys.target_points[1]
+
+	if caster:GetUnitName() == "npc_dota_hero_lina" then
+		local unit = CreateUnitByName("creature_unlimited", targetPoint, false, nil, nil, DOTA_TEAM_BADGUYS)
+		local id = caster:GetPlayerOwnerID()
+		
+		unit.thtd_player_index = id
+		unit.thtd_poison_buff = 0
+		unit:AddNewModifier(unit, nil, "modifier_phased", {})
+		
+		local currentWave = 200 - 51
+		local health = unit:GetBaseMaxHealth()
+		
+		health = health + (currentWave - math.floor(currentWave/4)) * 38400
+		
+		unit:SetBaseMaxHealth(health)
+		unit:SetMaxHealth(health)
+		unit:SetHealth(unit:GetMaxHealth())
+		
+		unit:SetPhysicalArmorBaseValue(unit:GetPhysicalArmorBaseValue()+6*math.min(25,currentWave)-10)
+		unit:SetBaseMagicalResistanceValue(unit:GetBaseMagicalResistanceValue()+6*math.min(25,currentWave)-10)
+		
+		local special = DoUniqueString("thtd_creep_buff")
+		local damageDecrease = math.max(-25*(1+(GameRules:GetCustomGameDifficulty()-1)*0.5),-currentWave*4)
+		ModifyDamageIncomingPercentage(unit,damageDecrease,special)
+		
+		table.insert(THTD_EntitiesRectInner[id],unit)
+	end
+end

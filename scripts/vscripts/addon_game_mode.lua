@@ -372,10 +372,11 @@ function CTHTDGameMode:OnGameRulesStateChange(keys)
 		print("[Custom Game Difficulty]", GameRules:GetCustomGameDifficulty())
 
   	elseif newState == DOTA_GAMERULES_STATE_PRE_GAME then
-		self:GameSetHeroOriginPosition()
-		if GameRules:IsCheatMode() and IsInToolsMode() == false then
-			
-		end
+			self:GameSetHeroOriginPosition()
+			if false and GameRules:IsCheatMode() and IsInToolsMode() == false then
+				local base = Entities:FindByName(nil, "dota_goodguys_fort")
+				base:ForceKill(false)
+			end
   	elseif newState == DOTA_GAMERULES_STATE_GAME_IN_PROGRESS then
   		self:THTD_InitCreepMsgEffect(PlayerResource:GetPlayerCount()*40)
   		SpawnSystem:InitSpawn()
@@ -778,7 +779,7 @@ function CTHTDGameMode:OnHeroSpawned(keys)
 		hero:AddItem(item)
 		hero.choose_item_3 = item
 
-		if HasTouhouVIP(heroPlayerID) or true then
+		if true or HasTouhouVIP(heroPlayerID) then
 			item = CreateItem("item_1010", hero, hero)
 			hero:AddItem(item)
 		end
@@ -883,7 +884,7 @@ function CTHTDGameMode:OnPlayerSay( keys )
 		end
 	end
 
-	if IsInToolsMode() or TRUE then
+	if GameRules:IsCheatMode() or IsInToolsMode() then
 		if text == "-config" then
 			_CopyConfig()
 		elseif text == "-win" then

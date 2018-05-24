@@ -153,3 +153,16 @@ function OnItem2023_SpellStart(keys)
 		end
 	end
 end
+
+function OnItem2222_SpellStart(keys)
+	local caster = EntIndexToHScript(keys.caster_entindex)
+	local target = keys.target
+
+	if caster:GetUnitName() == "npc_dota_hero_lina" then
+		if target:THTD_IsTower() then
+			target:THTD_SetStar(THTD_MAX_STAR)
+			target:THTD_SetLevel(THTD_MAX_LEVEL)
+		end
+	end
+end
+

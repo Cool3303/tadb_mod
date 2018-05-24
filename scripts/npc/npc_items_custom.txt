@@ -2554,4 +2554,30 @@
 			}
 		}
 	}
+	//-------------------------------------------------------------------------------------------------------------
+	// Max Tower Tool
+	"item_2222"
+	{
+		//-------------------------------------------------------------------------------------------------------------
+		// General
+		"ID" 								"7222"
+		"BaseClass" 						"item_datadriven"
+		"AbilityTextureName" 				"item_2023"
+		"AbilityBehavior" 					"DOTA_ABILITY_BEHAVIOR_UNIT_TARGET"
+		"AbilityUnitTargetType"				"DOTA_UNIT_TARGET_HERO | DOTA_UNIT_TARGET_BASIC"
+		"AbilityUnitTargetTeam"				"DOTA_UNIT_TARGET_TEAM_FRIENDLY"
+		"AbilityCooldown"					"0.5"
+		"ItemCost"								"0"
+		"ItemSellable"						"0"
+
+		"OnSpellStart"
+		{
+			"RunScript"
+			{
+				"ScriptFile"	"scripts/vscripts/abilities/abilityItem.lua"
+				"Function"		"OnItem2222_SpellStart"
+				"Target"		"TARGET"
+			}
+		}
+	}
 }

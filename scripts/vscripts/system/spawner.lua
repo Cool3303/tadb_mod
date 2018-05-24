@@ -152,6 +152,16 @@ function SpawnSystem:StopWave(index)
 	spawner[index].isStop = true
 end
 
+function SpawnSystem:ResumeWave(index)
+	local spawner  = SpawnSystem.AttackingSpawner
+
+	THTD_EntitiesRectInner[index-1] = {}
+	if spawner[index] == nil then
+		return
+	end
+	spawner[index].isStop = false
+end
+
 thtd_next_bossName_list = 
 {
 	[1] = nil,

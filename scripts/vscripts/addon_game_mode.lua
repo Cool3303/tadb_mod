@@ -892,6 +892,12 @@ function CTHTDGameMode:OnPlayerSay( keys )
 			QuestSystem:Update( 0, {Type="wave_clear", Wave=50} )
 		elseif text == "-server" then
 			ServerEvent( "set_can_select_free_mode", keys.playerid, {} )
+		elseif text == "-gold" then
+			PlayerResource:SetGold(keys.playerid, 99999, true)
+		elseif text == "-stop" then
+			SpawnSystem:StopWave(keys.playerid+1)
+		elseif text == "-resume" then
+			SpawnSystem:ResumeWave(keys.playerid+1)
 		end
 	end
 end

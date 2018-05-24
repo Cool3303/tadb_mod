@@ -2580,4 +2580,29 @@
 			}
 		}
 	}
+	
+	//-------------------------------------------------------------------------------------------------------------
+	// Test Dummy Spawner
+	"item_6666"
+	{
+		//-------------------------------------------------------------------------------------------------------------
+		// General
+		"ID" 								"7666"
+		"BaseClass" 						"item_datadriven"
+		"AbilityTextureName" 				"item_z00000"
+		"AbilityBehavior" 					"DOTA_ABILITY_BEHAVIOR_POINT"
+		"AbilityCooldown"					"0.5"
+		"ItemCost"								"0"
+		"ItemSellable"						"0"
+
+		"OnSpellStart"
+		{
+			"RunScript"
+			{
+				"ScriptFile"	"scripts/vscripts/abilities/abilityItem.lua"
+				"Function"		"OnItem6666_SpellStart"
+				"Target"		"POINT"
+			}
+		}
+	}	
 }

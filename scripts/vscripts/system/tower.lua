@@ -1,4 +1,5 @@
 THTD_MAX_LEVEL = 10
+THTD_MAX_STAR = 5
 
 thtd_exp_table={200,500,900,1400,2000,2700,3500,4400,5400}
 thtd_exp_star_table={1,2/3,1/3,1/5,1/15}
@@ -1538,12 +1539,14 @@ function CDOTA_BaseNPC:THTD_InitExp()
 				if GameRules:IsGamePaused() then return 0.03 end
 				if self:HasModifier("modifier_touhoutd_release_hidden") then return 1.0 end
 				if SpawnSystem:GetWave() > 51 then return nil end
-				if self.thtd_star < 5 then
+				if self.thtd_star < THTD_MAX_STAR then
 					time_count = time_count + 1 * ( (self:FindAbilityByName("ability_common_star_up_speed"):GetLevel() - 1) * 0.1 + 1 )
 					if self.thtd_isChanged == true then
 						time_count = 0
 						self.thtd_isChanged = false
 					end
+					
+					local aki_star_up = false
 					
 					if self:GetUnitName() == "minoriko" then
 						SendOverheadEventMessage(self:GetPlayerOwner(), OVERHEAD_ALERT_OUTGOING_DAMAGE, self, thtd_ability_minoriko_star_up_table[self.thtd_star+1] - time_count, self:GetPlayerOwner() )
@@ -1553,6 +1556,7 @@ function CDOTA_BaseNPC:THTD_InitExp()
 							self:THTD_DestroyLevelEffect()
 							self:THTD_CreateLevelEffect()
 							time_count = 0
+							aki_star_up = true
 						end
 					else
 						SendOverheadEventMessage(self:GetPlayerOwner(), OVERHEAD_ALERT_OUTGOING_DAMAGE, self, thtd_ability_sizuha_star_up_table[self.thtd_star+1] - time_count, self:GetPlayerOwner() )
@@ -1562,8 +1566,22 @@ function CDOTA_BaseNPC:THTD_InitExp()
 							self:THTD_DestroyLevelEffect()
 							self:THTD_CreateLevelEffect()
 							time_count = 0
+							aki_star_up = true
 						end
 					end
+					
+					if aki_star_up then
+						if self.thtd_star >= 3 then
+							CustomGameEventManager:Send_ServerToPlayer( self:GetPlayerOwner() , "show_message", {msg=self:GetUnitName().." reached "..self.thtd_star.." Stars!", duration=5, params={count=1}, color="#f00"} )
+						end
+
+						self:EmitSound("Sound_THTD.thtd_star_up")
+						local effectIndex = ParticleManager:CreateParticle("particles/heroes/byakuren/ability_byakuren_02.vpcf", PATTACH_CUSTOMORIGIN, self)
+						ParticleManager:SetParticleControl(effectIndex, 0, self:GetOrigin())
+						ParticleManager:SetParticleControl(effectIndex, 1, self:GetOrigin())
+						ParticleManager:DestroyParticleSystem(effectIndex,false)
+					end
+					
 					if self:HasModifier("modifier_touhoutd_release_hidden") then
 						time_count = 0
 					end

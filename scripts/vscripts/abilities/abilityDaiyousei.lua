@@ -77,7 +77,12 @@ function OnDaiyousei03SpellStart(keys)
 
 	caster:EmitSound("Hero_Wisp.Tether.Target")
 
-	keys.ability:ApplyDataDrivenModifier(caster, target, "modifier_daiyousei_03", nil)
+	keys.ability:ApplyDataDrivenModifier(caster, target, "modifier_daiyousei_03", {})
+	local stack_count = target:GetModifierStackCount("modifier_daiyousei_03", caster) or 0
+	stack_count = stack_count + 1
+	target:SetModifierStackCount("modifier_daiyousei_03", caster, stack_count)
+	print("modifier_daiyousei_03_stack_count: "..target:GetModifierStackCount("modifier_daiyousei_03", caster))
+	
 	local effectIndex = Daiyousei03CreateLine(caster,target)
 	caster.ability_daiyousei_03_target = target
 
@@ -87,7 +92,10 @@ function OnDaiyousei03SpellStart(keys)
 			if GameRules:IsGamePaused() then return 0.03 end
 			if caster.ability_daiyousei_03_target ~= target then
 				if target~=nil and target:IsNull()==false and target:HasModifier("modifier_daiyousei_03") then
-					target:RemoveModifierByName("modifier_daiyousei_03")
+					target:SetModifierStackCount("modifier_daiyousei_03", caster, target:GetModifierStackCount("modifier_daiyousei_03", caster) - 1)
+					if target:GetModifierStackCount("modifier_daiyousei_03", caster) <= 0 then
+							target:RemoveModifierByName("modifier_daiyousei_03")
+					end	
 				end
 				if count > 10 then
 					caster:StopSound("Hero_Wisp.Tether.Target")

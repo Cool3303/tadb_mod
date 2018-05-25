@@ -166,7 +166,7 @@ function OnCirno03Attack(keys)
 	if keys.ability:GetLevel() < 1 then return end
 	local caster = EntIndexToHScript(keys.caster_entindex)
 	local target = keys.target
-	local damage = 1.5 * caster:THTD_GetPower()
+	local damage = 1.66 * caster:THTD_GetPower()
 
 	local targets = THTD_FindUnitsInRadius(caster,target:GetOrigin(),250)
 	

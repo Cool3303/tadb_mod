@@ -1045,6 +1045,14 @@ thtd_ability_table =
 		[4] = {["thtd_cirno_01"] = 1,["thtd_cirno_02"] = 1,["thtd_cirno_03"] = 0,["thtd_cirno_04"] = 0},
 		[5] = {["thtd_cirno_01"] = 1,["thtd_cirno_02"] = 1,["thtd_cirno_03"] = 0,["thtd_cirno_04"] = 0},
 	},
+	["cirno_ex"] = 
+	{
+		[1] = {["thtd_cirno_01"] = 1,["thtd_cirno_02"] = 0,["thtd_cirno_03"] = 0,["thtd_cirno_04"] = 0},
+		[2] = {["thtd_cirno_01"] = 1,["thtd_cirno_02"] = 0,["thtd_cirno_03"] = 0,["thtd_cirno_04"] = 0},
+		[3] = {["thtd_cirno_01"] = 1,["thtd_cirno_02"] = 0,["thtd_cirno_03"] = 1,["thtd_cirno_04"] = 0},
+		[4] = {["thtd_cirno_01"] = 1,["thtd_cirno_02"] = 1,["thtd_cirno_03"] = 1,["thtd_cirno_04"] = 0},
+		[5] = {["thtd_cirno_01"] = 1,["thtd_cirno_02"] = 1,["thtd_cirno_03"] = 1,["thtd_cirno_04"] = 1},
+	},
 	["letty"] = {
 		[1] = {["thtd_letty_01"] = 1,["thtd_letty_02"] = 0},
 		[2] = {["thtd_letty_01"] = 1,["thtd_letty_02"] = 0},
@@ -1177,14 +1185,6 @@ thtd_ability_table =
 		[3] = {["thtd_daiyousei_01"] = 1,["thtd_daiyousei_02"] = 1,["thtd_daiyousei_03"] = 1,["thtd_daiyousei_04"] = 0},
 		[4] = {["thtd_daiyousei_01"] = 1,["thtd_daiyousei_02"] = 1,["thtd_daiyousei_03"] = 1,["thtd_daiyousei_04"] = 0},
 		[5] = {["thtd_daiyousei_01"] = 1,["thtd_daiyousei_02"] = 1,["thtd_daiyousei_03"] = 1,["thtd_daiyousei_04"] = 1},
-	},
-	["cirno_ex"] = 
-	{
-		[1] = {["thtd_cirno_01"] = 1,["thtd_cirno_02"] = 0,["thtd_cirno_03"] = 0,["thtd_cirno_04"] = 0},
-		[2] = {["thtd_cirno_01"] = 1,["thtd_cirno_02"] = 0,["thtd_cirno_03"] = 0,["thtd_cirno_04"] = 0},
-		[3] = {["thtd_cirno_01"] = 1,["thtd_cirno_02"] = 0,["thtd_cirno_03"] = 1,["thtd_cirno_04"] = 0},
-		[4] = {["thtd_cirno_01"] = 1,["thtd_cirno_02"] = 1,["thtd_cirno_03"] = 1,["thtd_cirno_04"] = 0},
-		[5] = {["thtd_cirno_01"] = 1,["thtd_cirno_02"] = 1,["thtd_cirno_03"] = 1,["thtd_cirno_04"] = 1},
 	},
 	["remilia"] = 
 	{
@@ -2149,7 +2149,7 @@ function CDOTA_BaseNPC:THTD_UpgradeEx()
 	local unitName = self:GetUnitName()
 	local star = self:THTD_GetStar()
 	local level = self:THTD_GetLevel()
-
+--[[
 	for k,v in pairs(thtd_ability_table[unitName]) do
 		for abilityName,level in pairs(v) do
 			if self:THTD_GetStar() == k then
@@ -2157,12 +2157,15 @@ function CDOTA_BaseNPC:THTD_UpgradeEx()
 			end
 		end
 	end
+]]--
 	unitName = self:GetUnitName().."_ex"
 
+	local index = 0
 	for k,v in pairs(thtd_ability_table[unitName]) do
+		index = index + 1
 		for abilityName,level in pairs(v) do
 			if self:THTD_GetStar() == k then
-				local ability=self:AddAbility(abilityName)
+				local ability=self:GetAbilityByIndex(index)
 				ability:SetLevel(level)
 			end
 		end

@@ -162,6 +162,20 @@ function SpawnSystem:ResumeWave(index)
 	spawner[index].isStop = false
 end
 
+function SpawnSystem:SkipBreakTime(index)
+	local spawner  = SpawnSystem.AttackingSpawner
+
+	THTD_EntitiesRectInner[index-1] = {}
+	if spawner[index] == nil then 
+		return
+	end
+    
+    local spawner  = SpawnSystem.AttackingSpawner
+    local wave = spawner[index].CurWave - 1
+    
+    SpawnSystem.Spawner["Attacking"]["Wave"..tostring(wave)]["BreakTime"] = 0
+end
+
 thtd_next_bossName_list = 
 {
 	[1] = nil,

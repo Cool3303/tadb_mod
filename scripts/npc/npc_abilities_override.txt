@@ -8,12 +8,10 @@
 		// General
 		//-------------------------------------------------------------------------------------------------------------
 		"ID"							"5223"														// unique ID number for this ability.  Do not change this once established or it will invalidate collected stats.
-		"BaseClass"				"ability_datadriven"
 		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_PASSIVE"
 		"SpellImmunityType"				"SPELL_IMMUNITY_ENEMIES_YES"
 		"AbilityTextureName"			"touhoutd/thtd_maidyousei_01"
 		"AbilitySound"					"Hero_Luna.MoonGlaive.Impact"
-		"MaxLevel"				"1"
 		// Special
 		//-------------------------------------------------------------------------------------------------------------
 		"AbilityRange"		"500"

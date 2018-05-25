@@ -111,7 +111,7 @@
 		"extra_bosses_yuugi"	"Boss Level: Yuugi Hoshiguma: Has twice the live of normal units"
 		"extra_bosses_mokou"	"Boss Level: Fujiwara no Mokou: Cumshot Effect of Immunized Items"
 		"extra_bosses_hina"	"Boss Level: Hina Kagiyama: Damage greater than 4*Star Level*Power Points of the Attacker is reduced by 50%"
-		"extra_bosses_marisa"	"Boss Levels: Marisa Kirisame: Sprints for 0.3s every 3s."
+		"extra_bosses_marisa"	"Boss Level: Marisa Kirisame: Sprints for 0.3s every 3s."
 		"extra_bosses_rumia"	"Boss Level: Rumia: Becomes invincible for 1s every 3s."
 
 		"DOTA_Tooltip_ability_item_2001"	"Four Dimensional Bomb"

@@ -231,7 +231,7 @@ function StarUp(keys)
 	
 	for item_slot = 0,5 do
 		item = caster:GetItemInSlot(item_slot)
-		if item ~= nil and item.thtd_exp_up_lock ~= true then
+		if item ~= nil and item.thtd_exp_up_lock ~= 0 then
 			local tower = item:THTD_GetTower()
 			if tower ~= nil then
 				if tower:THTD_GetStar() == star and tower:THTD_GetLevel() == THTD_MAX_LEVEL then
@@ -246,7 +246,7 @@ function StarUp(keys)
 
 	for item_slot = 0,5 do
 		item = hero:GetItemInSlot(item_slot)
-		if item ~= nil and item.thtd_exp_up_lock ~= true then
+		if item ~= nil and item.thtd_exp_up_lock ~= 0 then
 			local tower = item:THTD_GetTower()
 			if tower ~= nil then
 				if tower:THTD_GetStar() == star and tower:THTD_GetLevel() == THTD_MAX_LEVEL then

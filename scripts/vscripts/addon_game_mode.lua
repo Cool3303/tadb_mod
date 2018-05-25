@@ -372,10 +372,11 @@ function CTHTDGameMode:OnGameRulesStateChange(keys)
 		print("[Custom Game Difficulty]", GameRules:GetCustomGameDifficulty())
 
   	elseif newState == DOTA_GAMERULES_STATE_PRE_GAME then
-		self:GameSetHeroOriginPosition()
-		if GameRules:IsCheatMode() and IsInToolsMode() == false then
-			
-		end
+			self:GameSetHeroOriginPosition()
+			if false and GameRules:IsCheatMode() and IsInToolsMode() == false then
+				local base = Entities:FindByName(nil, "dota_goodguys_fort")
+				base:ForceKill(false)
+			end
   	elseif newState == DOTA_GAMERULES_STATE_GAME_IN_PROGRESS then
   		self:THTD_InitCreepMsgEffect(PlayerResource:GetPlayerCount()*40)
   		SpawnSystem:InitSpawn()
@@ -655,19 +656,19 @@ function CTHTDGameMode:OnHeroSpawned(keys)
 					QuestSystem:Update( heroPlayerID, {Type="finished_game",Difficulty=GameRules:GetCustomGameDifficulty()} )
 
 				elseif SpawnSystem:GetWave() >= 52 then
-
+					local winner = GameRules:IsCheatMode() and DOTA_TEAM_BADGUYS or DOTA_TEAM_GOODGUYS
 					if AcceptExtraMode == true then
 						if SpawnSystem:GetWave() > 121 then
 						 	ServerEvent( "set_can_select_free_mode", heroPlayerID, {} )
 						 	GiveTouhouGamePoints(heroPlayerID, math.floor(50+hero.thtd_game_info["creature_kill_count"]*(1+(GameRules:GetCustomGameDifficulty()-1)*0.5)))
-						 	GameRules:SetGameWinner(DOTA_TEAM_GOODGUYS)
+						 	GameRules:SetGameWinner(winner)
 						 	return nil
 						end
 					else
 						if SpawnSystem:GetWave() > (80+(GameRules:GetCustomGameDifficulty()-1)*10) then
 						 	ServerEvent( "set_can_select_free_mode", heroPlayerID, {} )
 						 	GiveTouhouGamePoints(heroPlayerID, math.floor(50+hero.thtd_game_info["creature_kill_count"]*(1+(GameRules:GetCustomGameDifficulty()-1)*0.5)))
-						 	GameRules:SetGameWinner(DOTA_TEAM_GOODGUYS)
+						 	GameRules:SetGameWinner(winner)
 						 	return nil
 						end
 					end
@@ -778,7 +779,7 @@ function CTHTDGameMode:OnHeroSpawned(keys)
 		hero:AddItem(item)
 		hero.choose_item_3 = item
 
-		if HasTouhouVIP(heroPlayerID) or true then
+		if true or HasTouhouVIP(heroPlayerID) then
 			item = CreateItem("item_1010", hero, hero)
 			hero:AddItem(item)
 		end
@@ -883,7 +884,7 @@ function CTHTDGameMode:OnPlayerSay( keys )
 		end
 	end
 
-	if IsInToolsMode() or TRUE then
+	if GameRules:IsCheatMode() or IsInToolsMode() then
 		if text == "-config" then
 			_CopyConfig()
 		elseif text == "-win" then
@@ -892,6 +893,12 @@ function CTHTDGameMode:OnPlayerSay( keys )
 			QuestSystem:Update( 0, {Type="wave_clear", Wave=50} )
 		elseif text == "-server" then
 			ServerEvent( "set_can_select_free_mode", keys.playerid, {} )
+		elseif text == "-gold" then
+			PlayerResource:SetGold(keys.playerid, 99999, true)
+		elseif text == "-stop" then
+			SpawnSystem:StopWave(keys.playerid+1)
+		elseif text == "-resume" then
+			SpawnSystem:ResumeWave(keys.playerid+1)
 		end
 	end
 end

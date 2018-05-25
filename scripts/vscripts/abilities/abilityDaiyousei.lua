@@ -137,14 +137,17 @@ function OnDaiyousei04SpellStart(keys)
 	if target:GetUnitName() == "cirno" and target:THTD_GetStar() == 5 and caster.thtd_ability_daiyousei_04_lock == false then
 		target:EmitSound("Hero_Wisp.Tether")
 		caster.thtd_ability_daiyousei_04_lock = true
+		
 		target:THTD_UpgradeEx()
-		target:SetBaseAttackTime(0.4)
+		target:SetBaseAttackTime(target:GetBaseAttackTime() * 0.66)
 		target:SetAttackCapability(DOTA_UNIT_CAP_MELEE_ATTACK)
-		target:SetModel("models/new_touhou_model/cirno/ex/ex_cirno.vmdl")
+        target:SetIntAttr("AttackRange", 1000)
+		
+        target:SetModel("models/new_touhou_model/cirno/ex/ex_cirno.vmdl")
 		target:SetOriginalModel("models/new_touhou_model/cirno/ex/ex_cirno.vmdl")
-		target:SetModelScale(1.5)
+		target:SetModelScale(target:GetModelScale() * 1.25)
+		
 		local mana_regen_ability =target:FindAbilityByName("ability_common_mana_regen_buff")
-
 		if mana_regen_ability ~= nil then
 			if mana_regen_ability:GetLevel() < mana_regen_ability:GetMaxLevel() then
 				mana_regen_ability:SetLevel(5)

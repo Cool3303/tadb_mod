@@ -43,17 +43,27 @@ function UnitDamageTarget(damage_table)
     end
 
     if DamageTable.attacker:FindModifierByName("modifier_daiyousei_03") ~= nil then
-		local modifier = DamageTable.attacker:FindModifierByName("modifier_daiyousei_03")
-		local daiyousei = modifier:GetCaster()
-		if daiyousei ~= nil then
-			if DamageTable.attacker:GetUnitName() == "cirno" then
-				DamageTable.damage = DamageTable.damage * ( 1 + (thtd_daiyousei_damage_bonus[daiyousei:THTD_GetStar()] or 0) * 1.5)
-			else
-				DamageTable.damage = DamageTable.damage * ( 1 + (thtd_daiyousei_damage_bonus[daiyousei:THTD_GetStar()] or 0) )
-			end
-		end
-		DamageTable.damage_type = DAMAGE_TYPE_MAGICAL 
-        DamageTable.damage_flags = DOTA_DAMAGE_FLAG_IGNORES_MAGIC_ARMOR
+				local modifier = DamageTable.attacker:FindModifierByName("modifier_daiyousei_03")
+				local daiyousei = modifier:GetCaster()
+				
+				if daiyousei ~= nil and daiyousei:IsNull() == false and daiyousei:THTD_GetStar() >= 3 then 							
+					local daiyousei_damage_bonus = thtd_daiyousei_damage_bonus[daiyousei:THTD_GetStar()]
+					local stack_count = DamageTable.attacker:GetModifierStackCount("modifier_daiyousei_03", daiyousei)
+									
+					if DamageTable.attacker:GetUnitName() == "cirno" then
+							if DamageTable.attacker:THTD_IsTowerEx() then
+						  		DamageTable.damage = DamageTable.damage * ( 1 + daiyousei_damage_bonus * 1.75 * stack_count )
+							else	
+									DamageTable.damage = DamageTable.damage * ( 1 + daiyousei_damage_bonus * 1.5 * stack_count )
+							end
+					else
+							DamageTable.damage = DamageTable.damage * ( 1 + daiyousei_damage_bonus * stack_count )
+					end
+				end
+				
+				DamageTable.damage_type = DAMAGE_TYPE_MAGICAL 
+				DamageTable.damage_flags = DOTA_DAMAGE_FLAG_IGNORES_MAGIC_ARMOR
+				
     elseif DamageTable.attacker:FindModifierByName("modifier_momiji_02") ~= nil then
         local modifier = DamageTable.attacker:FindModifierByName("modifier_momiji_02")
         local momiji = modifier:GetCaster()

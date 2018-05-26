@@ -899,8 +899,11 @@ function CTHTDGameMode:OnPlayerSay( keys )
 			SpawnSystem:StopWave(keys.playerid+1)
 		elseif text == "-resume" then
 			SpawnSystem:ResumeWave(keys.playerid+1)
+<<<<<<< HEAD
         elseif text == "-skip" then
             SpawnSystem:SkipBreakTime(keys.playerid+1)
+=======
+>>>>>>> utilyti
 		end
 	end
 end

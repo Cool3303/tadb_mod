@@ -208,11 +208,6 @@
 
 		"OnSpellStart"
 		{
-			"FireSound"
-			{
-				"EffectName"		"Sound_THTD.thtd_nazrin_01"
-				"Target"			"CASTER"
-			}
 			"RunScript"
 			{
 				"ScriptFile"	"scripts/vscripts/abilities/abilityNazrin.lua"
@@ -6919,10 +6914,56 @@
 		}
 	}
 
+
 	"thtd_toramaru_02"
 	{
 		"BaseClass"				"ability_datadriven"
-		"AbilityTextureName"	"touhoutd/thtd_toramaru_02"
+		"AbilityTextureName"	"touhoutd/thtd_toramaru_01"
+		"AbilityBehavior"		"DOTA_ABILITY_BEHAVIOR_NO_TARGET | DOTA_ABILITY_BEHAVIOR_IMMEDIATE"
+		"AbilityUnitTargetType"	"DOTA_UNIT_TARGET_HERO | DOTA_UNIT_TARGET_BASIC"
+		"AbilityUnitTargetTeam"	"DOTA_UNIT_TARGET_TEAM_ENEMY"
+		"AbilityUnitDamageType"	"DAMAGE_TYPE_PURE"
+		"AbilityCooldown"		"1"
+		"AbilityGoldCost"		"5000"
+		// Stats
+		// ----------------------------------------------------------------
+		"AbilityManaCost"		"0"
+		"MaxLevel"				"1"
+
+		"AbilitySpecial"
+		{
+			"01"
+			{
+				"var_type"					"FIELD_INTEGER"
+				"range"						"500"
+			}
+			"02"
+			{
+				"var_type"					"FIELD_INTEGER"
+				"bounces"					"6 6 6 6"
+			}
+			"03"
+			{
+				"var_type"					"FIELD_INTEGER"
+				"damage_reduction_percent"	"35"
+			}
+		}
+
+		"OnSpellStart"
+		{
+			"RunScript"
+			{
+				"Target"		"TARGET"
+				"ScriptFile"	"scripts/vscripts/abilities/abilityToramaru.lua"
+				"Function"		"OnToramaru02SpellStartDown"
+			}
+		}
+	}
+
+	"thtd_toramaru_03"
+	{
+		"BaseClass"				"ability_datadriven"
+		"AbilityTextureName"	"touhoutd/thtd_toramaru_03"
 		"AbilityBehavior"		"DOTA_ABILITY_BEHAVIOR_UNIT_TARGET"
 		"AbilityUnitTargetType"	"DOTA_UNIT_TARGET_HERO | DOTA_UNIT_TARGET_BASIC"
 		"AbilityUnitTargetTeam"	"DOTA_UNIT_TARGET_TEAM_ENEMY"
@@ -6945,16 +6986,16 @@
 			"RunScript"
 			{
 				"ScriptFile"	"scripts/vscripts/abilities/abilityToramaru.lua"
-				"Function"		"OnToramaru02SpellStart"
+				"Function"		"OnToramaru03SpellStart"
 				"Target"		"TARGET"
 			}
 		}
 	}
 
-	"thtd_toramaru_03"
+	"thtd_toramaru_04"
 	{
 		"BaseClass"				"ability_datadriven"
-		"AbilityTextureName"	"touhoutd/thtd_toramaru_03"
+		"AbilityTextureName"	"touhoutd/thtd_toramaru_04"
 		"AbilityBehavior"		"DOTA_ABILITY_BEHAVIOR_NO_TARGET"
 		"AbilityUnitTargetType"	"DOTA_UNIT_TARGET_HERO | DOTA_UNIT_TARGET_BASIC"
 		"AbilityUnitTargetTeam"	"DOTA_UNIT_TARGET_TEAM_ENEMY"
@@ -6975,7 +7016,7 @@
 			"RunScript"
 			{
 				"ScriptFile"	"scripts/vscripts/abilities/abilityToramaru.lua"
-				"Function"		"OnToramaru03SpellStart"
+				"Function"		"OnToramaru04SpellStart"
 				"Target"		"TARGET"
 			}
 		}

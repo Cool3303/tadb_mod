@@ -1381,11 +1381,11 @@ thtd_ability_table =
 	},
 
 	["toramaru"] = {
-		[1] = {["thtd_toramaru_01"] = 1,["thtd_toramaru_02"] = 0,["thtd_toramaru_03"] = 0},
-		[2] = {["thtd_toramaru_01"] = 1,["thtd_toramaru_02"] = 0,["thtd_toramaru_03"] = 0},
-		[3] = {["thtd_toramaru_01"] = 1,["thtd_toramaru_02"] = 1,["thtd_toramaru_03"] = 0},
-		[4] = {["thtd_toramaru_01"] = 1,["thtd_toramaru_02"] = 1,["thtd_toramaru_03"] = 0},
-		[5] = {["thtd_toramaru_01"] = 1,["thtd_toramaru_02"] = 1,["thtd_toramaru_03"] = 1},
+		[1] = {["thtd_toramaru_01"] = 1,["thtd_toramaru_02"] = 0,["thtd_toramaru_03"] = 0,["thtd_toramaru_04"] = 0},
+		[2] = {["thtd_toramaru_01"] = 1,["thtd_toramaru_02"] = 1,["thtd_toramaru_03"] = 0,["thtd_toramaru_04"] = 0},
+		[3] = {["thtd_toramaru_01"] = 1,["thtd_toramaru_02"] = 1,["thtd_toramaru_03"] = 1,["thtd_toramaru_04"] = 0},
+		[4] = {["thtd_toramaru_01"] = 1,["thtd_toramaru_02"] = 1,["thtd_toramaru_03"] = 1,["thtd_toramaru_04"] = 0},
+		[5] = {["thtd_toramaru_01"] = 1,["thtd_toramaru_02"] = 1,["thtd_toramaru_03"] = 1,["thtd_toramaru_04"] = 1},
 	},
 
 	["shinki"] = {

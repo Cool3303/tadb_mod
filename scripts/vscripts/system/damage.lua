@@ -48,16 +48,13 @@ function UnitDamageTarget(damage_table)
 				
 				if daiyousei ~= nil and daiyousei:IsNull() == false and daiyousei:THTD_GetStar() >= 3 then 							
 					local daiyousei_damage_bonus = thtd_daiyousei_damage_bonus[daiyousei:THTD_GetStar()]
-					local stack_count = DamageTable.attacker:GetModifierStackCount("modifier_daiyousei_03", daiyousei)
-									
-					if DamageTable.attacker:GetUnitName() == "cirno" then
-							if DamageTable.attacker:THTD_IsTowerEx() then
-						  		DamageTable.damage = DamageTable.damage * ( 1 + daiyousei_damage_bonus * 1.75 * stack_count )
-							else	
-									DamageTable.damage = DamageTable.damage * ( 1 + daiyousei_damage_bonus * 1.5 * stack_count )
-							end
+					local stack_count = DamageTable.attacker:GetModifierStackCount("modifier_daiyousei_03", daiyousei)	
+                    local unit_name = amageTable.attacker:GetUnitName()				
+                
+					if unit_name == "cirno" or unit_name == "cirno_ex" then
+					  	DamageTable.damage = DamageTable.damage * ( 1 + daiyousei_damage_bonus * 1.75 * stack_count )
 					else
-							DamageTable.damage = DamageTable.damage * ( 1 + daiyousei_damage_bonus * stack_count )
+						DamageTable.damage = DamageTable.damage * ( 1 + daiyousei_damage_bonus * stack_count )
 					end
 				end
 				

@@ -990,15 +990,15 @@ thtd_ability_table =
 		[5] = {["thtd_lily_01"] = 1,["thtd_lily_02"] = 1},
 	},
 	["nazrin"] = {
-		[1] = {["thtd_nazrin_01"] = 1},
-		[2] = {["thtd_nazrin_01"] = 1},
-		[3] = {["thtd_nazrin_01"] = 1},
-		[4] = {["thtd_nazrin_01"] = 1},
-		[5] = {["thtd_nazrin_01"] = 1},
+		[1] = {["thtd_nazrin_01"] = 1,["thtd_nazrin_02"] = 0},
+		[2] = {["thtd_nazrin_01"] = 1,["thtd_nazrin_02"] = 0},
+		[3] = {["thtd_nazrin_01"] = 1,["thtd_nazrin_02"] = 1},
+		[4] = {["thtd_nazrin_01"] = 1,["thtd_nazrin_02"] = 1},
+		[5] = {["thtd_nazrin_01"] = 1,["thtd_nazrin_02"] = 1},
 	},
 	["minoriko"] = {
 		[1] = {["thtd_minoriko_01"] = 1,["thtd_minoriko_02"] = 0},
-		[2] = {["thtd_minoriko_01"] = 1,["thtd_minoriko_02"] = 0},
+		[2] = {["thtd_minoriko_01"] = 1,["thtd_minoriko_02"] = 1},
 		[3] = {["thtd_minoriko_01"] = 1,["thtd_minoriko_02"] = 1},
 		[4] = {["thtd_minoriko_01"] = 1,["thtd_minoriko_02"] = 1},
 		[5] = {["thtd_minoriko_01"] = 1,["thtd_minoriko_02"] = 1},
@@ -1381,11 +1381,11 @@ thtd_ability_table =
 	},
 
 	["toramaru"] = {
-		[1] = {["thtd_toramaru_01"] = 1,["thtd_toramaru_02"] = 0,["thtd_toramaru_03"] = 0},
-		[2] = {["thtd_toramaru_01"] = 1,["thtd_toramaru_02"] = 0,["thtd_toramaru_03"] = 0},
-		[3] = {["thtd_toramaru_01"] = 1,["thtd_toramaru_02"] = 1,["thtd_toramaru_03"] = 0},
-		[4] = {["thtd_toramaru_01"] = 1,["thtd_toramaru_02"] = 1,["thtd_toramaru_03"] = 0},
-		[5] = {["thtd_toramaru_01"] = 1,["thtd_toramaru_02"] = 1,["thtd_toramaru_03"] = 1},
+		[1] = {["thtd_toramaru_01"] = 1,["thtd_toramaru_02"] = 0,["thtd_toramaru_03"] = 0,["thtd_toramaru_04"] = 0},
+		[2] = {["thtd_toramaru_01"] = 1,["thtd_toramaru_02"] = 1,["thtd_toramaru_03"] = 0,["thtd_toramaru_04"] = 0},
+		[3] = {["thtd_toramaru_01"] = 1,["thtd_toramaru_02"] = 1,["thtd_toramaru_03"] = 1,["thtd_toramaru_04"] = 0},
+		[4] = {["thtd_toramaru_01"] = 1,["thtd_toramaru_02"] = 1,["thtd_toramaru_03"] = 1,["thtd_toramaru_04"] = 0},
+		[5] = {["thtd_toramaru_01"] = 1,["thtd_toramaru_02"] = 1,["thtd_toramaru_03"] = 1,["thtd_toramaru_04"] = 1},
 	},
 
 	["shinki"] = {
@@ -1479,10 +1479,10 @@ thtd_combo_table =
 
 thtd_ability_minoriko_star_up_table = 
 {
-	[2] = 270,
-	[3] = 540,
-	[4] = 900,
-	[5] = 1260,
+	[2] = 40,
+	[3] = 160,
+	[4] = 500,
+	[5] = 22000,
 }
 
 thtd_ability_sizuha_star_up_table = 

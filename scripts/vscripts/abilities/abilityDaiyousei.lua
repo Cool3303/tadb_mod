@@ -145,12 +145,12 @@ function OnDaiyousei04SpellStart(keys)
 		
         target:SetModel("models/new_touhou_model/cirno/ex/ex_cirno.vmdl")
 		target:SetOriginalModel("models/new_touhou_model/cirno/ex/ex_cirno.vmdl")
-		target:SetModelScale(target:GetModelScale() * 1.25)
+		target:SetModelScale(target:GetModelScale() * 1.2)
 		
 		local mana_regen_ability =target:FindAbilityByName("ability_common_mana_regen_buff")
 		if mana_regen_ability ~= nil then
 			if mana_regen_ability:GetLevel() < mana_regen_ability:GetMaxLevel() then
-				mana_regen_ability:SetLevel(5)
+				mana_regen_ability:SetLevel(mana_regen_ability:GetMaxLevel())
 			end
 		end
 	end

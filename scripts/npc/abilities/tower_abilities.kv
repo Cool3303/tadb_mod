@@ -186,6 +186,44 @@
 			}
 		}
 	}
+	"thtd_nazrin_02"
+	{
+		"BaseClass"				"ability_datadriven"
+		"AbilityTextureName"	"touhoutd/thtd_nazrin_02"
+		"AbilityBehavior"		"DOTA_ABILITY_BEHAVIOR_UNIT_TARGET | DOTA_ABILITY_BEHAVIOR_IMMEDIATE"
+		"AbilityUnitTargetType"	"DOTA_UNIT_TARGET_HERO | DOTA_UNIT_TARGET_BASIC"
+		"AbilityUnitTargetTeam"	"DOTA_UNIT_TARGET_TEAM_FRIENDLY"
+		"MaxLevel"				"1"
+		"AbilityCastAnimation"	"ACT_DOTA_CAST_ABILITY_1"
+		"AbilityCooldown"		"1"
+		"AbilityManaCost"		"0"
+		// Stats
+		// ----------------------------------------------------------------
+		"AbilityCastRange"		"1000"
+
+		"precache"
+		{
+			"particle"					""
+		}
+
+		"OnSpellStart"
+		{
+			"FireSound"
+			{
+				"EffectName"		"Sound_THTD.thtd_nazrin_01"
+				"Target"			"CASTER"
+			}
+			"RunScript"
+			{
+				"ScriptFile"	"scripts/vscripts/abilities/abilityNazrin.lua"
+				"Function"		"OnNazrin02ConsumeTower"
+				"Target"		"TARGET"
+			}
+		}
+		"Modifiers"
+		{
+		}
+	}
 
 	"thtd_minoriko_01"
 	{

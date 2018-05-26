@@ -49,3 +49,72 @@ function OnNazrin01AttackLanded(keys)
 		caster:EmitSound("Sound_THTD.thtd_nazrin_01")
 	end
 end
+
+function OnNazrin02ConsumeTower(keys)
+	local caster = EntIndexToHScript(keys.caster_entindex)
+	local target = keys.target
+	local location = target:GetOrigin()
+	local count = 0
+	
+	if target:THTD_IsTower() and target:GetOwner() == caster:GetOwner() then
+		local gain = (target:THTD_GetStar() - 1) - ( caster:THTD_GetStar() - (target:THTD_GetStar()) -1 )
+		if gain == 0 then
+			CustomGameEventManager:Send_ServerToPlayer( caster:GetPlayerOwner() , "show_message", {msg="nazrin_no_gain", duration=5, params={count=1}, color="#0ff"} )
+			return
+		end
+		
+		for i=1, gain do
+			local itemName = "item_100" .. (target:THTD_GetStar() + 1)
+			local item = CreateItem(itemName, nil, nil)
+
+			local index = item:GetEntityIndex()
+			if caster.hero~=nil and caster.hero:IsNull()==false then
+				caster.hero.thtd_hero_star_list[tostring(index)] = count + 1
+				caster.hero.thtd_hero_level_list[tostring(index)] = 10
+			end
+
+			CreateItemOnPositionSync(location + Vector(count*100,0,0),item)
+		end
+		
+		for i=0,8 do
+			local targetItem = target:GetItemInSlot(i)
+			if targetItem~=nil and targetItem:IsNull()==false then
+				target:DropItemAtPositionImmediate(targetItem, target:GetOrigin())
+			end
+		end
+
+		for i=0,8 do
+			local targetItem = target:GetItemInSlot(i)
+			if targetItem~=nil and targetItem:IsNull()==false then
+				target:DropItemAtPositionImmediate(targetItem, target:GetOrigin())
+			end
+		end
+
+		target:AddNewModifier(caster, nil, "modifier_touhoutd_release_hidden", {})
+		target:SetOrigin(Vector(0,0,0))
+		target:AddNoDraw()
+		target:THTD_DestroyLevelEffect()
+		target:RemoveModifierByName("modifier_touhoutd_no_health_bar")
+		target.thtd_tower_damage = 0
+
+		local item = EntIndexToHScript(target.thtd_item)
+		caster:AddItem(item)
+
+		if target:THTD_GetStar() > 1 then
+			item.thtd_item_owner = caster
+		end
+
+		for k,v in pairs(caster.thtd_hero_tower_list) do
+			if v == target then
+				table.remove(caster.thtd_hero_tower_list,k)
+			end
+		end
+
+		-- 组合刷新
+		local combo = target:THTD_GetCombo()
+		local func = target["THTD_"..target:GetUnitName().."_thtd_combo"]
+		if func then
+			func(target,combo)
+		end
+	end
+end

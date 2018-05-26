@@ -180,6 +180,14 @@
 		"DOTA_Tooltip_ability_thtd_lily_02_duration"	"DURATION:"
 		"DOTA_Tooltip_modifier_lily_outgoing_damage"	"Spring Sign「Surprise Spring」"
 		"DOTA_Tooltip_modifier_lily_outgoing_damage_Description"	"Under the power of the Spring sign this tower deals 25% more damage to enemies."
+		"DOTA_Tooltip_ability_ogre_magi_multicast"	"「Multicast」"
+		"DOTA_Tooltip_ability_ogre_magi_multicast_Description"	"Casts this shit multiple times."
+		"DOTA_Tooltip_ability_ogre_magi_multicast_multicast_2_times_tooltip"	"Double Cast:"
+		"DOTA_Tooltip_ability_ogre_magi_multicast_multicast_3_times_tooltip"	"Triple Cast:"
+		"DOTA_Tooltip_ability_ogre_magi_multicast_multicast_4_times_tooltip"	"Quadruple Cast:"
+		"DOTA_Tooltip_ability_ogre_magi_multicast_damage_reduction_percent"	"Damage Reduction%:"
+		"DOTA_Tooltip_ability_ogre_magi_multicast_lore"	"Don't underestimate the servants of the Scarlet Devil Mansion."
+
 
 		"nazrin"	"Nazrin 「UFO」"
 		"DOTA_Tooltip_ability_item_0002"	"【R】Nazrin 「UFO」"

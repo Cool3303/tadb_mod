@@ -983,11 +983,11 @@ thtd_attack_table =
 thtd_ability_table = 
 {
 	["lily"] = {
-		[1] = {["thtd_lily_01"] = 1,["thtd_lily_02"] = 0},
-		[2] = {["thtd_lily_01"] = 1,["thtd_lily_02"] = 0},
-		[3] = {["thtd_lily_01"] = 1,["thtd_lily_02"] = 0},
-		[4] = {["thtd_lily_01"] = 1,["thtd_lily_02"] = 1},
-		[5] = {["thtd_lily_01"] = 1,["thtd_lily_02"] = 1},
+		[1] = {["thtd_lily_01"] = 1,["thtd_lily_02"] = 0,["ogre_magi_multicast"] = 0},
+		[2] = {["thtd_lily_01"] = 1,["thtd_lily_02"] = 0,["ogre_magi_multicast"] = 0},
+		[3] = {["thtd_lily_01"] = 1,["thtd_lily_02"] = 0,["ogre_magi_multicast"] = 1},
+		[4] = {["thtd_lily_01"] = 1,["thtd_lily_02"] = 1,["ogre_magi_multicast"] = 2},
+		[5] = {["thtd_lily_01"] = 1,["thtd_lily_02"] = 1,["ogre_magi_multicast"] = 3},
 	},
 	["nazrin"] = {
 		[1] = {["thtd_nazrin_01"] = 1,["thtd_nazrin_02"] = 0},

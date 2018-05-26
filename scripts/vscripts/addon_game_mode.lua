@@ -1114,8 +1114,9 @@ function CDOTA_BaseNPC:RemoveAllTowerDamage()
 		if v~=nil and v:IsNull()==false and v:IsAlive() then
 			if SpawnSystem:GetWave() <= 51 then
 				if v:GetUnitName() == "toramaru" then
-					PlayerResource:ModifyGold(v:GetPlayerOwnerID(),v.thtd_tower_damage*0.01,true,DOTA_ModifyGold_CreepKill)
-					SendOverheadEventMessage(v:GetPlayerOwner(),OVERHEAD_ALERT_GOLD,v,v.thtd_tower_damage*0.01,v:GetPlayerOwner() )
+					local interest = v:GetModifierStackCount("modifier_toramaru_02_money_stack", v) * 5000 * 0.02 * v:THTD_GetStar () or 0
+					PlayerResource:ModifyGold(v:GetPlayerOwnerID(), interest ,true,DOTA_ModifyGold_CreepKill)
+					SendOverheadEventMessage(v:GetPlayerOwner(),OVERHEAD_ALERT_GOLD,v, interest,v:GetPlayerOwner() )
 				elseif v:GetUnitName() == "shinki" and v.thtd_shinki_01_lock == false then
 					OnShinkiGainCard(v)
 				end

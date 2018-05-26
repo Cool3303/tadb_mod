@@ -58,6 +58,7 @@ function OnNazrin01AttackLanded(keys)
 end
 
 function OnNazrin02ConsumeTower(keys)
+	local hero = keys.caster
 	local caster = EntIndexToHScript(keys.caster_entindex)
 	local target = keys.target
 	local location = target:GetOrigin()
@@ -81,6 +82,11 @@ function OnNazrin02ConsumeTower(keys)
 			end
 
 			CreateItemOnPositionSync(location + Vector(count*100,0,0),item)
+			local effectIndex = ParticleManager:CreateParticle("particles/thd2/items/item_donation_box.vpcf", PATTACH_CUSTOMORIGIN, caster)
+			ParticleManager:SetParticleControl(effectIndex, 0, caster:GetAbsOrigin())
+			ParticleManager:SetParticleControl(effectIndex, 1, caster:GetAbsOrigin())
+			ParticleManager:DestroyParticleSystem(effectIndex,false)
+
 		end
 		
 
@@ -91,10 +97,6 @@ function OnNazrin02ConsumeTower(keys)
 			end
 		end
 		target:EmitSound("broo_lasthit_07.vsnd")
-		local effectIndex = ParticleManager:CreateParticle("particles/thd2/items/item_donation_box.vpcf", PATTACH_CUSTOMORIGIN, target)
-		ParticleManager:SetParticleControl(effectIndex, 0, caster:GetAbsOrigin())
-		ParticleManager:SetParticleControl(effectIndex, 1, target:GetAbsOrigin())
-		ParticleManager:DestroyParticleSystem(effectIndex,false)
 
 		target:AddNewModifier(caster, nil, "modifier_touhoutd_release_hidden", {})
 		target:SetOrigin(Vector(0,0,0))
@@ -103,9 +105,9 @@ function OnNazrin02ConsumeTower(keys)
 		target:RemoveModifierByName("modifier_touhoutd_no_health_bar")
 		target.thtd_tower_damage = 0
 
-		for k,v in pairs(caster.thtd_hero_tower_list) do
+		for k,v in pairs(caster:GetOwner().thtd_hero_tower_list) do
 			if v == target then
-				table.remove(caster.thtd_hero_tower_list,k)
+				table.remove(caster:GetOwner().thtd_hero_tower_list,k)
 			end
 		end
 

@@ -36,7 +36,30 @@ function OnToramaru01SpellStart(keys)
 	ParticleManager:DestroyParticleSystem(effectIndex,false)
 end
 
-function OnToramaru02SpellStart(keys)
+function OnToramaru02SpellStartDown(keys)
+	local caster = EntIndexToHScript(keys.caster_entindex)
+
+	if SpawnSystem:GetWave() > 51 then
+		return
+	end
+	
+	if caster:GetModifierStackCount("thtd_toramaru_02", caster) == nil then
+		caster:SetModifierStackCount("modifier_toramaru_02_money_stack", caster, 0)
+	end
+
+	local interest = caster:GetModifierStackCount("modifier_toramaru_02_money_stack", caster) * 5000 * 0.02 * caster:THTD_GetStar () or 0
+	keys.ability:ApplyDataDrivenModifier( caster, caster, "modifier_toramaru_02_money_stack", {} )
+	caster:SetModifierStackCount("modifier_toramaru_02_money_stack", caster, caster:GetModifierStackCount("modifier_toramaru_02_money_stack", caster)+1)
+	CustomGameEventManager:Send_ServerToPlayer( caster:GetPlayerOwner() , "show_message", {msg="toramaru_interest" .. interest , duration=5, params={count=1}, color="#0ff"} )
+
+	local effectIndex = ParticleManager:CreateParticle("particles/thd2/items/item_donation_box.vpcf", PATTACH_CUSTOMORIGIN, caster)
+	ParticleManager:SetParticleControl(effectIndex, 0, caster:GetAbsOrigin())
+	ParticleManager:SetParticleControl(effectIndex, 1, caster:GetAbsOrigin())
+	ParticleManager:DestroyParticleSystem(effectIndex,false)
+end
+
+
+function OnToramaru03SpellStart(keys)
 	local caster = EntIndexToHScript(keys.caster_entindex)
 	if SpawnSystem:GetWave() > 51 then
 		keys.ability:EndCooldown()
@@ -66,10 +89,14 @@ function OnToramaru02SpellStart(keys)
 	ParticleManager:DestroyParticleSystem(effectIndex,false)
 end
 
-function OnToramaru03SpellStart(keys)
+function OnToramaru04SpellStart(keys)
 	local caster = EntIndexToHScript(keys.caster_entindex)
 	if SpawnSystem:GetWave() > 51 then
 		keys.ability:EndCooldown()
+		if caster:GetModifierStackCount("thtd_toramaru_02", caster) >= 0 then
+			PlayerResource:ModifyGold(caster:GetPlayerOwnerID(), 5000, true, DOTA_ModifyGold_CreepKill)
+			caster:SetModifierStackCount("modifier_toramaru_02_money_stack", caster, caster:GetModifierStackCount("modifier_toramaru_02_money_stack", caster)-1)
+		end
 	end
 
 	if caster:HasModifier("modifier_byakuren_03_buff") then
@@ -97,3 +124,4 @@ function OnToramaru03SpellStart(keys)
 		ParticleManager:DestroyParticleSystem(effectIndex,false)
 	end
 end
+

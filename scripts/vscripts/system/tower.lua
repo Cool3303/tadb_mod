@@ -1623,7 +1623,8 @@ function CDOTA_BaseNPC:THTD_InitExp()
 	self.thtd_star = 1
 	self.thtd_tower_damage = 0
 	self.thtd_is_ex = false
-	self.thtd_close_ai = false
+	self.exup_count = 0
+    self.thtd_close_ai = false
 	self.thtd_mana_regen = self:GetManaRegen()
 	self.thtd_mana_regen_percentage = 0
 	self.thtd_crit_chance = 0
@@ -2107,7 +2108,6 @@ function CDOTA_BaseNPC:THTD_GetCombo()
 	return nil
 end
 
-local exup_count = 0
 function CDOTA_BaseNPC:THTD_UpgradeEx()
 	local unitName = self:GetUnitName()
 	local star = self:THTD_GetStar()
@@ -2140,11 +2140,12 @@ function CDOTA_BaseNPC:THTD_UpgradeEx()
 	self:THTD_SetStar(star)
 	self:THTD_SetLevel(level)
     
-    if exup_count > 0 then
-        self.thtd_power = self.thtd_power * (1 + 0.3 * exup_count)
-        self.thtd_attack = self.thtd_attack * (1 + 0.3 * exup_count)
+    if self.exup_count > 0 then
+        self.thtd_power = self.thtd_power + self.thtd_power * 0.3
+        self.thtd_attack = self.thtd_attack + self.thtd_attack * 0.3
     end
-    exup_count = exup_count + 1
+    self.exup_count = self.exup_count + 1
+    print("exup_count: "..self.exup_count.."\n\tpower: "..self.thtd_power.."\n\tattack: "..self.thtd_attack)
 end
 
 function CDOTA_BaseNPC:THTD_IsTowerEx()

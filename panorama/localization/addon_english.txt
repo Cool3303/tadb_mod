@@ -3,7 +3,7 @@
 	"td_pawn_count"		"PAWN AMOUNT：{d:count} / {d:max_count}"
 	"td_food_count"		"{d:count} / 12"
 	"td_food_count_text"	"FOOD AMOUNT"
-	"td_creature_kill_count"		"PAWN-KILLING AMOUNT:{d:count}"
+	"td_creature_kill_count"		"PAWN-KILLS: {d:count}"
 	"td_creature_kill_count_text"	"KILLING AMOUNT"
 	"td_tower_dps_title"  "DAMAGE STATS"
 	"td_attacking_wave"		"WAVE {d:wave}"

@@ -1924,7 +1924,7 @@ function CDOTA_BaseNPC:THTD_SetStar(star)
 
 	local unitName = self:GetUnitName()
 	if self:THTD_IsTowerEx() == true then
-		unitName = unitName.."_ex"
+        unitName = unitName.."_ex"
 	end
 
 	if thtd_power_table[unitName][self.thtd_star]~=nil then
@@ -2145,6 +2145,7 @@ function CDOTA_BaseNPC:THTD_GetCombo()
 	return nil
 end
 
+local exup_count = 0
 function CDOTA_BaseNPC:THTD_UpgradeEx()
 	local unitName = self:GetUnitName()
 	local star = self:THTD_GetStar()
@@ -2176,6 +2177,12 @@ function CDOTA_BaseNPC:THTD_UpgradeEx()
 	self.thtd_is_ex = true
 	self:THTD_SetStar(star)
 	self:THTD_SetLevel(level)
+    
+    if exup_count > 0 then
+        self.thtd_power = self.thtd_power * (1 + 0.3 * exup_count)
+        self.thtd_attack = self.thtd_attack * (1 + 0.3 * exup_count)
+    end
+    exup_count = exup_count + 1
 end
 
 function CDOTA_BaseNPC:THTD_IsTowerEx()

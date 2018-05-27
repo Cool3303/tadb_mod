@@ -162,7 +162,7 @@ function SpawnSystem:ResumeWave(index)
 	spawner[index].isStop = false
 end
 
-function SpawnSystem:SkipBreakTime(index)
+function SpawnSystem:SkipWaveTime(index)
 	local spawner  = SpawnSystem.AttackingSpawner
 
 	THTD_EntitiesRectInner[index-1] = {}
@@ -174,6 +174,17 @@ function SpawnSystem:SkipBreakTime(index)
     local wave = spawner[index].CurWave - 1
     
     SpawnSystem.Spawner["Attacking"]["Wave"..tostring(wave)]["BreakTime"] = 0
+    
+    local count = 0
+    for k,v in pairs(Entities:FindAllByClassname("npc_dota_creature")) do
+        if string.find(v:GetUnitName(), 'creature_') and v~=nil and v:IsNull()==false and v:IsAlive() and v.thtd_player_index == index then
+            count = count +1
+        end
+    end
+
+    if count == 0 then 
+        SpawnSystem.Spawner["Attacking"]["Wave"..tostring(wave)]["Times"] = 0
+    end
 end
 
 thtd_next_bossName_list = 

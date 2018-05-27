@@ -2145,7 +2145,6 @@ function CDOTA_BaseNPC:THTD_UpgradeEx()
         self.thtd_attack = self.thtd_attack + self.thtd_attack * 0.3
     end
     self.exup_count = self.exup_count + 1
-    print("exup_count: "..self.exup_count.."\n\tpower: "..self.thtd_power.."\n\tattack: "..self.thtd_attack)
 end
 
 function CDOTA_BaseNPC:THTD_IsTowerEx()

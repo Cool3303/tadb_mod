@@ -193,7 +193,7 @@ function OnCirno04Attack(keys)
 	local caster = EntIndexToHScript(keys.caster_entindex)
 	local target = keys.target
 	local targetPoint = target:GetOrigin()
-	local damage = caster:THTD_GetPower() * 6.6
+	local damage = caster:THTD_GetPower() * 6.66
 
 	if caster.thtd_cirno_04_attack_count == nil then
 		caster.thtd_cirno_04_attack_count = 0

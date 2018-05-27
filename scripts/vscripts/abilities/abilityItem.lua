@@ -160,8 +160,12 @@ function OnItem2222_SpellStart(keys)
 
 	if caster:GetUnitName() == "npc_dota_hero_lina" then
 		if target:THTD_IsTower() then
-			target:THTD_SetStar(THTD_MAX_STAR)
-			target:THTD_SetLevel(THTD_MAX_LEVEL)
+            for star = target:THTD_GetStar(), THTD_MAX_STAR do
+                for level = target:THTD_GetLevel(), 9 do
+			         target:THTD_SetLevel(level + 1)
+                 end
+                 if star < 5 then target:THTD_SetStar(star + 1) end
+            end
 		end
 	end
 end

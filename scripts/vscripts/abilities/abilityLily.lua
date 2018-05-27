@@ -80,11 +80,3 @@ function OnLily02SpellStart(keys)
 	ParticleManager:SetParticleControl(effectIndex, 1, Vector(keys.radius,keys.radius,keys.radius))
 	ParticleManager:DestroyParticleSystemTime(effectIndex,15.0)
 end
-
-function Onlilymulticast(keys)
-	local caster = keys.caster
-	local ability = keys.ability
-	local targetPoint = keys.target_points[1]
-
-	CustomGameEventManager:Send_ServerToPlayer( caster:GetPlayerOwner() , "show_message", {msg="multicast", duration=5, params={count=1}, color="#0ff"} )
-end

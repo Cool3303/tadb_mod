@@ -1961,45 +1961,7 @@ function CDOTA_BaseNPC:THTD_SetStar(star)
 end
 
 function CDOTA_BaseNPC:THTD_UpgradeStar()
-	local lastPower = nil
-	local lastAttack = nil
-
-	local unitName = self:GetUnitName()
-	if self:THTD_IsTowerEx() == true then
-		unitName = unitName.."_ex"
-	end
-	
-	if thtd_power_table[unitName][self.thtd_star]~=nil then
-		lastPower = thtd_power_table[unitName][self.thtd_star][1] + thtd_power_table[unitName][self.thtd_star][2] * (self:THTD_GetLevel()-1)
-	end
-	if thtd_attack_table[unitName]~=nil then
-		lastAttack = thtd_attack_table[unitName][self.thtd_star][1] + thtd_attack_table[unitName][self.thtd_star][2] * (self:THTD_GetLevel()-1)
-	end
-
-	self.thtd_star = self.thtd_star + 1
-	self.thtd_level = 1
-	self.thtd_exp = 0
-
-	if lastPower~=nil then
-		self.thtd_power = self.thtd_power + thtd_power_table[unitName][self.thtd_star][1] - lastPower
-	else
-		self.thtd_power = self.thtd_power + thtd_power_table[unitName][self.thtd_star][1]
-	end
-
-	if lastAttack~=nil then
-		self.thtd_attack = self.thtd_attack + thtd_attack_table[unitName][self.thtd_star][1] - lastAttack
-	end
-
-	self:THTD_DestroyLevelEffect()
-	self:THTD_CreateLevelEffect()
-	self:SetMana(0)
-	self:THTD_OpenAbility()
-	self:EmitSound("Sound_THTD.thtd_star_up")
-
-	local effectIndex = ParticleManager:CreateParticle("particles/heroes/byakuren/ability_byakuren_02.vpcf", PATTACH_CUSTOMORIGIN, self)
-	ParticleManager:SetParticleControl(effectIndex, 0, self:GetOrigin())
-	ParticleManager:SetParticleControl(effectIndex, 1, self:GetOrigin())
-	ParticleManager:DestroyParticleSystem(effectIndex,false)
+    self:THTD_SetStar(self.THTD_GetStar()+1)
 end
 
 	

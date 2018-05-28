@@ -137,7 +137,8 @@ function OnDaiyousei04SpellStart(keys)
 		caster.thtd_ability_daiyousei_04_lock = true
 		
 		target:THTD_UpgradeEx()
-		target:SetBaseAttackTime(target:GetBaseAttackTime() * 0.66)
+        local baseAttackTime = target:GetBaseAttackTime()
+        if baseAttackTime > 0.3 then target:SetBaseAttackTime(baseAttackTime * 0.66) end
 		target:SetAttackCapability(DOTA_UNIT_CAP_MELEE_ATTACK)
 		
         target:SetModel("models/new_touhou_model/cirno/ex/ex_cirno.vmdl")

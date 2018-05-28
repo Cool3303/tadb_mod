@@ -1482,7 +1482,7 @@ thtd_ability_minoriko_star_up_table =
 	[2] = 40,
 	[3] = 160,
 	[4] = 500,
-	[5] = 22000,
+	[5] = 2200,
 }
 
 thtd_ability_sizuha_star_up_table = 

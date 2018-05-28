@@ -1962,7 +1962,7 @@ function CDOTA_BaseNPC:THTD_SetStar(star)
 end
 
 function CDOTA_BaseNPC:THTD_UpgradeStar()
-    self:THTD_SetStar(self.THTD_GetStar()+1)
+    self:THTD_SetStar(self:THTD_GetStar()+1)
 end
 
 	

@@ -166,7 +166,7 @@ function OnCirno03Attack(keys)
 	if keys.ability:GetLevel() < 1 then return end
 	local caster = EntIndexToHScript(keys.caster_entindex)
 	local target = keys.target
-	local damage = 1.5 * caster:THTD_GetPower()
+	local damage = 1.66 * caster:THTD_GetPower()
 
 	local targets = THTD_FindUnitsInRadius(caster,target:GetOrigin(),250)
 	
@@ -193,7 +193,7 @@ function OnCirno04Attack(keys)
 	local caster = EntIndexToHScript(keys.caster_entindex)
 	local target = keys.target
 	local targetPoint = target:GetOrigin()
-	local damage = caster:THTD_GetPower() * 2
+	local damage = caster:THTD_GetPower() * 6.6
 
 	if caster.thtd_cirno_04_attack_count == nil then
 		caster.thtd_cirno_04_attack_count = 0
@@ -213,16 +213,21 @@ function OnCirno04Attack(keys)
 			function()
 				if GameRules:IsGamePaused() then return 0.03 end
 				local targets = THTD_FindUnitsInRadius(caster,targetPoint,300)
-				for k,v in pairs(targets) do
-					local DamageTable = {
-			   			ability = keys.ability,
-			            victim = v, 
-			            attacker = caster, 
-			            damage = damage/5, 
-			            damage_type = keys.ability:GetAbilityDamageType(), 
-			            damage_flags = DOTA_DAMAGE_FLAG_NONE
-				   	}
-				   	UnitDamageTarget(DamageTable)
+				
+				local units = 0
+				for _ in pairs(targets) do units = units + 1 end
+				if units > 0 then
+                    for k,v in pairs(targets) do
+                        local DamageTable = {
+                            ability = keys.ability,
+                            victim = v,
+                            attacker = caster,
+                            damage = damage/units,
+                            damage_type = keys.ability:GetAbilityDamageType(),
+                            damage_flags = DOTA_DAMAGE_FLAG_NONE
+                        }
+                        UnitDamageTarget(DamageTable)
+                    end
 				end
 				if count > 40 then
 					return nil

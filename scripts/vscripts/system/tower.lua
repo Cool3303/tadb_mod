@@ -1045,6 +1045,14 @@ thtd_ability_table =
 		[4] = {["thtd_cirno_01"] = 1,["thtd_cirno_02"] = 1,["thtd_cirno_03"] = 0,["thtd_cirno_04"] = 0},
 		[5] = {["thtd_cirno_01"] = 1,["thtd_cirno_02"] = 1,["thtd_cirno_03"] = 0,["thtd_cirno_04"] = 0},
 	},
+	["cirno_ex"] = 
+	{
+		[1] = {["thtd_cirno_01"] = 1,["thtd_cirno_02"] = 0,["thtd_cirno_03"] = 0,["thtd_cirno_04"] = 0},
+		[2] = {["thtd_cirno_01"] = 1,["thtd_cirno_02"] = 0,["thtd_cirno_03"] = 0,["thtd_cirno_04"] = 0},
+		[3] = {["thtd_cirno_01"] = 1,["thtd_cirno_02"] = 0,["thtd_cirno_03"] = 1,["thtd_cirno_04"] = 0},
+		[4] = {["thtd_cirno_01"] = 1,["thtd_cirno_02"] = 1,["thtd_cirno_03"] = 1,["thtd_cirno_04"] = 0},
+		[5] = {["thtd_cirno_01"] = 1,["thtd_cirno_02"] = 1,["thtd_cirno_03"] = 1,["thtd_cirno_04"] = 1},
+	},
 	["letty"] = {
 		[1] = {["thtd_letty_01"] = 1,["thtd_letty_02"] = 0},
 		[2] = {["thtd_letty_01"] = 1,["thtd_letty_02"] = 0},
@@ -1177,14 +1185,6 @@ thtd_ability_table =
 		[3] = {["thtd_daiyousei_01"] = 1,["thtd_daiyousei_02"] = 1,["thtd_daiyousei_03"] = 1,["thtd_daiyousei_04"] = 0},
 		[4] = {["thtd_daiyousei_01"] = 1,["thtd_daiyousei_02"] = 1,["thtd_daiyousei_03"] = 1,["thtd_daiyousei_04"] = 0},
 		[5] = {["thtd_daiyousei_01"] = 1,["thtd_daiyousei_02"] = 1,["thtd_daiyousei_03"] = 1,["thtd_daiyousei_04"] = 1},
-	},
-	["cirno_ex"] = 
-	{
-		[1] = {["thtd_cirno_01"] = 1,["thtd_cirno_02"] = 0,["thtd_cirno_03"] = 0,["thtd_cirno_04"] = 0},
-		[2] = {["thtd_cirno_01"] = 1,["thtd_cirno_02"] = 0,["thtd_cirno_03"] = 0,["thtd_cirno_04"] = 0},
-		[3] = {["thtd_cirno_01"] = 1,["thtd_cirno_02"] = 0,["thtd_cirno_03"] = 1,["thtd_cirno_04"] = 0},
-		[4] = {["thtd_cirno_01"] = 1,["thtd_cirno_02"] = 1,["thtd_cirno_03"] = 1,["thtd_cirno_04"] = 0},
-		[5] = {["thtd_cirno_01"] = 1,["thtd_cirno_02"] = 1,["thtd_cirno_03"] = 1,["thtd_cirno_04"] = 1},
 	},
 	["remilia"] = 
 	{
@@ -1623,7 +1623,8 @@ function CDOTA_BaseNPC:THTD_InitExp()
 	self.thtd_star = 1
 	self.thtd_tower_damage = 0
 	self.thtd_is_ex = false
-	self.thtd_close_ai = false
+	self.exup_count = 0
+    self.thtd_close_ai = false
 	self.thtd_mana_regen = self:GetManaRegen()
 	self.thtd_mana_regen_percentage = 0
 	self.thtd_crit_chance = 0
@@ -1924,7 +1925,7 @@ function CDOTA_BaseNPC:THTD_SetStar(star)
 
 	local unitName = self:GetUnitName()
 	if self:THTD_IsTowerEx() == true then
-		unitName = unitName.."_ex"
+        unitName = unitName.."_ex"
 	end
 
 	if thtd_power_table[unitName][self.thtd_star]~=nil then
@@ -1961,45 +1962,7 @@ function CDOTA_BaseNPC:THTD_SetStar(star)
 end
 
 function CDOTA_BaseNPC:THTD_UpgradeStar()
-	local lastPower = nil
-	local lastAttack = nil
-
-	local unitName = self:GetUnitName()
-	if self:THTD_IsTowerEx() == true then
-		unitName = unitName.."_ex"
-	end
-	
-	if thtd_power_table[unitName][self.thtd_star]~=nil then
-		lastPower = thtd_power_table[unitName][self.thtd_star][1] + thtd_power_table[unitName][self.thtd_star][2] * (self:THTD_GetLevel()-1)
-	end
-	if thtd_attack_table[unitName]~=nil then
-		lastAttack = thtd_attack_table[unitName][self.thtd_star][1] + thtd_attack_table[unitName][self.thtd_star][2] * (self:THTD_GetLevel()-1)
-	end
-
-	self.thtd_star = self.thtd_star + 1
-	self.thtd_level = 1
-	self.thtd_exp = 0
-
-	if lastPower~=nil then
-		self.thtd_power = self.thtd_power + thtd_power_table[unitName][self.thtd_star][1] - lastPower
-	else
-		self.thtd_power = self.thtd_power + thtd_power_table[unitName][self.thtd_star][1]
-	end
-
-	if lastAttack~=nil then
-		self.thtd_attack = self.thtd_attack + thtd_attack_table[unitName][self.thtd_star][1] - lastAttack
-	end
-
-	self:THTD_DestroyLevelEffect()
-	self:THTD_CreateLevelEffect()
-	self:SetMana(0)
-	self:THTD_OpenAbility()
-	self:EmitSound("Sound_THTD.thtd_star_up")
-
-	local effectIndex = ParticleManager:CreateParticle("particles/heroes/byakuren/ability_byakuren_02.vpcf", PATTACH_CUSTOMORIGIN, self)
-	ParticleManager:SetParticleControl(effectIndex, 0, self:GetOrigin())
-	ParticleManager:SetParticleControl(effectIndex, 1, self:GetOrigin())
-	ParticleManager:DestroyParticleSystem(effectIndex,false)
+    self:THTD_SetStar(self.THTD_GetStar()+1)
 end
 
 	
@@ -2149,7 +2112,7 @@ function CDOTA_BaseNPC:THTD_UpgradeEx()
 	local unitName = self:GetUnitName()
 	local star = self:THTD_GetStar()
 	local level = self:THTD_GetLevel()
-
+--[[
 	for k,v in pairs(thtd_ability_table[unitName]) do
 		for abilityName,level in pairs(v) do
 			if self:THTD_GetStar() == k then
@@ -2157,12 +2120,15 @@ function CDOTA_BaseNPC:THTD_UpgradeEx()
 			end
 		end
 	end
+]]--
 	unitName = self:GetUnitName().."_ex"
 
+	local index = 0
 	for k,v in pairs(thtd_ability_table[unitName]) do
+		index = index + 1
 		for abilityName,level in pairs(v) do
 			if self:THTD_GetStar() == k then
-				local ability=self:AddAbility(abilityName)
+				local ability=self:GetAbilityByIndex(index)
 				ability:SetLevel(level)
 			end
 		end
@@ -2173,6 +2139,13 @@ function CDOTA_BaseNPC:THTD_UpgradeEx()
 	self.thtd_is_ex = true
 	self:THTD_SetStar(star)
 	self:THTD_SetLevel(level)
+    
+    if self.exup_count > 0 then
+        self.thtd_power = self.thtd_power + self.thtd_power * 0.3
+        self.thtd_attack = self.thtd_attack + self.thtd_attack * 0.3
+    end
+    self.exup_count = self.exup_count + 1
+    print("exup_count: "..self.exup_count.."\n\tpower: "..self.thtd_power.."\n\tattack: "..self.thtd_attack)
 end
 
 function CDOTA_BaseNPC:THTD_IsTowerEx()

@@ -272,9 +272,15 @@
 		"DOTA_Tooltip_modifier_cirno_frozen_unit"	"Freeze Sign「Perfect Freeze」"
 		"DOTA_Tooltip_modifier_cirno_frozen_unit_Description"	"Under the influence of Cirno, this unit is being freezed."
 		"DOTA_Tooltip_ability_thtd_cirno_03"	"Blowing Ice「Ice Tornado」"
-		"DOTA_Tooltip_ability_thtd_cirno_03_Description"	"Cirno's attacks will cause damage to the target and units around it..\n【Relative to Star-level】Damage:POWER POINTS*1.5"
+<<<<<<< HEAD:resource/addon_english.txt
+		"DOTA_Tooltip_ability_thtd_cirno_03_Description"	"Cirno's attacks will cause damage to the target and units around it..\n【Relative to Star-level】Damage:POWER POINTS*1.66"
 		"DOTA_Tooltip_ability_thtd_cirno_04"	"Ice Sign「Ultimate Blizzard」"
-		"DOTA_Tooltip_ability_thtd_cirno_04_Description"	"Every 5th Attack of Cirno causes damage over time in the target area.\n【Relative to Star-level】Damage:POWER POINT*8/per second"
+		"DOTA_Tooltip_ability_thtd_cirno_04_Description"	"Every 5th Attack of Cirno causes damage over time in the target area.\n【Relative to Star-level】Damage:POWER POINT*6.66/victims/per second"
+=======
+		"DOTA_Tooltip_ability_thtd_cirno_03_Description"	"Cirno's attacks will cause damage to the target and units around it..\n\n【Relative to Star-level】Damage:POWER POINTS*1.66"
+		"DOTA_Tooltip_ability_thtd_cirno_04"	"Ice Sign「Ultimate Blizzard」"
+		"DOTA_Tooltip_ability_thtd_cirno_04_Description"	"Every 5th Attack of Cirno causes shared damage over time in the target area.\n\n【Relative to Star-level】Damage:POWER POINT*6.66/victims/per second"
+>>>>>>> Final touches and description:resource/addon_english.test.txt
 
 		"kogasa"	"Kogasa Tatara 「UFO」"
 		"DOTA_Tooltip_ability_item_0010"	"【R】Tatara Kogasa 「UFO」"
@@ -538,11 +544,19 @@
 		"DOTA_Tooltip_ability_thtd_daiyousei_02"	"「Yousei Garden」"
 		"DOTA_Tooltip_ability_thtd_daiyousei_02_Description"	"Daiyousei recovers 10 MP for all nearby units."
 		"DOTA_Tooltip_ability_thtd_daiyousei_03"	"「Revelution」"
-		"DOTA_Tooltip_ability_thtd_daiyousei_03_Description"	"Daiyousei links herself to the target, transforms all skill damage to magic damage and increases it.\n【Relative to Star-level】Damage Increase:30%/40%/60%\n【Combination Promotion - Cirno】\nWhen linking with Cirno，The damage increase is 45%/60%/90%."
+<<<<<<< HEAD:resource/addon_english.txt
+		"DOTA_Tooltip_ability_thtd_daiyousei_03_Description"	"Daiyousei links herself to the target, transforms all skill damage to magic damage and increases it.\n【Relative to Star-level】Damage Increase:30%/40%/60%\n【Combination Promotion - Cirno】\nWhen linking with Cirno，The damage increase is 50%/70%/100%."
 		"DOTA_Tooltip_modifier_daiyousei_03"	"「Revelution」"
 		"DOTA_Tooltip_modifier_daiyousei_03_Description"	"This unit is linked to Daiyousei. Its damage is converted to magic damage and increased."
 		"DOTA_Tooltip_ability_thtd_daiyousei_04"	"「Beyond The World」"
-		"DOTA_Tooltip_ability_thtd_daiyousei_04_Description"	"Daiyousei can release Cirno's hidden power.(This Cirno must be ★★★★★. This skill can only be used once.)"
+		"DOTA_Tooltip_ability_thtd_daiyousei_04_Description"	"Daiyousei can release Cirno's hidden power.Cirno must be 5 Star. Daiyousei can use this skill only once."
+=======
+		"DOTA_Tooltip_ability_thtd_daiyousei_03_Description"	"Daiyousei links herself to the target, transforms all skill damage to magic damage and increases it.\n\n【Relative to Star-level】Damage Increase:30%%/40%%/60%%\n\n【Combination Promotion - Cirno】\nWhen linking with Cirno，The damage increase is 50%%/70%%/100%%."
+		"DOTA_Tooltip_modifier_daiyousei_03"	"「Revelution」"
+		"DOTA_Tooltip_modifier_daiyousei_03_Description"	"This unit is linked to Daiyousei. Its damage is converted to magic damage and increased."
+		"DOTA_Tooltip_ability_thtd_daiyousei_04"	"「Beyond The World」"
+		"DOTA_Tooltip_ability_thtd_daiyousei_04_Description"	"Daiyousei can release Cirno's hidden power. Cirno must be ★★★★★. Daiyousei can use this skill only once."
+>>>>>>> Final touches and description:resource/addon_english.test.txt
 
 		"remilia"	"Remilia Scarlet"
 		"DOTA_Tooltip_ability_item_0030"	"【SSR】Remilia Scarlet"

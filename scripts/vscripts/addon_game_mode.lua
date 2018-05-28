@@ -611,6 +611,7 @@ function CTHTDGameMode:OnHeroSpawned(keys)
 						QuestSystem:Update( heroPlayerID, {Type="endless_wave_clear", Wave=last_wave-50} )
 					end
 				end
+                
 				if SpawnSystem:GetWave() <= 51 then
 					local entities = Entities:FindAllByClassname("npc_dota_creature")
 					local count = 0
@@ -620,7 +621,7 @@ function CTHTDGameMode:OnHeroSpawned(keys)
 							count = count + 1
 						end
 					end
-					self:THTD_CreateCreepEffect(count,hero)
+					CTHTDGameMode:THTD_CreateCreepEffect(count,hero)
 
 					if (hero:GetPlayerOwner()==nil or hero:GetPlayerOwner():IsNull()) and playerConnect == true then
 						G_disconnect_player_count = G_disconnect_player_count + 1
@@ -677,19 +678,21 @@ function CTHTDGameMode:OnHeroSpawned(keys)
 						local entities = Entities:FindAllByClassname("npc_dota_creature")
 						local count = 0
 						for k,v in pairs(entities) do
-							local findNum =  string.find(v:GetUnitName(), 'creature_unlimited')
-							if findNum ~= nil and v~=nil and v:IsNull()==false and v:IsAlive() and v.thtd_player_index == heroPlayerID then
-								count = count + 1
-							end
-							local findNum2 =  string.find(v:GetUnitName(), 'creature_alice')
-							if findNum2 ~= nil and v~=nil and v:IsNull()==false and v:IsAlive() and v.thtd_player_index == heroPlayerID and v.thtd_is_outer then
-								count = count + 1
-							end
-							local findNum3 =  string.find(v:GetUnitName(), 'creature_bosses')
-							if findNum3 ~= nil and v~=nil and v:IsNull()==false and v:IsAlive() and v.thtd_player_index == heroPlayerID then
-								count = count + 1
-							end
-						end
+                            local unitName = v:GetUnitName()
+                            local found_unlimited = string.find(unitName, 'creature_unlimited')
+                            local found_alice = string.find(unitName, 'creature_alice')
+                            local found_bosses =  string.find(unitName, 'creature_bosses')
+                            if found_unlimited or found_alice or found_alice then
+                                if v~=nil and v:IsNull()==false and v:IsAlive() and v.thtd_player_index == heroPlayerID then
+                                    if not found_alice then
+                                        count = count +1
+                                    elseif v.thtd_is_outer then
+                                        count = count +1
+                                    end
+                                end
+                            end
+                        end    
+
 						if count > 30 then
 							for k,v in pairs(entities) do
 								local findNum = string.find(v:GetUnitName(), 'creature_unlimited')
@@ -899,6 +902,8 @@ function CTHTDGameMode:OnPlayerSay( keys )
 			SpawnSystem:StopWave(keys.playerid+1)
 		elseif text == "-resume" then
 			SpawnSystem:ResumeWave(keys.playerid+1)
+        elseif text == "-skip" then
+            SpawnSystem:SkipWaveTime(keys.playerid+1)
 		end
 	end
 end
@@ -1114,8 +1119,9 @@ function CDOTA_BaseNPC:RemoveAllTowerDamage()
 		if v~=nil and v:IsNull()==false and v:IsAlive() then
 			if SpawnSystem:GetWave() <= 51 then
 				if v:GetUnitName() == "toramaru" then
-					PlayerResource:ModifyGold(v:GetPlayerOwnerID(),v.thtd_tower_damage*0.01,true,DOTA_ModifyGold_CreepKill)
-					SendOverheadEventMessage(v:GetPlayerOwner(),OVERHEAD_ALERT_GOLD,v,v.thtd_tower_damage*0.01,v:GetPlayerOwner() )
+					local interest = v:GetModifierStackCount("modifier_toramaru_02_money_stack", v) * 5000 * 0.02 * v:THTD_GetStar () or 0
+					PlayerResource:ModifyGold(v:GetPlayerOwnerID(), interest ,true,DOTA_ModifyGold_CreepKill)
+					SendOverheadEventMessage(v:GetPlayerOwner(),OVERHEAD_ALERT_GOLD,v, interest,v:GetPlayerOwner() )
 				elseif v:GetUnitName() == "shinki" and v.thtd_shinki_01_lock == false then
 					OnShinkiGainCard(v)
 				end

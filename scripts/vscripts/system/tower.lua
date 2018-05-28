@@ -983,22 +983,22 @@ thtd_attack_table =
 thtd_ability_table = 
 {
 	["lily"] = {
-		[1] = {["thtd_lily_01"] = 1,["thtd_lily_02"] = 0},
-		[2] = {["thtd_lily_01"] = 1,["thtd_lily_02"] = 0},
-		[3] = {["thtd_lily_01"] = 1,["thtd_lily_02"] = 0},
-		[4] = {["thtd_lily_01"] = 1,["thtd_lily_02"] = 1},
-		[5] = {["thtd_lily_01"] = 1,["thtd_lily_02"] = 1},
+		[1] = {["thtd_lily_01"] = 1,["thtd_lily_02"] = 0,["ogre_magi_multicast"] = 0},
+		[2] = {["thtd_lily_01"] = 1,["thtd_lily_02"] = 0,["ogre_magi_multicast"] = 0},
+		[3] = {["thtd_lily_01"] = 1,["thtd_lily_02"] = 0,["ogre_magi_multicast"] = 1},
+		[4] = {["thtd_lily_01"] = 1,["thtd_lily_02"] = 1,["ogre_magi_multicast"] = 2},
+		[5] = {["thtd_lily_01"] = 1,["thtd_lily_02"] = 1,["ogre_magi_multicast"] = 3},
 	},
 	["nazrin"] = {
-		[1] = {["thtd_nazrin_01"] = 1},
-		[2] = {["thtd_nazrin_01"] = 1},
-		[3] = {["thtd_nazrin_01"] = 1},
-		[4] = {["thtd_nazrin_01"] = 1},
-		[5] = {["thtd_nazrin_01"] = 1},
+		[1] = {["thtd_nazrin_01"] = 1,["thtd_nazrin_02"] = 0},
+		[2] = {["thtd_nazrin_01"] = 1,["thtd_nazrin_02"] = 0},
+		[3] = {["thtd_nazrin_01"] = 1,["thtd_nazrin_02"] = 1},
+		[4] = {["thtd_nazrin_01"] = 1,["thtd_nazrin_02"] = 1},
+		[5] = {["thtd_nazrin_01"] = 1,["thtd_nazrin_02"] = 1},
 	},
 	["minoriko"] = {
 		[1] = {["thtd_minoriko_01"] = 1,["thtd_minoriko_02"] = 0},
-		[2] = {["thtd_minoriko_01"] = 1,["thtd_minoriko_02"] = 0},
+		[2] = {["thtd_minoriko_01"] = 1,["thtd_minoriko_02"] = 1},
 		[3] = {["thtd_minoriko_01"] = 1,["thtd_minoriko_02"] = 1},
 		[4] = {["thtd_minoriko_01"] = 1,["thtd_minoriko_02"] = 1},
 		[5] = {["thtd_minoriko_01"] = 1,["thtd_minoriko_02"] = 1},
@@ -1381,11 +1381,11 @@ thtd_ability_table =
 	},
 
 	["toramaru"] = {
-		[1] = {["thtd_toramaru_01"] = 1,["thtd_toramaru_02"] = 0,["thtd_toramaru_03"] = 0},
-		[2] = {["thtd_toramaru_01"] = 1,["thtd_toramaru_02"] = 0,["thtd_toramaru_03"] = 0},
-		[3] = {["thtd_toramaru_01"] = 1,["thtd_toramaru_02"] = 1,["thtd_toramaru_03"] = 0},
-		[4] = {["thtd_toramaru_01"] = 1,["thtd_toramaru_02"] = 1,["thtd_toramaru_03"] = 0},
-		[5] = {["thtd_toramaru_01"] = 1,["thtd_toramaru_02"] = 1,["thtd_toramaru_03"] = 1},
+		[1] = {["thtd_toramaru_01"] = 1,["thtd_toramaru_02"] = 0,["thtd_toramaru_03"] = 0,["thtd_toramaru_04"] = 0},
+		[2] = {["thtd_toramaru_01"] = 1,["thtd_toramaru_02"] = 1,["thtd_toramaru_03"] = 0,["thtd_toramaru_04"] = 0},
+		[3] = {["thtd_toramaru_01"] = 1,["thtd_toramaru_02"] = 1,["thtd_toramaru_03"] = 1,["thtd_toramaru_04"] = 0},
+		[4] = {["thtd_toramaru_01"] = 1,["thtd_toramaru_02"] = 1,["thtd_toramaru_03"] = 1,["thtd_toramaru_04"] = 0},
+		[5] = {["thtd_toramaru_01"] = 1,["thtd_toramaru_02"] = 1,["thtd_toramaru_03"] = 1,["thtd_toramaru_04"] = 1},
 	},
 
 	["shinki"] = {
@@ -1479,10 +1479,10 @@ thtd_combo_table =
 
 thtd_ability_minoriko_star_up_table = 
 {
-	[2] = 270,
-	[3] = 540,
-	[4] = 900,
-	[5] = 1260,
+	[2] = 40,
+	[3] = 160,
+	[4] = 500,
+	[5] = 22000,
 }
 
 thtd_ability_sizuha_star_up_table = 
@@ -1623,7 +1623,8 @@ function CDOTA_BaseNPC:THTD_InitExp()
 	self.thtd_star = 1
 	self.thtd_tower_damage = 0
 	self.thtd_is_ex = false
-	self.thtd_close_ai = false
+	self.exup_count = 0
+    self.thtd_close_ai = false
 	self.thtd_mana_regen = self:GetManaRegen()
 	self.thtd_mana_regen_percentage = 0
 	self.thtd_crit_chance = 0
@@ -2139,7 +2140,6 @@ function CDOTA_BaseNPC:THTD_UpgradeEx()
 	self.thtd_is_ex = true
 	self:THTD_SetStar(star)
 	self:THTD_SetLevel(level)
-    
     if exup_count > 0 then
         self.thtd_power = self.thtd_power * (1 + 0.3 * exup_count)
         self.thtd_attack = self.thtd_attack * (1 + 0.3 * exup_count)

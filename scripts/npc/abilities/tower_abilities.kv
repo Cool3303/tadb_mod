@@ -3,8 +3,8 @@
 	"thtd_maidyousei_01"
 	{
 		"BaseClass"				"ability_datadriven"
-		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_PASSIVE"
-		"SpellImmunityType"				"SPELL_IMMUNITY_ENEMIES_YES"
+		"AbilityBehavior"		"DOTA_ABILITY_BEHAVIOR_PASSIVE"
+		"SpellImmunityType"		"SPELL_IMMUNITY_ENEMIES_YES"
 		"AbilityTextureName"	"touhoutd/thtd_maidyousei_01"
 		"MaxLevel"				"1"
 		// Stats
@@ -94,6 +94,11 @@
 				"var_type"	"FIELD_FLOAT"
 				"radius"	"600"
 			}
+			"02"
+			{
+				"var_type"			"FIELD_FLOAT"
+				"multicast_delay"	"3"
+			}
 		}
 	}
 
@@ -151,6 +156,74 @@
 				"var_type"			"FIELD_FLOAT"
 				"duration"			"15"
 			}
+			"03"
+			{
+				"var_type"			"FIELD_FLOAT"
+				"multicast_delay"	"3"
+			}
+		}
+	}
+
+	//=================================================================================================================
+	// Ogre Magi: Multicast
+	//=================================================================================================================
+	"ogre_magi_multicast"
+	{
+		// General
+		//-------------------------------------------------------------------------------------------------------------
+		"ID"							"5441"														// unique ID number for this ability.  Do not change this once established or it will invalidate collected stats.
+		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_PASSIVE"
+		"AbilityType"					"DOTA_ABILITY_TYPE_ULTIMATE"
+		"AbilityCastAnimation"			"ACT_INVALID"
+
+		"OnAbilityPhaseStart"
+		{
+			"RunScript"
+			{
+				"ScriptFile"	"scripts/vscripts/abilities/abilityLily.lua"
+				"Function"		"Onlilymulticast"
+				"Target"		"TARGET"
+			}
+		}
+
+		// Special
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilitySpecial"
+		{
+			"01"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"multicast_2_times"		"0.4 0.5 0.6"
+			}
+
+			"02"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"multicast_3_times"		"0 0.2 0.25"
+			}
+
+			"03"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"multicast_4_times"		"0 0 0.125"
+			}
+			"04"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"multicast_2_times_tooltip"		"40 50 60"
+			}
+
+			"05"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"multicast_3_times_tooltip"		"0 20 25"
+			}
+
+			"06"
+			{
+				"var_type"				"FIELD_FLOAT"
+				"multicast_4_times_tooltip"		"0 0 12.5"
+			}
 		}
 	}
 
@@ -184,6 +257,39 @@
 					}
 				}
 			}
+		}
+	}
+	"thtd_nazrin_02"
+	{
+		"BaseClass"				"ability_datadriven"
+		"AbilityTextureName"	"touhoutd/thtd_nazrin_02"
+		"AbilityBehavior"		"DOTA_ABILITY_BEHAVIOR_UNIT_TARGET | DOTA_ABILITY_BEHAVIOR_IMMEDIATE"
+		"AbilityUnitTargetType"	"DOTA_UNIT_TARGET_HERO | DOTA_UNIT_TARGET_BASIC"
+		"AbilityUnitTargetTeam"	"DOTA_UNIT_TARGET_TEAM_FRIENDLY"
+		"MaxLevel"				"1"
+		"AbilityCastAnimation"	"ACT_DOTA_CAST_ABILITY_1"
+		"AbilityCooldown"		"1"
+		"AbilityManaCost"		"0"
+		// Stats
+		// ----------------------------------------------------------------
+		"AbilityCastRange"		"1000"
+
+		"precache"
+		{
+			"particle"					""
+		}
+
+		"OnSpellStart"
+		{
+			"RunScript"
+			{
+				"ScriptFile"	"scripts/vscripts/abilities/abilityNazrin.lua"
+				"Function"		"OnNazrin02ConsumeTower"
+				"Target"		"TARGET"
+			}
+		}
+		"Modifiers"
+		{
 		}
 	}
 
@@ -6881,10 +6987,54 @@
 		}
 	}
 
+
 	"thtd_toramaru_02"
 	{
 		"BaseClass"				"ability_datadriven"
-		"AbilityTextureName"	"touhoutd/thtd_toramaru_02"
+		"AbilityTextureName"	"touhoutd/thtd_toramaru_01"
+		"AbilityBehavior"		"DOTA_ABILITY_BEHAVIOR_NO_TARGET | DOTA_ABILITY_BEHAVIOR_IMMEDIATE"
+		"AbilityUnitTargetType"	"DOTA_UNIT_TARGET_HERO | DOTA_UNIT_TARGET_BASIC"
+		"AbilityUnitTargetTeam"	"DOTA_UNIT_TARGET_TEAM_ENEMY"
+		"AbilityUnitDamageType"	"DAMAGE_TYPE_PURE"
+		"AbilityCooldown"		"1"
+		"AbilityGoldCost"		"5000"
+		// Stats
+		// ----------------------------------------------------------------
+		"AbilityManaCost"		"0"
+		"MaxLevel"				"1"
+
+		"AbilitySpecial"
+		{
+			"01"
+			{
+				"var_type"					"FIELD_PERCENT"
+				"interest"					"4 6 8 10"
+			}
+		}
+
+		"OnSpellStart"
+		{
+			"RunScript"
+			{
+				"Target"		"TARGET"
+				"ScriptFile"	"scripts/vscripts/abilities/abilityToramaru.lua"
+				"Function"		"OnToramaru02SpellStartDown"
+			}
+		}
+
+		"Modifiers"
+		{
+			"modifier_toramaru_02_money_stack"
+			{
+			}
+		}
+
+	}
+
+	"thtd_toramaru_03"
+	{
+		"BaseClass"				"ability_datadriven"
+		"AbilityTextureName"	"touhoutd/thtd_toramaru_03"
 		"AbilityBehavior"		"DOTA_ABILITY_BEHAVIOR_UNIT_TARGET"
 		"AbilityUnitTargetType"	"DOTA_UNIT_TARGET_HERO | DOTA_UNIT_TARGET_BASIC"
 		"AbilityUnitTargetTeam"	"DOTA_UNIT_TARGET_TEAM_ENEMY"
@@ -6907,16 +7057,16 @@
 			"RunScript"
 			{
 				"ScriptFile"	"scripts/vscripts/abilities/abilityToramaru.lua"
-				"Function"		"OnToramaru02SpellStart"
+				"Function"		"OnToramaru03SpellStart"
 				"Target"		"TARGET"
 			}
 		}
 	}
 
-	"thtd_toramaru_03"
+	"thtd_toramaru_04"
 	{
 		"BaseClass"				"ability_datadriven"
-		"AbilityTextureName"	"touhoutd/thtd_toramaru_03"
+		"AbilityTextureName"	"touhoutd/thtd_toramaru_04"
 		"AbilityBehavior"		"DOTA_ABILITY_BEHAVIOR_NO_TARGET"
 		"AbilityUnitTargetType"	"DOTA_UNIT_TARGET_HERO | DOTA_UNIT_TARGET_BASIC"
 		"AbilityUnitTargetTeam"	"DOTA_UNIT_TARGET_TEAM_ENEMY"
@@ -6937,7 +7087,7 @@
 			"RunScript"
 			{
 				"ScriptFile"	"scripts/vscripts/abilities/abilityToramaru.lua"
-				"Function"		"OnToramaru03SpellStart"
+				"Function"		"OnToramaru04SpellStart"
 				"Target"		"TARGET"
 			}
 		}

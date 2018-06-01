@@ -1183,8 +1183,8 @@ thtd_ability_table =
 		[1] = {["thtd_daiyousei_01"] = 1,["thtd_daiyousei_02"] = 1,["thtd_daiyousei_03"] = 0,["thtd_daiyousei_04"] = 0},
 		[2] = {["thtd_daiyousei_01"] = 1,["thtd_daiyousei_02"] = 1,["thtd_daiyousei_03"] = 0,["thtd_daiyousei_04"] = 0},
 		[3] = {["thtd_daiyousei_01"] = 1,["thtd_daiyousei_02"] = 1,["thtd_daiyousei_03"] = 1,["thtd_daiyousei_04"] = 0},
-		[4] = {["thtd_daiyousei_01"] = 1,["thtd_daiyousei_02"] = 1,["thtd_daiyousei_03"] = 1,["thtd_daiyousei_04"] = 0},
-		[5] = {["thtd_daiyousei_01"] = 1,["thtd_daiyousei_02"] = 1,["thtd_daiyousei_03"] = 1,["thtd_daiyousei_04"] = 1},
+		[4] = {["thtd_daiyousei_01"] = 1,["thtd_daiyousei_02"] = 1,["thtd_daiyousei_03"] = 2,["thtd_daiyousei_04"] = 0},
+		[5] = {["thtd_daiyousei_01"] = 1,["thtd_daiyousei_02"] = 1,["thtd_daiyousei_03"] = 3,["thtd_daiyousei_04"] = 1},
 	},
 	["remilia"] = 
 	{
@@ -2139,12 +2139,12 @@ function CDOTA_BaseNPC:THTD_UpgradeEx()
 	self.thtd_is_ex = true
 	self:THTD_SetStar(star)
 	self:THTD_SetLevel(level)
+
     if self.exup_count > 0 then
         self.thtd_power = self.thtd_power + self.thtd_power * 0.3
         self.thtd_attack = self.thtd_attack + self.thtd_attack * 0.3
     end
     self.exup_count = self.exup_count + 1
-    print("exup_count: "..self.exup_count.."\n\tpower: "..self.thtd_power.."\n\tattack: "..self.thtd_attack)
 end
 
 function CDOTA_BaseNPC:THTD_IsTowerEx()

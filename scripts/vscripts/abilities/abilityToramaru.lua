@@ -50,7 +50,7 @@ function OnToramaru02SpellStartDown(keys)
 	local interest = caster:GetModifierStackCount("modifier_toramaru_02_money_stack", caster) * 5000 * 0.02 * caster:THTD_GetStar () or 0
 	keys.ability:ApplyDataDrivenModifier( caster, caster, "modifier_toramaru_02_money_stack", {} )
 	caster:SetModifierStackCount("modifier_toramaru_02_money_stack", caster, caster:GetModifierStackCount("modifier_toramaru_02_money_stack", caster)+1)
-	CustomGameEventManager:Send_ServerToPlayer( caster:GetPlayerOwner() , "show_message", {msg="toramaru_interest" .. interest , duration=5, params={count=1}, color="#0ff"} )
+	CustomGameEventManager:Send_ServerToPlayer( caster:GetPlayerOwner() , "show_message", {msg="toramaru_interest" , interest , duration=5, params={count=1}, color="#0ff"} )
 
 	local effectIndex = ParticleManager:CreateParticle("particles/thd2/items/item_donation_box.vpcf", PATTACH_CUSTOMORIGIN, caster)
 	ParticleManager:SetParticleControl(effectIndex, 0, caster:GetAbsOrigin())

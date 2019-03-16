@@ -15,8 +15,8 @@ function OnChen01SpellStart(keys)
 		function () 
 			if GameRules:IsGamePaused() then return 0.03 end
 			if GetDistanceBetweenTwoVec2D(caster:GetOrigin(), targetPoint)>=30 and GetDistanceBetweenTwoVec2D(caster:GetOrigin(), targetPoint)<keys.ability:GetCastRange() 
-			and caster:HasModifier("modifier_touhoutd_release_hidden") == false then
-				caster:SetOrigin(caster:GetOrigin() + Vector(math.cos(rad),math.sin(rad),0)*30)
+			and caster:THTD_IsHidden() == false then
+				caster:SetAbsOrigin(caster:GetOrigin() + Vector(math.cos(rad),math.sin(rad),0)*30)
 			else
 				FindClearSpaceForUnit(caster, caster:GetOrigin(), false)
 				caster:THTD_DestroyLevelEffect()
@@ -45,7 +45,7 @@ function OnChen01SpellThink(keys)
 		caster.thtd_chen_01_distance_increase = 100
 	end
 
-	if GetDistanceBetweenTwoVec2D(caster:GetOrigin(), caster.thtd_chen_01_vector) > 30 and caster:HasModifier("modifier_touhoutd_release_hidden")==false then
+	if GetDistanceBetweenTwoVec2D(caster:GetOrigin(), caster.thtd_chen_01_vector) > 30 and caster:THTD_IsHidden()==false then
 		local dis = GetDistanceBetweenTwoVec2D(caster:GetOrigin(), caster.thtd_chen_01_vector)
 		caster.thtd_chen_01_vector = caster:GetOrigin()
 		local increase = math.min(dis/caster.thtd_chen_01_distance_increase,caster.thtd_chen_01_distance_max)

@@ -45,7 +45,7 @@ function OnMiko02SpellStart(keys)
 	local caster = EntIndexToHScript(keys.caster_entindex)
 	local target = keys.target
 
-	if target:THTD_IsTower() and IsTempleOfGodTower(target) then
+	if target:THTD_IsTower() and THTD_IsTempleOfGodTower(target) then
 		if caster.thtd_miko_02_religious_count == nil then
 			caster.thtd_miko_02_religious_count = 0
 		end
@@ -64,7 +64,7 @@ function OnMiko02SpellThink(keys)
 	local targets = THTD_FindFriendlyUnitsInRadius(caster,caster:GetOrigin(),1500)
 
 	for k,v in pairs(targets) do
-		if IsTempleOfGodTower(v) then
+		if THTD_IsTempleOfGodTower(v) then
 			if caster.thtd_miko_02_religious_count == nil then
 				caster.thtd_miko_02_religious_count = 0
 			end
@@ -174,7 +174,7 @@ function OnMiko04SpellThink(keys)
 				keys.ability:ApplyDataDrivenModifier(believer, believer, "modifier_miko_04_pose", {Duration=8.0})
 			end
 			for k,v in pairs(inners) do
-				if RandomInt(0,10) == 1 then
+				if RandomInt(1,3) == 1 then
 			   		local effectIndex = ParticleManager:CreateParticle("particles/heroes/thtd_miko/ability_thtd_miko_04_starfall.vpcf",PATTACH_CUSTOMORIGIN,caster)
 					ParticleManager:SetParticleControl(effectIndex, 0, v:GetOrigin())
 					ParticleManager:SetParticleControl(effectIndex, 2, RandomVector(255))

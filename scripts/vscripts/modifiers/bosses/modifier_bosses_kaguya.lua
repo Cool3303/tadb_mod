@@ -39,7 +39,7 @@ function public:OnDestroy(kv)
 		caster.thtd_damage_lock = true
 		caster:SetContextThink(DoUniqueString("thtd_modifier_kaguya_renew"), 
 			function()
-				if GameRules:IsGamePaused() then return 0.03 end
+				if GameRules:IsGamePaused() then return 0.1 end
 				if caster:GetHealth() >= caster:GetMaxHealth() then 
 					caster.thtd_damage_lock = false
 					caster:RemoveGesture(ACT_DOTA_DIE)

@@ -10,36 +10,36 @@ local Seiga01ItemDrop =
 {
 	[1] = 
 	{
-		["item_1011"] = 2,
+		["item_1011"] = 1,
 		["item_1012"] = 0,
 		["item_1013"] = 0,
 		["item_1014"] = 0,
 	},
 	[2] = 
 	{
-		["item_1011"] = 4,
+		["item_1011"] = 2,
 		["item_1012"] = 0,
 		["item_1013"] = 0,
 		["item_1014"] = 0,
 	},
 	[3] = 
 	{
-		["item_1011"] = 4,
-		["item_1012"] = 2,
+		["item_1011"] = 2,
+		["item_1012"] = 1,
 		["item_1013"] = 0,
 		["item_1014"] = 0,
 	},
 	[4] = 
 	{
-		["item_1011"] = 4,
+		["item_1011"] = 0,
 		["item_1012"] = 2,
 		["item_1013"] = 1,
 		["item_1014"] = 0,
 	},
 	[5] = 
 	{
-		["item_1011"] = 8,
-		["item_1012"] = 4,
+		["item_1011"] = 0,
+		["item_1012"] = 0,
 		["item_1013"] = 2,
 		["item_1014"] = 1,
 	},
@@ -53,7 +53,7 @@ function OnSeiga01Death(keys)
 	local caster = keys.caster
 	local target = keys.unit
 
-	if SpawnSystem:GetWave() > 51 then 
+	if SpawnSystem.IsUnLimited or GameRules:GetCustomGameDifficulty() == 10 then 
 		if caster:HasModifier("modifier_miko_02_buff") then
 			local targets = THTD_FindUnitsInRadius(caster,target:GetOrigin(),300)
 
@@ -66,7 +66,7 @@ function OnSeiga01Death(keys)
 					ability = keys.ability,
 			        victim = v, 
 			        attacker = caster, 
-			        damage = THTD_GetAllTempleOfGodTowerStarCount(caster)*caster:THTD_GetPower()*0.1, 
+			        damage = THTD_GetTempleOfGodBuffedTowerStarCount(caster)*caster:THTD_GetPower()*0.1, 
 			        damage_type = DAMAGE_TYPE_MAGICAL, 
 			        damage_flags = DOTA_DAMAGE_FLAG_NONE
 			   	}
@@ -74,21 +74,34 @@ function OnSeiga01Death(keys)
 			end
 		end
 	else
+		if caster.thtd_chance_count == nil then 
+			caster.thtd_chance_count = {}
+		end
+		local hero = caster:GetOwner()
 		local count = 0
-
 		for itemName,chance in pairs(Seiga01ItemDrop[caster:THTD_GetStar()]) do
-			if chance > 0 and RandomInt(0,200) < chance then
-				local item = CreateItem(itemName, nil, nil)
-
-				local index = item:GetEntityIndex()
-				if caster.hero~=nil and caster.hero:IsNull()==false then
-					caster.hero.thtd_hero_star_list[tostring(index)] = count + 1
-					caster.hero.thtd_hero_level_list[tostring(index)] = 10
+			if chance > 0 then
+				if caster.thtd_chance_count[itemName] == nil then 
+					caster.thtd_chance_count[itemName] = 0
 				end
-
-				CreateItemOnPositionSync(SeigaSpawnOrigin[caster:GetPlayerOwnerID()+1] + Vector(count*100,0,0),item)
-			end
-			count = count + 1
+				local randChance = chance
+				if caster.thtd_chance_count[itemName] >= math.floor(100/chance) then 
+					randChance = 100
+				end
+				if RandomInt(1,100) <= randChance then
+					caster.thtd_chance_count[itemName] = 0
+					local item = CreateItem(itemName, nil, nil)	
+					item.owner_player_id = caster:GetPlayerOwnerID()
+					if hero.thtd_player_id < 2 then 
+						CreateItemOnPositionSync(SeigaSpawnOrigin[hero.thtd_player_id+1] + Vector(count*100,-200,0),item)
+					else
+						CreateItemOnPositionSync(SeigaSpawnOrigin[hero.thtd_player_id+1] + Vector(count*100,200,0),item)
+					end
+				else
+					caster.thtd_chance_count[itemName] = caster.thtd_chance_count[itemName] + 1
+				end
+			end			
+			count = count + 1			
 		end
 	end
 end
@@ -120,7 +133,7 @@ function OnSeiga03Death(keys)
 		local targets = THTD_FindUnitsInRadius(caster,target:GetOrigin(),300)
 	
 		for k,v in pairs(targets) do
-			local damage = caster:THTD_GetStar() * caster:THTD_GetPower() * target.thtd_poison_buff
+			local damage = caster:THTD_GetStar() * caster:THTD_GetPower() * target.thtd_poison_buff * 0.5
 
 			local DamageTable = {
 					ability = keys.ability,

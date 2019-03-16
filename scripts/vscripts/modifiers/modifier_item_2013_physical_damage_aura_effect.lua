@@ -26,7 +26,7 @@ function public:OnCreated(kv)
 	if IsServer() then
 		local target = self:GetParent()
 		if target:THTD_IsTower() then
-			ModifyPhysicalDamageOutgoingPercentage(target,10,nil)
+			ModifyPhysicalDamageOutgoingPercentage(target,10)
 		end
 	end
 end
@@ -37,7 +37,7 @@ function public:OnDestroy(kv)
 	if IsServer() then
 		local target = self:GetParent()
 		if target:THTD_IsTower() then
-			ModifyPhysicalDamageOutgoingPercentage(target,-10,nil)
+			ModifyPhysicalDamageOutgoingPercentage(target,-10)
 		end
 	end
 end

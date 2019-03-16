@@ -1,9 +1,33 @@
+local thtd_boss_health_factor = 
+{
+	["creature_bosses_aya"] = 1.2,
+	["creature_bosses_hina"] = 1.5,
+	["creature_bosses_keine"] = 1.5,
+	["creature_bosses_mokou"] = 1.5,
+	["creature_bosses_yuugi"] = 2.0,
+}
+
+function IsRumiaUnlimited(caster,target)	
+	local hero = caster:GetOwner()
+	local count = 31
+	if SpawnSystem.CurWave%4 == 0 then 
+		if target:GetUnitName() == "creature_bosses_kaguya" then count = 62 end
+		if target:GetUnitName() == "creature_bosses_alice" or target:GetUnitName() == "creature_alice_ningyou" then count = 124 end
+	end
+	if hero.thtd_rumia_kill_count == nil then hero.thtd_rumia_kill_count = 0 end
+	local maxCount = math.floor(count * 0.1 + 0.5)
+	if hero.thtd_rumia_kill_count < maxCount then 
+		return true
+	else
+		return false
+	end	
+end
+
 function OnRumia01AttackLanded(keys)
 	local caster = EntIndexToHScript(keys.caster_entindex)
 	local target = keys.target
 
-	local damage = caster:THTD_GetPower()
-
+	local damage = caster:THTD_GetPower() * caster:THTD_GetStar()
 	local DamageTable = {
 			ability = keys.ability,
 	        victim = target, 
@@ -23,8 +47,8 @@ function OnRumia01Kill(keys)
 	end
 	
 	if caster.rumia_01_bonus < keys.max_bonus then
-		caster.rumia_01_bonus = caster.rumia_01_bonus + 1
-		caster:THTD_AddPower(1)
+		caster.rumia_01_bonus = caster.rumia_01_bonus + 10
+		caster:THTD_AddPower(10)
 	end
 end
 
@@ -51,8 +75,17 @@ function OnRumia03AttackLanded(keys)
 	local caster = EntIndexToHScript(keys.caster_entindex)
 	local target = keys.target
 	local chance = RandomInt(0,100)
+	if target.thtd_damage_lock == true then return end
+	
+	if target:GetHealth() > target:GetMaxHealth()*0.7 and chance <= 10 then	
+		if IsRumiaUnlimited(caster,target) == false and SpawnSystem.CurWave > 120 then 
+			local maxDamage = 3768000
+			THTD_Kill(caster, target, maxDamage)
+			return 
+		end
 
-	if target:GetHealth() > target:GetMaxHealth()*0.7 and chance <= 10 then
+		local hero = caster:GetOwner()
+		hero.thtd_rumia_kill_count = hero.thtd_rumia_kill_count + 1		
 
 		local targetPoint = target:GetOrigin()
 		keys.ability:ApplyDataDrivenModifier(caster,target,"modifier_rumia_03_pause",{})
@@ -140,7 +173,7 @@ function OnRumia03AttackLanded(keys)
 	            		target:StartGesture(ACT_DOTA_FLAIL)
 	            	end
 	            	high = high + 25
-	            	target:SetOrigin(projectileTable.vSpawnOriginNew+400*Vector(forwardVec.x,forwardVec.y,0)-Vector(0,0,50))
+	            	target:SetAbsOrigin(projectileTable.vSpawnOriginNew+400*Vector(forwardVec.x,forwardVec.y,0)-Vector(0,0,50))
 	            end
 
 	            if(dis<projectileTable.fEndRadius)then
@@ -171,22 +204,21 @@ function OnRumia03AbilityEnd(caster,target,ability,effectIndex,time)
         function()
             if GameRules:IsGamePaused() then return 0.03 end
             target:RemoveModifierByName("modifier_rumia_03_pause")
-			ParticleManager:DestroyParticleSystem(effectIndex,true)
+			ParticleManager:DestroyParticleSystem(effectIndex,true)	
 			local effectIndexEnd = ParticleManager:CreateParticle("particles/heroes/thtd_rumia/ability_rumia_04_explosion.vpcf", PATTACH_CUSTOMORIGIN, caster)
 			ParticleManager:SetParticleControl(effectIndexEnd, 0, target:GetOrigin())
 			ParticleManager:SetParticleControl(effectIndexEnd, 3, target:GetOrigin())
 			ParticleManager:DestroyParticleSystem(effectIndexEnd,false)
-			target:AddNoDraw()
-			target:SetHealth(1)
-			local DamageTable = {
-	   			ability = ability,
-	            victim = target, 
-	            attacker = caster, 
-	            damage = caster:THTD_GetPower() * caster:THTD_GetStar(), 
-	            damage_type = DAMAGE_TYPE_PURE, 
-	            damage_flags = DOTA_DAMAGE_FLAG_NONE
-		   	}
-		   	UnitDamageTarget(DamageTable)
+			target:SetContextThink(DoUniqueString("ability_caster_projectile_END"), 
+				function()
+					if GameRules:IsGamePaused() then return 0.03 end
+					if THTD_IsValid(target) then 
+						FindClearSpaceForUnit(target, target:GetOrigin(), false)
+					end				
+					return nil
+				end, 
+			0.2)
+			THTD_Kill(caster, target, nil)
             return nil
         end, 
    	1.5 - time)
@@ -236,10 +268,10 @@ function OnRumiaProjectileHit(keys)
 	local caster = EntIndexToHScript(keys.caster_entindex)
 	local target = keys.target
 
-	local damage = caster:THTD_GetPower()
+	local damage = caster:THTD_GetPower() * caster:THTD_GetStar()
 
 	if caster:THTD_IsTowerEx() == true then
-		damage = caster:THTD_GetPower() * caster:THTD_GetStar() / 2
+		damage = caster:THTD_GetPower() * caster:THTD_GetStar() * 3
 	end
 
 	local DamageTable = {
@@ -305,7 +337,7 @@ function Rumia04AttackTargetPoint(keys)
 				local damage_table = {
 					victim = v,
 					attacker = caster,
-					damage = caster:THTD_GetPower()*caster:THTD_GetStar()/3*caster.thtd_rumia_04_damage_increase,
+					damage = caster:THTD_GetPower()*caster:THTD_GetStar()*caster.thtd_rumia_04_damage_increase,
 					ability = keys.ability,
 					damage_type = keys.ability:GetAbilityDamageType(), 
 					damage_flags = DOTA_DAMAGE_FLAG_NONE,

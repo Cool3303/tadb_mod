@@ -291,31 +291,33 @@ function OnMeirin01AttackThink(keys)
 		caster.thtd_meirin_01_chance_increase = 0
 	end
 
-	local targets = THTD_FindUnitsInRadius(caster,caster:GetOrigin(),500)
-	
-	caster.thtd_meirin_01_hot_duration = caster.thtd_meirin_01_hot_duration + 0.03
-	if #targets > 0 and targets[1]~=nil and targets[1]:IsNull()==false and targets[1]:IsAlive() and caster:HasModifier("modifier_meirin_01_pause") == false then
-		keys.target = targets[1]
-		local level = caster:FindAbilityByName("thtd_meirin_02"):GetLevel()+2
+	caster.thtd_meirin_01_hot_duration = caster.thtd_meirin_01_hot_duration + 0.1
 
-		if caster.thtd_meirin_01_attack_step <= level and RandomInt(0,100) <= thtd_meirin_01_chance[caster.thtd_meirin_01_attack_step] + caster.thtd_meirin_01_chance_increase and caster.thtd_meirin_01_hot_duration < 2 then
-			caster:StartGestureWithPlaybackRate(thtd_meirin_01_activity[caster.thtd_meirin_01_attack_step]["action"],1)
-			local func = thtd_meirin_01_activity[caster.thtd_meirin_01_attack_step].func
-			caster:EmitSound("Hero_Axe.PreAttack")
-			caster:SetContextThink(DoUniqueString("modifier_meirin_01_attack"), 
-				function()
-					if GameRules:IsGamePaused() then return 0.03 end
-					if func then
-						func(keys)
-					end
-					return nil
-				end, 
-			thtd_meirin_01_activity[caster.thtd_meirin_01_attack_step]["duration"])
-			keys.ability:ApplyDataDrivenModifier(caster, caster, "modifier_meirin_01_pause", {duration=thtd_meirin_01_activity[caster.thtd_meirin_01_attack_step]["duration"]})
-			caster.thtd_meirin_01_attack_step = caster.thtd_meirin_01_attack_step + 1
-		else
-			caster.thtd_meirin_01_attack_step = 1
+	if caster:HasModifier("modifier_meirin_01_pause") == false then
+		local targets = THTD_FindUnitsInRadius(caster,caster:GetOrigin(),500)			
+		if #targets > 0 and targets[1]~=nil and targets[1]:IsNull()==false and targets[1]:IsAlive() then
+			keys.target = targets[1]
+			local level = caster:FindAbilityByName("thtd_meirin_02"):GetLevel()+2
+
+			if caster.thtd_meirin_01_attack_step <= level and RandomInt(0,100) <= thtd_meirin_01_chance[caster.thtd_meirin_01_attack_step] + caster.thtd_meirin_01_chance_increase and caster.thtd_meirin_01_hot_duration < 2 then
+				caster:StartGestureWithPlaybackRate(thtd_meirin_01_activity[caster.thtd_meirin_01_attack_step]["action"],1)
+				local func = thtd_meirin_01_activity[caster.thtd_meirin_01_attack_step].func
+				caster:EmitSound("Hero_Axe.PreAttack")
+				caster:SetContextThink(DoUniqueString("modifier_meirin_01_attack"), 
+					function()
+						if GameRules:IsGamePaused() then return 0.03 end
+						if func then
+							func(keys)
+						end
+						return nil
+					end, 
+				thtd_meirin_01_activity[caster.thtd_meirin_01_attack_step]["duration"])
+				keys.ability:ApplyDataDrivenModifier(caster, caster, "modifier_meirin_01_pause", {duration=thtd_meirin_01_activity[caster.thtd_meirin_01_attack_step]["duration"]})
+				caster.thtd_meirin_01_attack_step = caster.thtd_meirin_01_attack_step + 1
+			else
+				caster.thtd_meirin_01_attack_step = 1
+			end
+			caster.thtd_meirin_01_hot_duration = 0
 		end
-		caster.thtd_meirin_01_hot_duration = 0
-	end
+	end	
 end

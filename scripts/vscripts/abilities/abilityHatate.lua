@@ -61,7 +61,7 @@ function OnHatate02SpellStart(keys)
 		if v:HasModifier("modifier_hatate01_news_buff") == false then
    			keys.ability:ApplyDataDrivenModifier(caster,v,"modifier_hatate01_news_buff", nil)
    		end
-		local deal_damage = caster:THTD_GetPower() * caster:THTD_GetStar() / 2.5
+		local deal_damage = caster:THTD_GetPower() * caster:THTD_GetStar() * 2
 		local damage_table = {
 				ability = keys.ability,
 			    victim = v,
@@ -80,7 +80,7 @@ function OnHatate02SpellStart(keys)
 
 	for k,v in pairs(outers) do
    		if v:HasModifier("modifier_hatate01_news_buff") or v:HasModifier("modifier_aya01_news_buff") then
-			local deal_damage = caster:THTD_GetPower() * caster:THTD_GetStar() / 2.5
+			local deal_damage = caster:THTD_GetPower() * caster:THTD_GetStar() * 2
 			local damage_table = {
 					ability = keys.ability,
 				    victim = v,

@@ -5,18 +5,29 @@ function OnItem2001_SpellStart(keys)
 
 		for k,v in pairs(entities) do
 			local findNum =  string.find(v:GetUnitName(), 'creature')
-			if findNum ~= nil and v~=nil and v:IsNull()==false and v:IsAlive() and v.thtd_player_index == caster:GetPlayerOwnerID() then
-				v:SetHealth(1)
-				local DamageTable = {
-						ability = keys.ability,
-				        victim = v, 
-				        attacker = caster, 
-				        damage = 10000, 
-				        damage_type = DAMAGE_TYPE_PURE, 
-				        damage_flags = DOTA_DAMAGE_FLAG_NONE
-			   	}
-			   	ApplyDamage(DamageTable)
+			if findNum ~= nil and v~=nil and v:IsNull()==false and v:IsAlive() then 
+				if SpawnSystem.IsUnLimited then 
+					if v.thtd_player_index == caster:GetPlayerOwnerID() and v.thtd_damage_lock ~= true then						
+						v:SetHealth(1)										
+						local DamageTable = {
+								ability = keys.ability,
+								victim = v, 
+								attacker = caster, 
+								damage = 10000, 
+								damage_type = DAMAGE_TYPE_PURE, 
+								damage_flags = DOTA_DAMAGE_FLAG_NONE
+						}
+						ApplyDamage(DamageTable)						
+					end					
+				else
+					v:ForceKill(false)					
+				end
 			end
+		end
+		
+		if SpawnSystem.CurWave > 120 then 
+			caster.use_item2001 = true
+			GameRules:SendCustomMessage("<font color='red'>使用了四次元爆弹的这一波不计入有效波数。</font>", DOTA_TEAM_GOODGUYS, 0)
 		end
 
 		local particle = ParticleManager:CreateParticle("particles/heroes/yumemi/ability_yumemi_04_exolosion.vpcf",PATTACH_CUSTOMORIGIN,caster)
@@ -83,7 +94,7 @@ function OnItem2004_SpellStart(keys)
 end
 
 function OnItem2021_SpellStart(keys)
-	if SpawnSystem:GetWave() > 51 then return end
+	if SpawnSystem.IsUnLimited then return end
 	local caster = keys.caster
 	local target = keys.target
 
@@ -109,10 +120,14 @@ function OnItem2021_SpellStart(keys)
 end
 
 function OnItem2022_SpellStart(keys)
-	if SpawnSystem:GetWave() > 51 then return end
+	if SpawnSystem.IsUnLimited then return end
 	local caster = keys.caster
 	local ability = keys.ability
 	local targetPoint = keys.target_points[1]
+
+	if keys.ability:GetLevel() < 2 and (GameRules:GetCustomGameDifficulty() == 7 or GameRules:GetCustomGameDifficulty() >= 9) then 
+		keys.ability:SetLevel(2) 
+	end
 
 	if caster:GetUnitName() == "npc_dota_hero_lina" then
 		local targets = 
@@ -143,74 +158,19 @@ function OnItem2022_SpellStart(keys)
 end
 
 function OnItem2023_SpellStart(keys)
-	if SpawnSystem:GetWave() > 51 then return end
+	if SpawnSystem.IsUnLimited then return end
 	local caster = EntIndexToHScript(keys.caster_entindex)
 	local target = keys.target
+
+	if keys.ability:GetLevel() < 2 and (GameRules:GetCustomGameDifficulty() == 7 or GameRules:GetCustomGameDifficulty() == 9) then 
+		keys.ability:SetLevel(2) 
+	end
 
 	if caster:GetUnitName() == "npc_dota_hero_lina" then
 		if target:THTD_IsTower() and target:THTD_GetLevel()<THTD_MAX_LEVEL then
 			target:THTD_SetLevel(THTD_MAX_LEVEL)
+		else
+			keys.ability:EndCooldown()	
 		end
-	end
-end
-
-function OnItem2222_SpellStart(keys)
-	local caster = EntIndexToHScript(keys.caster_entindex)
-	local target = keys.target
-
-	if caster:GetUnitName() == "npc_dota_hero_lina" then
-		if target:THTD_IsTower() then
-            for star = target:THTD_GetStar(), THTD_MAX_STAR do
-                for level = target:THTD_GetLevel(), 9 do
-			         target:THTD_SetLevel(level + 1)
-                 end
-                 if star < 5 then target:THTD_SetStar(star + 1) end
-            end
-		end
-	end
-end
-
-function OnItem6666_SpellStart(keys)
-	local caster = EntIndexToHScript(keys.caster_entindex)
-	local targetPoint = keys.target_points[1]
-
-	if caster:GetUnitName() == "npc_dota_hero_lina" then
-		local unit = CreateUnitByName("creature_unlimited", targetPoint, false, nil, nil, DOTA_TEAM_BADGUYS)
-		local id = caster:GetPlayerOwnerID()
-		
-		unit.thtd_player_index = id
-		unit.thtd_poison_buff = 0
-		unit:AddNewModifier(unit, nil, "modifier_phased", {})
-		
-		local wave = (AcceptExtraMode and 121 or 80+(GameRules:GetCustomGameDifficulty()-1)*10) - 51
-		
-		local health = unit:GetBaseMaxHealth()
-		local difficulty = GameRules:GetCustomGameDifficulty()
-                
-        if difficulty <= 2 then
-            health = health + (wave - math.floor(wave/4)) * 28800
-            
-            unit:SetPhysicalArmorBaseValue(unit:GetPhysicalArmorBaseValue()+3*math.min(50,wave)-10)
-            unit:SetBaseMagicalResistanceValue(unit:GetBaseMagicalResistanceValue()+3*math.min(50,wave)-10)
-        else
-            if difficulty == 3 then
-                health = health + (wave - math.floor(wave/4)) * 38400
-            elseif difficulty == 4 then
-                health = health + (wave - math.floor(wave/4)) * (AcceptExtraMode and 72000 or 38400)
-            end
-            
-            unit:SetPhysicalArmorBaseValue(unit:GetPhysicalArmorBaseValue()+6*math.min(25,wave)-10)
-            unit:SetBaseMagicalResistanceValue(unit:GetBaseMagicalResistanceValue()+6*math.min(25,wave)-10)
-        end
-
-        unit:SetBaseMaxHealth(health)
-		unit:SetMaxHealth(health)
-		unit:SetHealth(unit:GetMaxHealth())
-        
-		local special = DoUniqueString("thtd_creep_buff")
-		local damageDecrease = math.max(-25*(1+(GameRules:GetCustomGameDifficulty()-1)*0.5),-wave*4)
-		ModifyDamageIncomingPercentage(unit,damageDecrease,special)
-		
-		table.insert(THTD_EntitiesRectInner[id],unit)
 	end
 end

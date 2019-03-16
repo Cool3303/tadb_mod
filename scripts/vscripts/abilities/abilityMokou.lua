@@ -83,8 +83,13 @@ function Mokou02GetChance(caster)
 	if caster.thtd_mokou_01_crit_damage == nil then
  		caster.thtd_mokou_01_crit_damage = 2.0
  	end
+
+ 	local extra_chance = 0
+ 	if caster.thtd_keine_01_open == true then
+ 		extra_chance = 15
+ 	end
  	
- 	if RandomInt(0,100) < caster.thtd_mokou_01_crit_chance then
+ 	if RandomInt(0,100) < caster.thtd_mokou_01_crit_chance + extra_chance then
  		return caster.thtd_mokou_01_crit_damage
  	end
  	return 1.0

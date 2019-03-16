@@ -53,7 +53,7 @@ function OnTenshi02SpellStart(keys)
 	local caster = EntIndexToHScript(keys.caster_entindex)
 	local target = keys.target
 	local crit = Tenshi02GetChance(caster)
-	local damage = caster:GetAttackDamage() * crit
+	local damage = caster:GetAverageTrueAttackDamage(caster) * crit
 
 	if keys.ability:GetLevel() < 1 then return end
 
@@ -149,7 +149,7 @@ function OnTenshiProjectileHit(keys)
 end
 
 function Tenshi02GetChance(caster)
-	if RandomInt(0, 100) < 40 then
+	if RandomInt(1, 100) <= 40 then
 		return 4.0
 	end
 	return 1.0

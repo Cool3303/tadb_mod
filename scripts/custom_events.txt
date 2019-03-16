@@ -1,0 +1,11 @@
+"CustomEvents"
+{
+	
+	"custom_spawn_per_tick"
+	{		
+		"Wave"		"short"
+		"MaxTime"		"float"
+		"LeftTime"		"float"
+	}
+	
+}

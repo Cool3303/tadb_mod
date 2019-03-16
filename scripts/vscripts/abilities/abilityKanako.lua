@@ -10,7 +10,7 @@ function OnKanako01SpellStart(keys)
 			Ability = keys.ability,
         	EffectName = "particles/heroes/kanako/ability_kanako_01.vpcf",
         	vSpawnOrigin = targetPoint + Vector(0,0,128),
-        	fDistance = 250,
+        	fDistance = 500,
         	fStartRadius = 400,
         	fEndRadius = 400,
         	Source = caster,
@@ -27,36 +27,43 @@ function OnKanako01SpellStart(keys)
 			iVisionTeamNumber = caster:GetTeamNumber()
 	}
 	local projectile = ProjectileManager:CreateLinearProjectile(info)
-	ParticleManager:DestroyLinearProjectileSystem(projectile,false)
+	caster:SetContextThink(DoUniqueString("thtd_kanako_01_projectile"), 
+		function()
+			if GameRules:IsGamePaused() then return 0.03 end			
+			ParticleManager:DestroyLinearProjectileSystem(projectile,false)
+			return nil
+		end,
+	1.25)
 	
 	local origin = targetPoint + targetForward * 150
-	local time = 1.25
+	local time = 2.5
 	local count = 0
 
 	caster:SetContextThink(DoUniqueString("thtd_kanako_01_think"), 
 		function()
 			if GameRules:IsGamePaused() then return 0.03 end
+			count = count + 1
 			local targets = THTD_FindUnitsInRadius(caster,origin,300)
 			origin = origin - targetForward * 8
-
 			for k,v in pairs(targets) do
 				local forward = v:GetForwardVector()
 				if v.thtd_is_kanako_knockback ~= true then
-					v:SetOrigin(v:GetOrigin() - forward * 16)
+					v.thtd_is_fearing = true
+					v:SetAbsOrigin(v:GetOrigin() - forward * 16)
 					table.insert(knockBackGroup,v)
 				end
-
-				local damage = caster:THTD_GetPower()
-				local DamageTable = {
-						ability = keys.ability,
-				        victim = v, 
-				        attacker = caster, 
-				        damage = damage/5, 
-				        damage_type = keys.ability:GetAbilityDamageType(), 
-				        damage_flags = DOTA_DAMAGE_FLAG_NONE
-			   	}
-			   	UnitDamageTarget(DamageTable)
-
+				if count == 5 then
+					local damage = caster:THTD_GetPower() * caster:THTD_GetStar()
+					local DamageTable = {
+							ability = keys.ability,
+							victim = v, 
+							attacker = caster, 
+							damage = damage/5, 
+							damage_type = keys.ability:GetAbilityDamageType(), 
+							damage_flags = DOTA_DAMAGE_FLAG_NONE
+					}
+					UnitDamageTarget(DamageTable)
+				end
 			   	local modifier = v:FindModifierByName("modifier_kanako_01_stun")
 			   	if modifier == nil then
 					keys.ability:ApplyDataDrivenModifier(caster, v, "modifier_kanako_01_stun", {duration=0.1})
@@ -64,8 +71,7 @@ function OnKanako01SpellStart(keys)
 					modifier:SetDuration(0.1,false)
 				end
 			end
-
-			count = count + 1
+			
 			if count == 5 then
 				count = 0
 			   	local effectIndex = ParticleManager:CreateParticle("particles/heroes/thtd_kanako/ability_kanako_01_explosion.vpcf", PATTACH_CUSTOMORIGIN, caster)
@@ -81,6 +87,7 @@ function OnKanako01SpellStart(keys)
 				for k,v in pairs(knockBackGroup) do
 					if v~=nil and v:IsNull()==false and v:IsAlive() then
 						v.thtd_is_kanako_knockback = true
+						v.thtd_is_fearing = false
 						FindClearSpaceForUnit(v, v:GetOrigin(), false)
 					end
 				end
@@ -209,7 +216,7 @@ function OnKanako03Think(keys)
 	if caster.thtd_kanako_gojou_group == nil then
 		caster.thtd_kanako_gojou_group = {}
 	end
-	if keys.ability:GetLevel() < 1 or caster:HasModifier("modifier_touhoutd_release_hidden") then 
+	if keys.ability:GetLevel() < 1 or caster:THTD_IsHidden() then 
 		for k,v in pairs(caster.thtd_kanako_gojou_group) do
 			OnKanako03ReleaseUnit(caster,v)
 		end
@@ -238,7 +245,7 @@ function OnKanako03Think(keys)
 									ability = keys.ability,
 							        victim = unit, 
 							        attacker = caster, 
-							        damage = damage * (1 + caster:THTD_GetFaith()/1000), 
+							        damage = damage * (1 + caster:THTD_GetFaith()/500), 
 							        damage_type = keys.ability:GetAbilityDamageType(), 
 							        damage_flags = DOTA_DAMAGE_FLAG_NONE
 						   	}
@@ -274,7 +281,7 @@ function OnKanako04SpellStart(keys)
 								ability = keys.ability,
 						        victim = v, 
 						        attacker = caster, 
-						        damage = damage * (1 + caster:THTD_GetFaith()/1000), 
+						        damage = damage * (1 + caster:THTD_GetFaith()/500), 
 						        damage_type = keys.ability:GetAbilityDamageType(), 
 						        damage_flags = DOTA_DAMAGE_FLAG_NONE
 					   	}
@@ -283,12 +290,12 @@ function OnKanako04SpellStart(keys)
 						modifier:SetDuration(0.2,false)
 					end
 				end
-				local damage = caster:THTD_GetPower() * caster:THTD_GetStar() / 4
+				local damage = caster:THTD_GetPower() * caster:THTD_GetStar() * 0.25
 				local DamageTable = {
 						ability = keys.ability,
 				        victim = v, 
 				        attacker = caster, 
-				        damage = damage * (1 + caster:THTD_GetFaith()/1000), 
+				        damage = damage * (1 + caster:THTD_GetFaith()/500), 
 				        damage_type = keys.ability:GetAbilityDamageType(), 
 				        damage_flags = DOTA_DAMAGE_FLAG_NONE
 			   	}
@@ -313,11 +320,6 @@ end
 function OnKanakoKill(keys)
 	local caster = EntIndexToHScript(keys.caster_entindex)
 	if caster:HasModifier("modifier_thtd_ss_kill") then
-		local modifier = caster:FindModifierByName("modifier_thtd_ss_faith")
-		if modifier==nil then
-			caster:AddNewModifier(caster, nil, "modifier_thtd_ss_faith", {})
-		elseif modifier:GetStackCount() < caster:THTD_GetStar() * 100 then
-			modifier:SetStackCount(modifier:GetStackCount()+1)
-		end
+		caster:THTD_AddFaith(1)
 	end
 end

@@ -83,7 +83,7 @@ function Cirno02PassToNextUnit(keys,target,damagedGroup)
 		0.5)
 	else
 		for k,v in pairs(targets) do
-			if v~=nil and v:IsNull()==false and IsUnitInGroup(v,damagedGroup) == false then
+			if v~=nil and v:IsNull()==false and THTD_IsUnitInGroup(v,damagedGroup) == false then
 				table.insert(damagedGroup,v)
 				local count = keys.ice_count
 				caster:SetContextThink(DoUniqueString("thtd_cirno02_projectile"), 
@@ -136,13 +136,17 @@ function OnCirno02SpellHit(keys)
    			ability = keys.ability,
             victim = target, 
             attacker = caster, 
-            damage = caster:THTD_GetStar() * caster:THTD_GetPower() * 0.3, 
+            damage = caster:THTD_GetStar() * caster:THTD_GetPower() * 2, 
             damage_type = keys.ability:GetAbilityDamageType(), 
             damage_flags = DOTA_DAMAGE_FLAG_NONE
    	}
    	UnitDamageTarget(DamageTable)
-   	if RandomInt(1,3) == 1 then
-   		keys.ability:ApplyDataDrivenModifier(caster,target,"modifier_cirno_frozen_unit", nil)
+	   if RandomInt(1,3) == 1 then
+		local stuntime = keys.StunTime
+		if caster:THTD_IsTowerEx() == true then 
+			stuntime = stuntime * 2
+		end
+   		keys.ability:ApplyDataDrivenModifier(caster,target,"modifier_cirno_frozen_unit", {Duration = stuntime})
    	end
    	if target.thtd_ability_cirno_02_damaged ~= true then
    		target.thtd_ability_cirno_02_damaged = true
@@ -166,7 +170,7 @@ function OnCirno03Attack(keys)
 	if keys.ability:GetLevel() < 1 then return end
 	local caster = EntIndexToHScript(keys.caster_entindex)
 	local target = keys.target
-	local damage = 1.66 * caster:THTD_GetPower()
+	local damage = caster:THTD_GetStar() * caster:THTD_GetPower()
 
 	local targets = THTD_FindUnitsInRadius(caster,target:GetOrigin(),250)
 	
@@ -193,7 +197,7 @@ function OnCirno04Attack(keys)
 	local caster = EntIndexToHScript(keys.caster_entindex)
 	local target = keys.target
 	local targetPoint = target:GetOrigin()
-	local damage = caster:THTD_GetPower() * 6.6
+	local damage = caster:THTD_GetStar() * caster:THTD_GetPower() * 4
 
 	if caster.thtd_cirno_04_attack_count == nil then
 		caster.thtd_cirno_04_attack_count = 0
@@ -203,7 +207,7 @@ function OnCirno04Attack(keys)
 
 	if caster.thtd_cirno_04_attack_count >= 5 then
 		caster.thtd_cirno_04_attack_count = 0
-		local count = 0 
+		local count = 1
 		
 		local effectIndex = ParticleManager:CreateParticle("particles/heroes/thtd_cirno/ability_cirno_04_circle.vpcf", PATTACH_CUSTOMORIGIN, caster)
 		ParticleManager:SetParticleControl(effectIndex, 0, targetPoint)
@@ -212,22 +216,19 @@ function OnCirno04Attack(keys)
 		caster:SetContextThink(DoUniqueString("thtd_cirno_04_spell_start"), 
 			function()
 				if GameRules:IsGamePaused() then return 0.03 end
-				local targets = THTD_FindUnitsInRadius(caster,targetPoint,300)
-				
-				local units = 0
-				for _ in pairs(targets) do units = units + 1 end
-				if units > 0 then
-                    for k,v in pairs(targets) do
-                        local DamageTable = {
-                            ability = keys.ability,
-                            victim = v,
-                            attacker = caster,
-                            damage = damage/units,
-                            damage_type = keys.ability:GetAbilityDamageType(),
-                            damage_flags = DOTA_DAMAGE_FLAG_NONE
-                        }
-                        UnitDamageTarget(DamageTable)
-                    end
+				if count%5 == 0 then 
+					local targets = THTD_FindUnitsInRadius(caster,targetPoint,300)
+					for k,v in pairs(targets) do
+						local DamageTable = {
+							ability = keys.ability,
+							victim = v, 
+							attacker = caster, 
+							damage = damage/4, 
+							damage_type = keys.ability:GetAbilityDamageType(), 
+							damage_flags = DOTA_DAMAGE_FLAG_NONE
+						}
+						UnitDamageTarget(DamageTable)
+					end
 				end
 				if count > 40 then
 					return nil

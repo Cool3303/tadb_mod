@@ -402,5 +402,13 @@
 			"Interval" 				"1.6"
 			"BreakTime"				"150"
 		}
+		"Wave51"
+		{
+			"Unit"					"creature_unlimited"
+			"Times"					"30"
+			"Count"					"1"
+			"Interval" 				"0.5"
+			"BreakTime"				"15"
+		}
 	}
 }

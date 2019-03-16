@@ -39,7 +39,7 @@ function OnReimu01ProjectileHit(keys)
 	local caster = EntIndexToHScript(keys.caster_entindex)
 	local target = keys.target
 
-	local damage = caster:THTD_GetPower() * caster:THTD_GetStar() * 0.5
+	local damage = caster:THTD_GetPower() * caster:THTD_GetStar()
 
 	local DamageTable = {
 			ability = keys.ability,
@@ -145,7 +145,7 @@ function Reimu03ThrowBallToPoint(keys,origin,targetpoint,vhigh,count)
 	local speed = dis/t
 	local rad = GetRadBetweenTwoVec2D(origin,targetpoint)
 
-	local damage = caster:THTD_GetPower() * caster:THTD_GetStar() * 0.5
+	local damage = caster:THTD_GetPower() * caster:THTD_GetStar() * 3
 
 
 	caster:SetContextThink(DoUniqueString("ability_reimu_03"), 
@@ -170,15 +170,15 @@ function Reimu03ThrowBallToPoint(keys,origin,targetpoint,vhigh,count)
 			   			ability = keys.ability,
 			            victim = v, 
 			            attacker = caster, 
-			            damage = damage/count * Reimu02GetChance(caster), 
+			            damage = math.floor(damage/count * Reimu02GetChance(caster)), 
 			            damage_type = keys.ability:GetAbilityDamageType(), 
 			            damage_flags = DOTA_DAMAGE_FLAG_NONE
 				   	}
 				   	UnitDamageTarget(DamageTable)
-	   				UnitStunTarget(caster,v,0.5/count)
+	   				UnitStunTarget(caster,v,0.75/count) -- 由0.5变0.75提高晕眩时间
 				end
 
-				if count <= 3 then
+				if count <= 2 then --由3变2减少一层球分裂
 					count = count + 1
 					for i=1,count do
 						Reimu03ThrowBallToPoint(keys,curOrigin,curOrigin+RandomVector(300-count*30),vhigh*400/442,count)
@@ -252,7 +252,7 @@ function OnReimu04SpellThink(keys)
 	end
 
 	-- 光球攻击行为
-	if caster.thtd_reimu_04_ball_count == 7 and caster.thtd_reimu_04_think_count%8 == 0 then
+	if caster.thtd_reimu_04_ball_count == 7 and caster.thtd_reimu_04_think_count%36 == 0 then -- 原始为8，卡顿改善
 		Reimu04AttackTargetPoint(keys)
 		for i=1,7 do
 			if caster.thtd_reimu_04_ball_table[i]["effectIndex"] ~= nil then
@@ -335,10 +335,10 @@ function Reimu04AttackTargetPoint(keys)
 				local damage_table = {
 					victim = v,
 					attacker = caster,
-					damage = caster:THTD_GetPower()*caster:THTD_GetStar()/5*Reimu02GetChance(caster)*caster.thtd_reimu_04_damage_increase,
+					damage = caster:THTD_GetPower()*caster:THTD_GetStar() * 5 * Reimu02GetChance(caster)*caster.thtd_reimu_04_damage_increase,
 					ability = keys.ability,
 					damage_type = keys.ability:GetAbilityDamageType(), 
-					damage_flags = DOTA_DAMAGE_FLAG_NONE,
+					damage_flags = DOTA_DAMAGE_FLAG_NONE
 				}
 				UnitDamageTarget(damage_table)
 			end

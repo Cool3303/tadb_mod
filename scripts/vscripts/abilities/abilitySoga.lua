@@ -291,11 +291,11 @@ function OnSoga03SpellStart(keys)
 					   	UnitDamageTarget(DamageTable)
 					   	if caster.thtd_soga_03_debuff == true and v:HasModifier("modifier_soga_03_debuff") == false then
 					   		keys.ability:ApplyDataDrivenModifier(caster, v, "modifier_soga_03_debuff", {Duration = 10.0})
-			   				ModifyMagicalDamageIncomingPercentage(v,20,nil)
+			   				ModifyMagicalDamageIncomingPercentage(v,20)
 			   				v:SetContextThink(DoUniqueString("thtd_soga_03_buff_remove"), 
 								function()
 									if GameRules:IsGamePaused() then return 0.03 end
-									ModifyMagicalDamageIncomingPercentage(v,-20,nil)
+									ModifyMagicalDamageIncomingPercentage(v,-20)
 									return nil
 								end,
 							10.0)
@@ -392,7 +392,7 @@ function OnSoga03SpellStart(keys)
 	   				v:SetContextThink(DoUniqueString("thtd_soga_03_buff_remove"), 
 						function()
 							if GameRules:IsGamePaused() then return 0.03 end
-							ModifyMagicalDamageIncomingPercentage(v,-20,nil)
+							ModifyMagicalDamageIncomingPercentage(v,-20)
 							return nil
 						end,
 					10.0)

@@ -70,7 +70,7 @@
 		"AbilityManaCost"		"0"
 		// Stats
 		// ----------------------------------------------------------------
-		"AbilityCastRange"		"800"
+		"AbilityCastRange"		"1000"
 
 		"precache"
 		{
@@ -183,7 +183,7 @@
 		"AbilityManaCost"		"0"
 		// Stats
 		// ----------------------------------------------------------------
-		"AbilityCastRange"		"800"
+		"AbilityCastRange"		"1000"
 
 		"precache"
 		{
@@ -262,6 +262,15 @@
 				"Function"		"BuyNormalCard"
 			}
 		}
+
+		"AbilitySpecial"
+		{
+			"01"
+			{				
+				"var_type"		"FIELD_INTEGER"
+				"cost"		"500"
+			}
+		}
 	}
 
 	"ability_touhoutd_shop_buy_senior_card"
@@ -281,6 +290,15 @@
 			{
 				"ScriptFile"	"scripts/vscripts/abilities/abilityCommon.lua"
 				"Function"		"BuySeniorCard"
+			}
+		}
+
+		"AbilitySpecial"
+		{
+			"01"
+			{				
+				"var_type"		"FIELD_INTEGER"
+				"cost"		"2500"
 			}
 		}
 	}
@@ -304,6 +322,15 @@
 				"Function"		"BuyEggLevel1"
 			}
 		}
+
+		"AbilitySpecial"
+		{
+			"01"
+			{				
+				"var_type"		"FIELD_INTEGER"
+				"cost"		"1000"
+			}
+		}
 	}
 
 	"ability_touhoutd_shop_buy_egg_level_2"
@@ -323,6 +350,15 @@
 			{
 				"ScriptFile"	"scripts/vscripts/abilities/abilityCommon.lua"
 				"Function"		"BuyEggLevel2"
+			}
+		}
+
+		"AbilitySpecial"
+		{
+			"01"
+			{				
+				"var_type"		"FIELD_INTEGER"
+				"cost"		"1800"
 			}
 		}
 	}
@@ -346,6 +382,15 @@
 				"Function"		"BuyEggLevel3"
 			}
 		}
+
+		"AbilitySpecial"
+		{
+			"01"
+			{				
+				"var_type"		"FIELD_INTEGER"
+				"cost"		"7200"
+			}
+		}
 	}
 
 	"ability_touhoutd_shop_buy_egg_level_4"
@@ -365,6 +410,15 @@
 			{
 				"ScriptFile"	"scripts/vscripts/abilities/abilityCommon.lua"
 				"Function"		"BuyEggLevel4"
+			}
+		}
+
+		"AbilitySpecial"
+		{
+			"01"
+			{				
+				"var_type"		"FIELD_INTEGER"
+				"cost"		"35000"
 			}
 		}
 	}

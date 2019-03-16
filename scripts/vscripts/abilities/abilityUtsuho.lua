@@ -60,6 +60,7 @@ end
 function OnUtsuho04SpellStart(keys)
 	local caster = EntIndexToHScript(keys.caster_entindex)
 	local targetPoint = keys.target_points[1]
+
 	keys.ability.ability_utsuho04_point_x = targetPoint.x
 	keys.ability.ability_utsuho04_point_y = targetPoint.y
 	keys.ability.ability_utsuho04_point_z = targetPoint.z
@@ -97,7 +98,7 @@ function OnUtsuho04SpellThink(keys)
 		local dis = GetDistanceBetweenTwoVec2D(targetPoint,v:GetOrigin())
 		local rad = GetRadBetweenTwoVec2D(targetPoint,v:GetOrigin())
 		if(dis>=(keys.Gravity/10))then
-			v:SetOrigin(v:GetOrigin() - keys.Gravity/10 * Vector(math.cos(rad),math.sin(rad),0))
+			v:SetAbsOrigin(v:GetOrigin() - keys.Gravity/10 * Vector(math.cos(rad),math.sin(rad),0))
 		end
 	end
 end
@@ -133,7 +134,7 @@ function OnUtsuho04SpellRemove(keys)
 				ability = keys.ability,
 			    victim = v,
 			    attacker = caster,
-			    damage = caster:THTD_GetPower() * caster:THTD_GetStar() * 3,
+			    damage = caster:THTD_GetPower() * caster:THTD_GetStar() * 48, --大小姐上限设定值
 			    damage_type = keys.ability:GetAbilityDamageType(), 
 	    	    damage_flags = DOTA_DAMAGE_FLAG_NONE
 		}

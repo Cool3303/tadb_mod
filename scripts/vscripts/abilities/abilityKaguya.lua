@@ -43,7 +43,7 @@ function OnKaguya01SpellThink(keys,count)
 		
 		local targets = THTD_FindUnitsInRadius(caster,damageVector,350)
 		for k,v in pairs(targets) do
-			local damage = caster:THTD_GetPower()*caster:THTD_GetStar()*0.5
+			local damage = caster:THTD_GetPower() * caster:THTD_GetStar()
 			local DamageTable = {
 				ability = keys.ability,
 		        victim = v, 
@@ -94,14 +94,14 @@ function OnKaguya03SpellStart(keys)
 		caster.thtd_kaguya_03_roll = true
 	else
 		caster.thtd_kaguya_03_roll = false
-	end
+	end	
 end
 
 function OnKaguya03SpellThink(keys)
 	local caster = EntIndexToHScript(keys.caster_entindex)
 	if keys.ability:GetLevel() < 1 then return end
 	if GameRules:IsGamePaused() then return end
-	if caster:HasModifier("modifier_touhoutd_release_hidden") then 
+	if caster:THTD_IsHidden() then 
 		OnKaguya03ReleaseBall(keys)
 		return 
 	end
@@ -118,6 +118,10 @@ function OnKaguya03SpellThink(keys)
 		caster.thtd_kaguya_03_think_count = caster.thtd_kaguya_03_think_count + 1
 	else
 		caster.thtd_kaguya_03_think_count = 0
+	end
+
+	if caster.thtd_effect_count == nil then 
+		caster.thtd_effect_count = 1
 	end
 	
 	for i=1,4 do
@@ -138,63 +142,68 @@ function OnKaguya03SpellThink(keys)
 					math.sin(i*2*math.pi/4 + caster.thtd_kaguya_03_think_count * math.pi/180)*400,
 					150)
 		end
+	end	
+
+	local friends = {}
+	local enemies = {}
+	if caster.thtd_effect_count >= 10 then 
+		friends = THTD_FindFriendlyUnitsAll(caster)
+		enemies = THTD_FindUnitsAll(caster)
 	end
-
-	local friends = THTD_FindFriendlyUnitsAll(caster)
-	local enemies = THTD_FindUnitsAll(caster)
-
 	-- 旋转宝具
 	for i=1,4 do
 		if caster.thtd_kaguya_03_treasure_table[i]["effectIndex"] ~= nil then
 			ParticleManager:SetParticleControl(caster.thtd_kaguya_03_treasure_table[i]["effectIndex"], 0, caster.thtd_kaguya_03_treasure_table[i]["origin"] )
 		end
-		local buff = "modifier_kaguya_03_"..i.."_buff"
-		local debuff = "modifier_kaguya_03_"..i.."_debuff"
 
-		for k,v in pairs(friends) do
-			if GetDistanceBetweenTwoVec2D(caster.thtd_kaguya_03_treasure_table[i]["origin"], v:GetOrigin()) > 200 then
-				if v:HasModifier(buff) then
-					v:RemoveModifierByName(buff)
-				end
-			else
-				if v:HasModifier(buff) == false then
-					keys.ability:ApplyDataDrivenModifier(caster, v, buff, {})
+		if caster.thtd_effect_count >= 10 then 			
+			local buff = "modifier_kaguya_03_"..i.."_buff"
+			local debuff = "modifier_kaguya_03_"..i.."_debuff"
+			for k,v in pairs(friends) do
+				if GetDistanceBetweenTwoVec2D(caster.thtd_kaguya_03_treasure_table[i]["origin"], v:GetOrigin()) > 200 then
+					if v:FindModifierByNameAndCaster(buff,caster)~=nil then
+						v:RemoveModifierByName(buff)
+					end
+				else
+					if v:HasModifier(buff) == false then
+						keys.ability:ApplyDataDrivenModifier(caster, v, buff, {})
+					end
 				end
 			end
-		end
-
-		for k,v in pairs(enemies) do
-			if GetDistanceBetweenTwoVec2D(caster.thtd_kaguya_03_treasure_table[i]["origin"], v:GetOrigin()) > 200 then
-				if v:HasModifier(debuff) then
-					v:RemoveModifierByName(debuff)
+			for k,v in pairs(enemies) do
+				if GetDistanceBetweenTwoVec2D(caster.thtd_kaguya_03_treasure_table[i]["origin"], v:GetOrigin()) > 200 then
+					if v:FindModifierByNameAndCaster(debuff,caster)~=nil then
+						v:RemoveModifierByName(debuff)
+					end
+				else				
+					if i ~= 2 and v:HasModifier(debuff) == false then
+						keys.ability:ApplyDataDrivenModifier(caster, v, debuff, {})
+					end
+					local damage = caster:THTD_GetPower() * caster:THTD_GetStar()
+					if i == 2 then
+						damage = damage * 1.5
+					end					
+					local DamageTable = {
+						ability = keys.ability,
+						victim = v, 
+						attacker = caster, 
+						damage = damage, 
+						damage_type = keys.ability:GetAbilityDamageType(), 
+						damage_flags = DOTA_DAMAGE_FLAG_NONE
+					}
+					UnitDamageTarget(DamageTable)
 				end
-			else
-				if v:HasModifier(debuff) == false then
-					keys.ability:ApplyDataDrivenModifier(caster, v, debuff, {})
-				end
-				local damage = caster:THTD_GetPower()*caster:THTD_GetStar()/16
-				if i == 2 then
-					damage = damage * 1.5
-				end
-				local DamageTable = {
-					ability = keys.ability,
-			        victim = v, 
-			        attacker = caster, 
-			        damage = damage, 
-			        damage_type = keys.ability:GetAbilityDamageType(), 
-			        damage_flags = DOTA_DAMAGE_FLAG_NONE
-			   	}
-			   	UnitDamageTarget(DamageTable)
 			end
+			if i == 4 then caster.thtd_effect_count = 1 end
+		else
+			if i == 4 then caster.thtd_effect_count = caster.thtd_effect_count + 1 end
 		end
-	end
+	end	
 end
 
 
 function OnKaguya03ReleaseBall(keys)
-	local caster = EntIndexToHScript(keys.caster_entindex)
-	local targetPoint = keys.target:GetOrigin()
-	
+	local caster = EntIndexToHScript(keys.caster_entindex)	
 	if caster.thtd_kaguya_03_treasure_table ~= nil then
 		local friends = THTD_FindFriendlyUnitsAll(caster)
 		local enemies = THTD_FindUnitsAll(caster)
@@ -223,9 +232,9 @@ end
 
 function OnCreatedKaguya03_3_debuff(keys)
 	local caster = EntIndexToHScript(keys.caster_entindex)
-	ModifyDamageIncomingPercentage(keys.target,keys.incoming_percent,nil)
+	ModifyDamageIncomingPercentage(keys.target,keys.incoming_percent)
 end
 function OnRemoveKaguya03_3_debuff(keys)
 	local caster = EntIndexToHScript(keys.caster_entindex)
-	ModifyDamageIncomingPercentage(keys.target,-keys.incoming_percent,nil)
+	ModifyDamageIncomingPercentage(keys.target,-keys.incoming_percent)
 end

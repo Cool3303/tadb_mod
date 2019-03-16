@@ -9,6 +9,9 @@
 		// General
 		"ID" 								"9001"
 		"BaseClass" 						"item_datadriven"
+		"ItemKillable" 						"0"
+		"ItemPurchasable"				    "0"
+		"ItemDisassembleRule"				"DOTA_ITEM_DISASSEMBLE_ALWAYS"
 		"AbilityTextureName" 				"item_1001"
 		"AbilityBehavior" 					"DOTA_ABILITY_BEHAVIOR_NO_TARGET"
 		"AbilityCooldown"					"0.2"
@@ -36,6 +39,9 @@
 		// General
 		"ID" 								"9002"
 		"BaseClass" 						"item_datadriven"
+		"ItemKillable" 						"0"
+		"ItemPurchasable"				    "0"
+		"ItemDisassembleRule"				"DOTA_ITEM_DISASSEMBLE_ALWAYS"
 		"AbilityTextureName" 				"item_1002"
 		"AbilityBehavior" 					"DOTA_ABILITY_BEHAVIOR_NO_TARGET"
 		"AbilityCooldown"					"0.2"
@@ -63,6 +69,9 @@
 		// General
 		"ID" 								"9003"
 		"BaseClass" 						"item_datadriven"
+		"ItemKillable" 						"0"
+		"ItemPurchasable"				    "0"
+		"ItemDisassembleRule"				"DOTA_ITEM_DISASSEMBLE_ALWAYS"
 		"AbilityTextureName" 				"item_1003"
 		"AbilityBehavior" 					"DOTA_ABILITY_BEHAVIOR_PASSIVE"
 		"AbilityCooldown"					"1"
@@ -79,6 +88,9 @@
 		// General
 		"ID" 								"9004"
 		"BaseClass" 						"item_datadriven"
+		"ItemKillable" 						"0"
+		"ItemPurchasable"				    "0"
+		"ItemDisassembleRule"				"DOTA_ITEM_DISASSEMBLE_ALWAYS"
 		"AbilityTextureName" 				"item_1004"
 		"AbilityBehavior" 					"DOTA_ABILITY_BEHAVIOR_PASSIVE"
 		"AbilityCooldown"					"1"
@@ -95,6 +107,9 @@
 		// General
 		"ID" 								"9005"
 		"BaseClass" 						"item_datadriven"
+		"ItemKillable" 						"0"
+		"ItemPurchasable"				    "0"
+		"ItemDisassembleRule"				"DOTA_ITEM_DISASSEMBLE_ALWAYS"
 		"AbilityTextureName" 				"item_1005"
 		"AbilityBehavior" 					"DOTA_ABILITY_BEHAVIOR_PASSIVE"
 		"AbilityCooldown"					"1"
@@ -111,112 +126,16 @@
 		// General
 		"ID" 								"9006"
 		"BaseClass" 						"item_datadriven"
+		"ItemKillable" 						"0"
+		"ItemPurchasable"				    "0"
+		"ItemDisassembleRule"				"DOTA_ITEM_DISASSEMBLE_ALWAYS"
 		"AbilityTextureName" 				"item_1006"
 		"AbilityBehavior" 					"DOTA_ABILITY_BEHAVIOR_PASSIVE"
 		"AbilityCooldown"					"1"
 		"ItemCost"							"35000"
 		"ItemSellable"						"1"
 		"ItemShareability"					"ITEM_PARTIALLY_SHAREABLE"
-	}
-
-	//-------------------------------------------------------------------------------------------------------------
-	// 幻神莉莉白
-	"item_1007"
-	{
-		//-------------------------------------------------------------------------------------------------------------
-		// General
-		"ID" 								"9007"
-		"BaseClass" 						"item_datadriven"
-		"AbilityTextureName" 				"item_0001"
-		"AbilityBehavior" 					"DOTA_ABILITY_BEHAVIOR_NO_TARGET"
-		"AbilityCooldown"					"1"
-		"ItemCost"							"0"
-		"ItemSellable"						"0"
-
-		"OnSpellStart"
-		{
-			"RunScript"
-			{
-				"ScriptFile"	"scripts/vscripts/abilities/abilityCommon.lua"
-				"Function"		"ChooseIt"
-			}
-		}
-	}
-
-	//-------------------------------------------------------------------------------------------------------------
-	// 幻神纳兹琳
-	"item_1008"
-	{
-		//-------------------------------------------------------------------------------------------------------------
-		// General
-		"ID" 								"9008"
-		"BaseClass" 						"item_datadriven"
-		"AbilityTextureName" 				"item_0002"
-		"AbilityBehavior" 					"DOTA_ABILITY_BEHAVIOR_NO_TARGET"
-		"AbilityCooldown"					"1"
-		"ItemCost"							"0"
-		"ItemSellable"						"0"
-
-		"OnSpellStart"
-		{
-			"RunScript"
-			{
-				"ScriptFile"	"scripts/vscripts/abilities/abilityCommon.lua"
-				"Function"		"ChooseIt"
-			}
-		}
-	}
-
-	//-------------------------------------------------------------------------------------------------------------
-	// 幻神秋穣子
-	"item_1009"
-	{
-		//-------------------------------------------------------------------------------------------------------------
-		// General
-		"ID" 								"9009"
-		"BaseClass" 						"item_datadriven"
-		"AbilityTextureName" 				"item_0003"
-		"AbilityBehavior" 					"DOTA_ABILITY_BEHAVIOR_NO_TARGET"
-		"AbilityCooldown"					"1"
-		"ItemCost"							"0"
-		"ItemSellable"						"0"
-
-		"OnSpellStart"
-		{
-			"RunScript"
-			{
-				"ScriptFile"	"scripts/vscripts/abilities/abilityCommon.lua"
-				"Function"		"ChooseIt"
-			}
-		}
-	}
-
-	//-------------------------------------------------------------------------------------------------------------
-	// 究极召唤符
-	"item_1010"
-	{
-		//-------------------------------------------------------------------------------------------------------------
-		// General
-		"ID" 								"9010"
-		"BaseClass" 						"item_datadriven"
-		"AbilityTextureName" 				"item_1010"
-		"AbilityBehavior" 					"DOTA_ABILITY_BEHAVIOR_NO_TARGET"
-		"AbilityCooldown"					"1"
-		"ItemStackable" 					"1"
-		"ItemInitialCharges" 				"1"
-		"ItemCost"							"0"
-		"ItemSellable"						"1"
-		"ItemShareability"					"ITEM_PARTIALLY_SHAREABLE"
-
-		"OnSpellStart"
-		{
-			"RunScript"
-			{
-				"ScriptFile"	"scripts/vscripts/abilities/abilityCommon.lua"
-				"Function"		"DrawUltimaCard"
-			}
-		}
-	}
+	}		
 
 	//-------------------------------------------------------------------------------------------------------------
 	// 一星僵尸
@@ -226,6 +145,9 @@
 		// General
 		"ID" 								"9011"
 		"BaseClass" 						"item_datadriven"
+		"ItemKillable" 						"0"
+		"ItemPurchasable"				    "0"
+		"ItemDisassembleRule"				"DOTA_ITEM_DISASSEMBLE_ALWAYS"
 		"AbilityTextureName" 				"item_0097"
 		"AbilityBehavior" 					"DOTA_ABILITY_BEHAVIOR_PASSIVE"
 		"AbilityCooldown"					"1"
@@ -242,6 +164,9 @@
 		// General
 		"ID" 								"9012"
 		"BaseClass" 						"item_datadriven"
+		"ItemKillable" 						"0"
+		"ItemPurchasable"				    "0"
+		"ItemDisassembleRule"				"DOTA_ITEM_DISASSEMBLE_ALWAYS"
 		"AbilityTextureName" 				"item_0097"
 		"AbilityBehavior" 					"DOTA_ABILITY_BEHAVIOR_PASSIVE"
 		"AbilityCooldown"					"1"
@@ -258,6 +183,9 @@
 		// General
 		"ID" 								"9013"
 		"BaseClass" 						"item_datadriven"
+		"ItemKillable" 						"0"
+		"ItemPurchasable"				    "0"
+		"ItemDisassembleRule"				"DOTA_ITEM_DISASSEMBLE_ALWAYS"
 		"AbilityTextureName" 				"item_0097"
 		"AbilityBehavior" 					"DOTA_ABILITY_BEHAVIOR_PASSIVE"
 		"AbilityCooldown"					"1"
@@ -274,6 +202,9 @@
 		// General
 		"ID" 								"9014"
 		"BaseClass" 						"item_datadriven"
+		"ItemKillable" 						"0"
+		"ItemPurchasable"				    "0"
+		"ItemDisassembleRule"				"DOTA_ITEM_DISASSEMBLE_ALWAYS"
 		"AbilityTextureName" 				"item_0097"
 		"AbilityBehavior" 					"DOTA_ABILITY_BEHAVIOR_PASSIVE"
 		"AbilityCooldown"					"1"
@@ -290,6 +221,9 @@
 		// General
 		"ID" 								"7001"
 		"BaseClass" 						"item_datadriven"
+		"ItemKillable" 						"0"
+		"ItemPurchasable"				    "0"
+		"ItemDisassembleRule"				"DOTA_ITEM_DISASSEMBLE_ALWAYS"
 		"AbilityTextureName" 				"item_2001"
 		"AbilityBehavior" 					"DOTA_ABILITY_BEHAVIOR_NO_TARGET"
 		"AbilityCooldown"					"1"
@@ -315,6 +249,9 @@
 		// General
 		"ID" 								"7002"
 		"BaseClass" 						"item_datadriven"
+		"ItemKillable" 						"0"
+		"ItemPurchasable"				    "0"
+		"ItemDisassembleRule"				"DOTA_ITEM_DISASSEMBLE_ALWAYS"
 		"AbilityTextureName" 				"item_2002"
 		"AbilityBehavior" 					"DOTA_ABILITY_BEHAVIOR_NO_TARGET"
 		"AbilityCooldown"					"1"
@@ -339,6 +276,9 @@
 		// General
 		"ID" 								"7003"
 		"BaseClass" 						"item_datadriven"
+		"ItemKillable" 						"0"
+		"ItemPurchasable"				    "0"
+		"ItemDisassembleRule"				"DOTA_ITEM_DISASSEMBLE_ALWAYS"
 		"AbilityTextureName" 				"item_2003"
 		"AbilityBehavior" 					"DOTA_ABILITY_BEHAVIOR_NO_TARGET"
 		"AbilityCooldown"					"1"
@@ -363,6 +303,9 @@
 		// General
 		"ID" 								"7004"
 		"BaseClass" 						"item_datadriven"
+		"ItemKillable" 						"0"
+		"ItemPurchasable"				    "0"
+		"ItemDisassembleRule"				"DOTA_ITEM_DISASSEMBLE_ALWAYS"
 		"AbilityTextureName" 				"item_2004"
 		"AbilityBehavior" 					"DOTA_ABILITY_BEHAVIOR_NO_TARGET"
 		"AbilityCooldown"					"1"
@@ -387,6 +330,9 @@
 		// General
 		"ID" 								"7005"
 		"BaseClass" 						"item_datadriven"
+		"ItemKillable" 						"0"
+		"ItemPurchasable"				    "0"
+		"ItemDisassembleRule"				"DOTA_ITEM_DISASSEMBLE_ALWAYS"
 		"AbilityTextureName" 				"item_2005"
 		"AbilityBehavior" 					"DOTA_ABILITY_BEHAVIOR_PASSIVE"
 		"AbilityCooldown"					"1"
@@ -403,6 +349,9 @@
 		// General
 		"ID" 								"7006"
 		"BaseClass" 						"item_datadriven"
+		"ItemKillable" 						"0"
+		"ItemPurchasable"				    "0"
+		"ItemDisassembleRule"				"DOTA_ITEM_DISASSEMBLE_ALWAYS"
 		"AbilityTextureName" 				"item_2006"
 		"AbilityBehavior" 					"DOTA_ABILITY_BEHAVIOR_PASSIVE"
 		"AbilityCooldown"					"1"
@@ -419,6 +368,9 @@
 		// General
 		"ID" 								"7007"
 		"BaseClass" 						"item_datadriven"
+		"ItemKillable" 						"0"
+		"ItemPurchasable"				    "0"
+		"ItemDisassembleRule"				"DOTA_ITEM_DISASSEMBLE_ALWAYS"
 		"AbilityTextureName" 				"item_2007"
 		"AbilityBehavior" 					"DOTA_ABILITY_BEHAVIOR_PASSIVE"
 		"AbilityCooldown"					"1"
@@ -435,6 +387,9 @@
 		// General
 		"ID" 								"7008"
 		"BaseClass" 						"item_datadriven"
+		"ItemKillable" 						"0"
+		"ItemPurchasable"				    "0"
+		"ItemDisassembleRule"				"DOTA_ITEM_DISASSEMBLE_ALWAYS"
 		"AbilityTextureName" 				"item_2008"
 		"AbilityBehavior" 					"DOTA_ABILITY_BEHAVIOR_PASSIVE"
 		"AbilityCooldown"					"1"
@@ -451,6 +406,9 @@
 		// General
 		"ID" 								"7009"
 		"BaseClass" 						"item_datadriven"
+		"ItemKillable" 						"0"
+		"ItemPurchasable"				    "0"
+		"ItemDisassembleRule"				"DOTA_ITEM_DISASSEMBLE_ALWAYS"
 		"AbilityTextureName" 				"item_2009"
 		"AbilityBehavior" 					"DOTA_ABILITY_BEHAVIOR_PASSIVE"
 		"AbilityCooldown"					"1"
@@ -467,6 +425,9 @@
 		// General
 		"ID" 								"7010"
 		"BaseClass" 						"item_datadriven"
+		"ItemKillable" 						"0"
+		"ItemPurchasable"				    "0"
+		"ItemDisassembleRule"				"DOTA_ITEM_DISASSEMBLE_ALWAYS"
 		"AbilityTextureName" 				"item_2010"
 		"AbilityBehavior" 					"DOTA_ABILITY_BEHAVIOR_PASSIVE"
 		"AbilityCooldown"					"1"
@@ -483,6 +444,9 @@
 		// General
 		"ID" 								"7011"
 		"BaseClass" 						"item_datadriven"
+		"ItemKillable" 						"0"
+		"ItemPurchasable"				    "0"
+		"ItemDisassembleRule"				"DOTA_ITEM_DISASSEMBLE_ALWAYS"
 		"AbilityTextureName" 				"item_2011"
 		"AbilityBehavior" 					"DOTA_ABILITY_BEHAVIOR_PASSIVE"
 		"AbilityCooldown"					"1"
@@ -499,6 +463,9 @@
 		// General
 		"ID" 								"7012"
 		"BaseClass" 						"item_datadriven"
+		"ItemKillable" 						"0"
+		"ItemPurchasable"				    "0"
+		"ItemDisassembleRule"				"DOTA_ITEM_DISASSEMBLE_ALWAYS"
 		"AbilityTextureName" 				"item_2012"
 		"AbilityBehavior" 					"DOTA_ABILITY_BEHAVIOR_PASSIVE"
 		"AbilityCooldown"					"1"
@@ -515,6 +482,9 @@
 		// General
 		"ID" 								"7013"
 		"BaseClass" 						"item_datadriven"
+		"ItemKillable" 						"0"
+		"ItemPurchasable"				    "0"
+		"ItemDisassembleRule"				"DOTA_ITEM_DISASSEMBLE_ALWAYS"
 		"AbilityTextureName" 				"item_2013"
 		"AbilityBehavior" 					"DOTA_ABILITY_BEHAVIOR_PASSIVE"
 		"AbilityCooldown"					"1"
@@ -531,6 +501,9 @@
 		// General
 		"ID" 								"7014"
 		"BaseClass" 						"item_datadriven"
+		"ItemKillable" 						"0"
+		"ItemPurchasable"				    "0"
+		"ItemDisassembleRule"				"DOTA_ITEM_DISASSEMBLE_ALWAYS"
 		"AbilityTextureName" 				"item_2014"
 		"AbilityBehavior" 					"DOTA_ABILITY_BEHAVIOR_PASSIVE"
 		"AbilityCooldown"					"1"
@@ -547,6 +520,9 @@
 		// General
 		"ID" 								"7015"
 		"BaseClass" 						"item_datadriven"
+		"ItemKillable" 						"0"
+		"ItemPurchasable"				    "0"
+		"ItemDisassembleRule"				"DOTA_ITEM_DISASSEMBLE_ALWAYS"
 		"AbilityTextureName" 				"item_2015"
 		"AbilityBehavior" 					"DOTA_ABILITY_BEHAVIOR_PASSIVE"
 		"AbilityCooldown"					"1"
@@ -563,6 +539,9 @@
 		// General
 		"ID" 								"7016"
 		"BaseClass" 						"item_datadriven"
+		"ItemKillable" 						"0"
+		"ItemPurchasable"				    "0"
+		"ItemDisassembleRule"				"DOTA_ITEM_DISASSEMBLE_ALWAYS"
 		"AbilityTextureName" 				"item_2016"
 		"AbilityBehavior" 					"DOTA_ABILITY_BEHAVIOR_PASSIVE"
 		"AbilityCooldown"					"1"
@@ -579,6 +558,9 @@
 		// General
 		"ID" 								"7017"
 		"BaseClass" 						"item_datadriven"
+		"ItemKillable" 						"0"
+		"ItemPurchasable"				    "0"
+		"ItemDisassembleRule"				"DOTA_ITEM_DISASSEMBLE_ALWAYS"
 		"AbilityTextureName" 				"item_2017"
 		"AbilityBehavior" 					"DOTA_ABILITY_BEHAVIOR_PASSIVE"
 		"AbilityCooldown"					"1"
@@ -595,6 +577,9 @@
 		// General
 		"ID" 								"7018"
 		"BaseClass" 						"item_datadriven"
+		"ItemKillable" 						"0"
+		"ItemPurchasable"				    "0"
+		"ItemDisassembleRule"				"DOTA_ITEM_DISASSEMBLE_ALWAYS"
 		"AbilityTextureName" 				"item_2018"
 		"AbilityBehavior" 					"DOTA_ABILITY_BEHAVIOR_PASSIVE"
 		"AbilityCooldown"					"1"
@@ -611,6 +596,9 @@
 		// General
 		"ID" 								"7019"
 		"BaseClass" 						"item_datadriven"
+		"ItemKillable" 						"0"
+		"ItemPurchasable"				    "0"
+		"ItemDisassembleRule"				"DOTA_ITEM_DISASSEMBLE_ALWAYS"
 		"AbilityTextureName" 				"item_2019"
 		"AbilityBehavior" 					"DOTA_ABILITY_BEHAVIOR_PASSIVE"
 		"AbilityCooldown"					"1"
@@ -627,6 +615,9 @@
 		// General
 		"ID" 								"7020"
 		"BaseClass" 						"item_datadriven"
+		"ItemKillable" 						"0"
+		"ItemPurchasable"				    "0"
+		"ItemDisassembleRule"				"DOTA_ITEM_DISASSEMBLE_ALWAYS"
 		"AbilityTextureName" 				"item_2020"
 		"AbilityBehavior" 					"DOTA_ABILITY_BEHAVIOR_PASSIVE"
 		"AbilityCooldown"					"1"
@@ -643,6 +634,9 @@
 		// General
 		"ID" 								"7021"
 		"BaseClass" 						"item_datadriven"
+		"ItemKillable" 						"0"
+		"ItemPurchasable"				    "0"
+		"ItemDisassembleRule"				"DOTA_ITEM_DISASSEMBLE_ALWAYS"
 		"AbilityTextureName" 				"item_2021"
 		"AbilityBehavior" 					"DOTA_ABILITY_BEHAVIOR_UNIT_TARGET"
 		"AbilityUnitTargetType"				"DOTA_UNIT_TARGET_HERO | DOTA_UNIT_TARGET_BASIC"
@@ -670,13 +664,17 @@
 		// General
 		"ID" 								"7022"
 		"BaseClass" 						"item_datadriven"
+		"ItemKillable" 						"0"
+		"ItemPurchasable"				    "0"
+		"ItemDisassembleRule"				"DOTA_ITEM_DISASSEMBLE_ALWAYS"
 		"AbilityTextureName" 				"item_2022"
 		"AbilityBehavior"					"DOTA_ABILITY_BEHAVIOR_IMMEDIATE | DOTA_ABILITY_BEHAVIOR_AOE | DOTA_ABILITY_BEHAVIOR_POINT"
 		"AbilityUnitTargetType"				"DOTA_UNIT_TARGET_HERO | DOTA_UNIT_TARGET_BASIC"
 		"AbilityUnitTargetTeam"				"DOTA_UNIT_TARGET_TEAM_FRIENDLY"
-		"AbilityCooldown"					"80"
+		"AbilityCooldown"					"80 56"
 		"ItemCost"							"2000"
 		"ItemSellable"						"0"
+		"MaxLevel"							"2"
 
 		"OnSpellStart"
 		{
@@ -697,13 +695,17 @@
 		// General
 		"ID" 								"7023"
 		"BaseClass" 						"item_datadriven"
+		"ItemKillable" 						"0"
+		"ItemPurchasable"				    "0"
+		"ItemDisassembleRule"				"DOTA_ITEM_DISASSEMBLE_ALWAYS"
 		"AbilityTextureName" 				"item_2023"
 		"AbilityBehavior" 					"DOTA_ABILITY_BEHAVIOR_UNIT_TARGET"
 		"AbilityUnitTargetType"				"DOTA_UNIT_TARGET_HERO | DOTA_UNIT_TARGET_BASIC"
 		"AbilityUnitTargetTeam"				"DOTA_UNIT_TARGET_TEAM_FRIENDLY"
-		"AbilityCooldown"					"40"
+		"AbilityCooldown"					"40 28"
 		"ItemCost"							"5000"
 		"ItemSellable"						"0"
+		"MaxLevel"							"2"
 
 		"OnSpellStart"
 		{
@@ -724,6 +726,9 @@
 		// General
 		"ID" 								"7024"
 		"BaseClass" 						"item_datadriven"
+		"ItemKillable" 						"0"
+		"ItemPurchasable"				    "0"
+		"ItemDisassembleRule"				"DOTA_ITEM_DISASSEMBLE_ALWAYS"
 		"AbilityTextureName" 				"item_2024"
 		"AbilityBehavior" 					"DOTA_ABILITY_BEHAVIOR_PASSIVE"
 		"AbilityCooldown"					"1"
@@ -740,6 +745,9 @@
 		// General
 		"ID" 								"7025"
 		"BaseClass" 						"item_datadriven"
+		"ItemKillable" 						"0"
+		"ItemPurchasable"				    "0"
+		"ItemDisassembleRule"				"DOTA_ITEM_DISASSEMBLE_ALWAYS"
 		"AbilityTextureName" 				"item_2025"
 		"AbilityBehavior" 					"DOTA_ABILITY_BEHAVIOR_PASSIVE"
 		"AbilityCooldown"					"1"
@@ -756,6 +764,9 @@
 		// General
 		"ID" 								"7026"
 		"BaseClass" 						"item_datadriven"
+		"ItemKillable" 						"0"
+		"ItemPurchasable"				    "0"
+		"ItemDisassembleRule"				"DOTA_ITEM_DISASSEMBLE_ALWAYS"
 		"AbilityTextureName" 				"item_2026"
 		"AbilityBehavior" 					"DOTA_ABILITY_BEHAVIOR_PASSIVE"
 		"AbilityCooldown"					"1"
@@ -772,12 +783,16 @@
 		// General
 		"ID" 								"8001"
 		"BaseClass" 						"item_datadriven"
+		"ItemKillable" 						"0"
+		"ItemPurchasable"				    "0"
+		"ItemDisassembleRule"				"DOTA_ITEM_DISASSEMBLE_ALWAYS"
 		"AbilityTextureName" 				"item_0001"
 		"AbilityBehavior" 					"DOTA_ABILITY_BEHAVIOR_POINT"
 		"AbilityCastRange"					"100"
 		"ItemCost"							"2000"
 		"Model"								"models/thd_hero/lily_white/item/item_lily_white.vmdl"
-		"ItemPurchasable"				    "0"
+		 
+		
 		"ItemShareability"					"ITEM_PARTIALLY_SHAREABLE"
 		
 		//-------------------------------------------------------------------------------------------------------------
@@ -802,12 +817,16 @@
 		// General
 		"ID" 								"8002"
 		"BaseClass" 						"item_datadriven"
+		"ItemKillable" 						"0"
+		"ItemPurchasable"				    "0"
+		"ItemDisassembleRule"				"DOTA_ITEM_DISASSEMBLE_ALWAYS"
 		"AbilityTextureName" 				"item_0002"
 		"AbilityBehavior" 					"DOTA_ABILITY_BEHAVIOR_POINT"
 		"AbilityCastRange"					"100"
 		"ItemCost"							"2000"
 		"Model"								"models/thd_hero/nazrin/item/item_nazrin.vmdl"
-		"ItemPurchasable"				    "0"
+		 
+		
 		"ItemShareability"					"ITEM_PARTIALLY_SHAREABLE"
 		
 		//---------------------------------------------
@@ -833,12 +852,16 @@
 		// General
 		"ID" 								"8003"
 		"BaseClass" 						"item_datadriven"
+		"ItemKillable" 						"0"
+		"ItemPurchasable"				    "0"
+		"ItemDisassembleRule"				"DOTA_ITEM_DISASSEMBLE_ALWAYS"
 		"AbilityTextureName" 				"item_0003"
 		"AbilityBehavior" 					"DOTA_ABILITY_BEHAVIOR_POINT"
 		"AbilityCastRange"					"100"
 		"ItemCost"							"2000"
 		"Model"								"models/thd_hero/minoriko/item/item_minoriko.vmdl"
-		"ItemPurchasable"				    "0"
+		 
+		
 		"ItemShareability"					"ITEM_PARTIALLY_SHAREABLE"
 		
 		//-------------------------------------------------------------------------------------------------------------
@@ -864,12 +887,16 @@
 		// General
 		"ID" 								"8004"
 		"BaseClass" 						"item_datadriven"
+		"ItemKillable" 						"0"
+		"ItemPurchasable"				    "0"
+		"ItemDisassembleRule"				"DOTA_ITEM_DISASSEMBLE_ALWAYS"
 		"AbilityTextureName" 				"item_0004"
 		"AbilityBehavior" 					"DOTA_ABILITY_BEHAVIOR_POINT"
 		"AbilityCastRange"					"100"
 		"ItemCost"							"500"
 		"Model"								"models/thd_hero/mugiyousei/item/item_mujiyousei.vmdl"
-		"ItemPurchasable"				    "0"
+		 
+		
 		"ItemShareability"					"ITEM_PARTIALLY_SHAREABLE"
 		
 		//-------------------------------------------------------------------------------------------------------------
@@ -895,12 +922,16 @@
 		// General
 		"ID" 								"8005"
 		"BaseClass" 						"item_datadriven"
+		"ItemKillable" 						"0"
+		"ItemPurchasable"				    "0"
+		"ItemDisassembleRule"				"DOTA_ITEM_DISASSEMBLE_ALWAYS"
 		"AbilityTextureName" 				"item_0005"
 		"AbilityBehavior" 					"DOTA_ABILITY_BEHAVIOR_POINT"
 		"AbilityCastRange"					"100"
 		"ItemCost"							"500"
 		"Model"								"models/thd_hero/shanghainingyou/item/item_shanghainingyou.vmdl"
-		"ItemPurchasable"				    "0"
+		 
+		
 		"ItemShareability"					"ITEM_PARTIALLY_SHAREABLE"
 		
 		//-------------------------------------------------------------------------------------------------------------
@@ -926,12 +957,16 @@
 		// General
 		"ID" 								"8006"
 		"BaseClass" 						"item_datadriven"
+		"ItemKillable" 						"0"
+		"ItemPurchasable"				    "0"
+		"ItemDisassembleRule"				"DOTA_ITEM_DISASSEMBLE_ALWAYS"
 		"AbilityTextureName" 				"item_0006"
 		"AbilityBehavior" 					"DOTA_ABILITY_BEHAVIOR_POINT"
 		"AbilityCastRange"					"100"
 		"ItemCost"							"500"
 		"Model"								"models/thd_hero/hourainingyou/item/item_hourainingyou.vmdl"
-		"ItemPurchasable"				    "0"
+		 
+		
 		"ItemShareability"					"ITEM_PARTIALLY_SHAREABLE"
 		
 		//-------------------------------------------------------------------------------------------------------------
@@ -957,12 +992,16 @@
 		// General
 		"ID" 								"8007"
 		"BaseClass" 						"item_datadriven"
+		"ItemKillable" 						"0"
+		"ItemPurchasable"				    "0"
+		"ItemDisassembleRule"				"DOTA_ITEM_DISASSEMBLE_ALWAYS"
 		"AbilityTextureName" 				"item_0007"
 		"AbilityBehavior" 					"DOTA_ABILITY_BEHAVIOR_POINT"
 		"AbilityCastRange"					"100"
 		"ItemCost"							"500"
 		"Model"								"models/thd_hero/hanadayousei/item/item_hanadayousei.vmdl"
-		"ItemPurchasable"				    "0"
+		 
+		
 		"ItemShareability"					"ITEM_PARTIALLY_SHAREABLE"
 		
 		//-------------------------------------------------------------------------------------------------------------
@@ -988,12 +1027,16 @@
 		// General
 		"ID" 								"8008"
 		"BaseClass" 						"item_datadriven"
+		"ItemKillable" 						"0"
+		"ItemPurchasable"				    "0"	
+		"ItemDisassembleRule"				"DOTA_ITEM_DISASSEMBLE_ALWAYS"
 		"AbilityTextureName" 				"item_0008"
 		"AbilityBehavior" 					"DOTA_ABILITY_BEHAVIOR_POINT"
 		"AbilityCastRange"					"100"
 		"ItemCost"							"500"
 		"Model"								"models/thd_hero/maidyousei/item/item_maidyousei.vmdl"
-		"ItemPurchasable"				    "0"
+		 
+		
 		"ItemShareability"					"ITEM_PARTIALLY_SHAREABLE"
 		
 		//-------------------------------------------------------------------------------------------------------------
@@ -1019,12 +1062,16 @@
 		// General
 		"ID" 								"8009"
 		"BaseClass" 						"item_datadriven"
+		"ItemKillable" 						"0"
+		"ItemPurchasable"				    "0"
+		"ItemDisassembleRule"				"DOTA_ITEM_DISASSEMBLE_ALWAYS"
 		"AbilityTextureName" 				"item_0009"
 		"AbilityBehavior" 					"DOTA_ABILITY_BEHAVIOR_POINT"
 		"AbilityCastRange"					"100"
 		"ItemCost"							"2000"
 		"Model"								"models/thd_hero/cirno/item/item_cirno.vmdl"
-		"ItemPurchasable"				    "0"
+		 
+		
 		"ItemShareability"					"ITEM_PARTIALLY_SHAREABLE"
 		
 		//-------------------------------------------------------------------------------------------------------------
@@ -1050,12 +1097,16 @@
 		// General
 		"ID" 								"8010"
 		"BaseClass" 						"item_datadriven"
+		"ItemKillable" 						"0"
+		"ItemPurchasable"				    "0"
+		"ItemDisassembleRule"				"DOTA_ITEM_DISASSEMBLE_ALWAYS"
 		"AbilityTextureName" 				"item_0010"
 		"AbilityBehavior" 					"DOTA_ABILITY_BEHAVIOR_POINT"
 		"AbilityCastRange"					"100"
 		"ItemCost"							"2000"
 		"Model"								"models/thd_hero/kogasa/item/item_kogasa.vmdl"
-		"ItemPurchasable"				    "0"
+		 
+		
 		"ItemShareability"					"ITEM_PARTIALLY_SHAREABLE"
 		
 		//-------------------------------------------------------------------------------------------------------------
@@ -1081,12 +1132,16 @@
 		// General
 		"ID" 								"8011"
 		"BaseClass" 						"item_datadriven"
+		"ItemKillable" 						"0"
+		"ItemPurchasable"				    "0"
+		"ItemDisassembleRule"				"DOTA_ITEM_DISASSEMBLE_ALWAYS"
 		"AbilityTextureName" 				"item_0011"
 		"AbilityBehavior" 					"DOTA_ABILITY_BEHAVIOR_POINT"
 		"AbilityCastRange"					"100"
 		"ItemCost"							"2000"
 		"Model"								"models/thd_hero/letty/item/item_letty.vmdl"
-		"ItemPurchasable"				    "0"
+		 
+		
 		"ItemShareability"					"ITEM_PARTIALLY_SHAREABLE"
 		
 		//-------------------------------------------------------------------------------------------------------------
@@ -1112,12 +1167,16 @@
 		// General
 		"ID" 								"8012"
 		"BaseClass" 						"item_datadriven"
+		"ItemKillable" 						"0"
+		"ItemPurchasable"				    "0"
+		"ItemDisassembleRule"				"DOTA_ITEM_DISASSEMBLE_ALWAYS"
 		"AbilityTextureName" 				"item_0012"
 		"AbilityBehavior" 					"DOTA_ABILITY_BEHAVIOR_POINT"
 		"AbilityCastRange"					"100"
 		"ItemCost"							"2000"
 		"Model"								"models/thd_hero/lyrica_prismriver/item/item_lyrica.vmdl"
-		"ItemPurchasable"				    "0"
+		 
+		
 		"ItemShareability"					"ITEM_PARTIALLY_SHAREABLE"
 		
 		//-------------------------------------------------------------------------------------------------------------
@@ -1143,12 +1202,16 @@
 		// General
 		"ID" 								"8013"
 		"BaseClass" 						"item_datadriven"
+		"ItemKillable" 						"0"
+		"ItemPurchasable"				    "0"
+		"ItemDisassembleRule"				"DOTA_ITEM_DISASSEMBLE_ALWAYS"
 		"AbilityTextureName" 				"item_0013"
 		"AbilityBehavior" 					"DOTA_ABILITY_BEHAVIOR_POINT"
 		"AbilityCastRange"					"100"
 		"ItemCost"							"2000"
 		"Model"								"models/thd_hero/lunasa_prismriver/item/item_lunasa.vmdl"
-		"ItemPurchasable"				    "0"
+		 
+		
 		"ItemShareability"					"ITEM_PARTIALLY_SHAREABLE"
 		
 		//-------------------------------------------------------------------------------------------------------------
@@ -1174,12 +1237,16 @@
 		// General
 		"ID" 								"8014"
 		"BaseClass" 						"item_datadriven"
+		"ItemKillable" 						"0"
+		"ItemPurchasable"				    "0"
+		"ItemDisassembleRule"				"DOTA_ITEM_DISASSEMBLE_ALWAYS"
 		"AbilityTextureName" 				"item_0014"
 		"AbilityBehavior" 					"DOTA_ABILITY_BEHAVIOR_POINT"
 		"AbilityCastRange"					"100"
 		"ItemCost"							"2000"
 		"Model"								"models/thd_hero/merlin_prismriver/item/item_merlin.vmdl"
-		"ItemPurchasable"				    "0"
+		 
+		
 		"ItemShareability"					"ITEM_PARTIALLY_SHAREABLE"
 
 		
@@ -1206,12 +1273,16 @@
 		// General
 		"ID" 								"8015"
 		"BaseClass" 						"item_datadriven"
+		"ItemKillable" 						"0"
+		"ItemPurchasable"				    "0"
+		"ItemDisassembleRule"				"DOTA_ITEM_DISASSEMBLE_ALWAYS"
 		"AbilityTextureName" 				"item_0015"
 		"AbilityBehavior" 					"DOTA_ABILITY_BEHAVIOR_POINT"
 		"AbilityCastRange"					"100"
 		"ItemCost"							"2000"
 		"Model"								"models/thd_hero/rumia/item/item_rumia.vmdl"
-		"ItemPurchasable"				    "0"
+		 
+		
 		"ItemShareability"					"ITEM_PARTIALLY_SHAREABLE"
 		
 		//-------------------------------------------------------------------------------------------------------------
@@ -1237,12 +1308,16 @@
 		// General
 		"ID" 								"8016"
 		"BaseClass" 						"item_datadriven"
+		"ItemKillable" 						"0"
+		"ItemPurchasable"				    "0"
+		"ItemDisassembleRule"				"DOTA_ITEM_DISASSEMBLE_ALWAYS"
 		"AbilityTextureName" 				"item_0016"
 		"AbilityBehavior" 					"DOTA_ABILITY_BEHAVIOR_POINT"
 		"AbilityCastRange"					"100"
 		"ItemCost"							"2000"
 		"Model"								"models/thd_hero/satori/item/item_satori.vmdl"
-		"ItemPurchasable"				    "0"
+		 
+		
 		"ItemShareability"					"ITEM_PARTIALLY_SHAREABLE"
 		
 		//-------------------------------------------------------------------------------------------------------------
@@ -1268,12 +1343,16 @@
 		// General
 		"ID" 								"8017"
 		"BaseClass" 						"item_datadriven"
+		"ItemKillable" 						"0"
+		"ItemPurchasable"				    "0"
+		"ItemDisassembleRule"				"DOTA_ITEM_DISASSEMBLE_ALWAYS"
 		"AbilityTextureName" 				"item_0017"
 		"AbilityBehavior" 					"DOTA_ABILITY_BEHAVIOR_POINT"
 		"AbilityCastRange"					"100"
 		"ItemCost"							"2000"
 		"Model"								"models/thd_hero/iku/item/item_iku.vmdl"
-		"ItemPurchasable"				    "0"
+		 
+		
 		"ItemShareability"					"ITEM_PARTIALLY_SHAREABLE"
 		
 		//-------------------------------------------------------------------------------------------------------------
@@ -1299,12 +1378,16 @@
 		// General
 		"ID" 								"8018"
 		"BaseClass" 						"item_datadriven"
+		"ItemKillable" 						"0"
+		"ItemPurchasable"				    "0"
+		"ItemDisassembleRule"				"DOTA_ITEM_DISASSEMBLE_ALWAYS"
 		"AbilityTextureName" 				"item_0018"
 		"AbilityBehavior" 					"DOTA_ABILITY_BEHAVIOR_POINT"
 		"AbilityCastRange"					"100"
 		"ItemCost"							"2000"
 		"Model"								"models/thd_hero/mystia/item/item_mystia.vmdl"
-		"ItemPurchasable"				    "0"
+		 
+		
 		"ItemShareability"					"ITEM_PARTIALLY_SHAREABLE"
 		
 		//-------------------------------------------------------------------------------------------------------------
@@ -1330,12 +1413,16 @@
 		// General
 		"ID" 								"8019"
 		"BaseClass" 						"item_datadriven"
+		"ItemKillable" 						"0"
+		"ItemPurchasable"				    "0"
+		"ItemDisassembleRule"				"DOTA_ITEM_DISASSEMBLE_ALWAYS"
 		"AbilityTextureName" 				"item_0019"
 		"AbilityBehavior" 					"DOTA_ABILITY_BEHAVIOR_POINT"
 		"AbilityCastRange"					"100"
 		"ItemCost"							"5000"
 		"Model"								"models/thd_hero/marisa/item/item_marisa.vmdl"
-		"ItemPurchasable"				    "0"
+		 
+		
 		"ItemShareability"					"ITEM_PARTIALLY_SHAREABLE"
 		
 		//-------------------------------------------------------------------------------------------------------------
@@ -1361,12 +1448,16 @@
 		// General
 		"ID" 								"8020"
 		"BaseClass" 						"item_datadriven"
+		"ItemKillable" 						"0"
+		"ItemPurchasable"				    "0"
+		"ItemDisassembleRule"				"DOTA_ITEM_DISASSEMBLE_ALWAYS"
 		"AbilityTextureName" 				"item_0020"
 		"AbilityBehavior" 					"DOTA_ABILITY_BEHAVIOR_POINT"
 		"AbilityCastRange"					"100"
 		"ItemCost"							"5000"
 		"Model"								"models/thd_hero/tenshi/item/item_tenshi.vmdl"
-		"ItemPurchasable"				    "0"
+		 
+		
 		"ItemShareability"					"ITEM_PARTIALLY_SHAREABLE"
 		
 		//-------------------------------------------------------------------------------------------------------------
@@ -1392,12 +1483,16 @@
 		// General
 		"ID" 								"8021"
 		"BaseClass" 						"item_datadriven"
+		"ItemKillable" 						"0"
+		"ItemPurchasable"				    "0"
+		"ItemDisassembleRule"				"DOTA_ITEM_DISASSEMBLE_ALWAYS"
 		"AbilityTextureName" 				"item_0021"
 		"AbilityBehavior" 					"DOTA_ABILITY_BEHAVIOR_POINT"
 		"AbilityCastRange"					"100"
 		"ItemCost"							"5000"
 		"Model"								"models/thd_hero/patchouli/item/item_patchouli.vmdl"
-		"ItemPurchasable"				    "0"
+		 
+		
 		"ItemShareability"					"ITEM_PARTIALLY_SHAREABLE"
 		
 		//-------------------------------------------------------------------------------------------------------------
@@ -1423,12 +1518,16 @@
 		// General
 		"ID" 								"8022"
 		"BaseClass" 						"item_datadriven"
+		"ItemKillable" 						"0"
+		"ItemPurchasable"				    "0"
+		"ItemDisassembleRule"				"DOTA_ITEM_DISASSEMBLE_ALWAYS"
 		"AbilityTextureName" 				"item_0022"
 		"AbilityBehavior" 					"DOTA_ABILITY_BEHAVIOR_POINT"
 		"AbilityCastRange"					"100"
 		"ItemCost"							"5000"
 		"Model"								"models/thd_hero/sakuya/item/item_sakuya.vmdl"
-		"ItemPurchasable"				    "0"
+		 
+		
 		"ItemShareability"					"ITEM_PARTIALLY_SHAREABLE"
 		
 		//-------------------------------------------------------------------------------------------------------------
@@ -1454,12 +1553,16 @@
 		// General
 		"ID" 								"8023"
 		"BaseClass" 						"item_datadriven"
+		"ItemKillable" 						"0"
+		"ItemPurchasable"				    "0"
+		"ItemDisassembleRule"				"DOTA_ITEM_DISASSEMBLE_ALWAYS"
 		"AbilityTextureName" 				"item_0023"
 		"AbilityBehavior" 					"DOTA_ABILITY_BEHAVIOR_POINT"
 		"AbilityCastRange"					"100"
 		"ItemCost"							"5000"
 		"Model"								"models/thd_hero/reisen/item/item_reisen.vmdl"
-		"ItemPurchasable"				    "0"
+		 
+		
 		"ItemShareability"					"ITEM_PARTIALLY_SHAREABLE"
 		
 		//-------------------------------------------------------------------------------------------------------------
@@ -1485,12 +1588,16 @@
 		// General
 		"ID" 								"8024"
 		"BaseClass" 						"item_datadriven"
+		"ItemKillable" 						"0"
+		"ItemPurchasable"				    "0"
+		"ItemDisassembleRule"				"DOTA_ITEM_DISASSEMBLE_ALWAYS"
 		"AbilityTextureName" 				"item_0024"
 		"AbilityBehavior" 					"DOTA_ABILITY_BEHAVIOR_POINT"
 		"AbilityCastRange"					"100"
 		"ItemCost"							"5000"
 		"Model"								"models/thd_hero/yuyuko/item/item_yuyuko.vmdl"
-		"ItemPurchasable"				    "0"
+		 
+		
 		"ItemShareability"					"ITEM_PARTIALLY_SHAREABLE"
 		
 		//-------------------------------------------------------------------------------------------------------------
@@ -1516,12 +1623,16 @@
 		// General
 		"ID" 								"8025"
 		"BaseClass" 						"item_datadriven"
+		"ItemKillable" 						"0"
+		"ItemPurchasable"				    "0"
+		"ItemDisassembleRule"				"DOTA_ITEM_DISASSEMBLE_ALWAYS"
 		"AbilityTextureName" 				"item_0025"
 		"AbilityBehavior" 					"DOTA_ABILITY_BEHAVIOR_POINT"
 		"AbilityCastRange"					"100"
 		"ItemCost"							"5000"
 		"Model"								"models/thd_hero/youmu/item/item_youmu.vmdl"
-		"ItemPurchasable"				    "0"
+		 
+		
 		"ItemShareability"					"ITEM_PARTIALLY_SHAREABLE"
 		
 		//-------------------------------------------------------------------------------------------------------------
@@ -1547,12 +1658,16 @@
 		// General
 		"ID" 								"8026"
 		"BaseClass" 						"item_datadriven"
+		"ItemKillable" 						"0"
+		"ItemPurchasable"				    "0"
+		"ItemDisassembleRule"				"DOTA_ITEM_DISASSEMBLE_ALWAYS"
 		"AbilityTextureName" 				"item_0026"
 		"AbilityBehavior" 					"DOTA_ABILITY_BEHAVIOR_POINT"
 		"AbilityCastRange"					"100"
 		"ItemCost"							"5000"
 		"Model"								"models/thd_hero/rin/item/item_rin.vmdl"
-		"ItemPurchasable"				    "0"
+		 
+		
 		"ItemShareability"					"ITEM_PARTIALLY_SHAREABLE"
 		
 		//-------------------------------------------------------------------------------------------------------------
@@ -1578,12 +1693,16 @@
 		// General
 		"ID" 								"8027"
 		"BaseClass" 						"item_datadriven"
+		"ItemKillable" 						"0"
+		"ItemPurchasable"				    "0"
+		"ItemDisassembleRule"				"DOTA_ITEM_DISASSEMBLE_ALWAYS"
 		"AbilityTextureName" 				"item_0027"
 		"AbilityBehavior" 					"DOTA_ABILITY_BEHAVIOR_POINT"
 		"AbilityCastRange"					"100"
 		"ItemCost"							"5000"
 		"Model"								"models/thd_hero/utsuho/item/item_utsuho.vmdl"
-		"ItemPurchasable"				    "0"
+		 
+		
 		"ItemShareability"					"ITEM_PARTIALLY_SHAREABLE"
 		
 		//-------------------------------------------------------------------------------------------------------------
@@ -1609,12 +1728,16 @@
 		// General
 		"ID" 								"8028"
 		"BaseClass" 						"item_datadriven"
+		"ItemKillable" 						"0"
+		"ItemPurchasable"				    "0"
+		"ItemDisassembleRule"				"DOTA_ITEM_DISASSEMBLE_ALWAYS"
 		"AbilityTextureName" 				"item_0028"
 		"AbilityBehavior" 					"DOTA_ABILITY_BEHAVIOR_POINT"
 		"AbilityCastRange"					"100"
 		"ItemCost"							"10000"
 		"Model"								"models/thd_hero/reimu/item/item_reimu.vmdl"
-		"ItemPurchasable"				    "0"
+		 
+		
 		"ItemShareability"					"ITEM_PARTIALLY_SHAREABLE"
 		
 		//-------------------------------------------------------------------------------------------------------------
@@ -1640,12 +1763,16 @@
 		// General
 		"ID" 								"8029"
 		"BaseClass" 						"item_datadriven"
+		"ItemKillable" 						"0"
+		"ItemPurchasable"				    "0"
+		"ItemDisassembleRule"				"DOTA_ITEM_DISASSEMBLE_ALWAYS"
 		"AbilityTextureName" 				"item_0029"
 		"AbilityBehavior" 					"DOTA_ABILITY_BEHAVIOR_POINT"
 		"AbilityCastRange"					"100"
 		"ItemCost"							"10000"
 		"Model"								"models/thd_hero/daiyousei/item/item_daiyousei.vmdl"
-		"ItemPurchasable"				    "0"
+		 
+		
 		"ItemShareability"					"ITEM_PARTIALLY_SHAREABLE"
 		
 		//-------------------------------------------------------------------------------------------------------------
@@ -1671,12 +1798,16 @@
 		// General
 		"ID" 								"8030"
 		"BaseClass" 						"item_datadriven"
+		"ItemKillable" 						"0"
+		"ItemPurchasable"				    "0"
+		"ItemDisassembleRule"				"DOTA_ITEM_DISASSEMBLE_ALWAYS"
 		"AbilityTextureName" 				"item_0030"
 		"AbilityBehavior" 					"DOTA_ABILITY_BEHAVIOR_POINT"
 		"AbilityCastRange"					"100"
 		"ItemCost"							"10000"
 		"Model"								"models/thd_hero/remilia/item/item_remilia.vmdl"
-		"ItemPurchasable"				    "0"
+		 
+		
 		"ItemShareability"					"ITEM_PARTIALLY_SHAREABLE"
 		
 		//-------------------------------------------------------------------------------------------------------------
@@ -1702,12 +1833,16 @@
 		// General
 		"ID" 								"8031"
 		"BaseClass" 						"item_datadriven"
+		"ItemKillable" 						"0"
+		"ItemPurchasable"				    "0"
+		"ItemDisassembleRule"				"DOTA_ITEM_DISASSEMBLE_ALWAYS"
 		"AbilityTextureName" 				"item_0031"
 		"AbilityBehavior" 					"DOTA_ABILITY_BEHAVIOR_POINT"
 		"AbilityCastRange"					"100"
 		"ItemCost"							"10000"
 		"Model"								"models/thd_hero/koishi/item/item_koishi.vmdl"
-		"ItemPurchasable"				    "0"
+		 
+		
 		"ItemShareability"					"ITEM_PARTIALLY_SHAREABLE"
 		
 		//-------------------------------------------------------------------------------------------------------------
@@ -1732,12 +1867,16 @@
 		// General
 		"ID" 								"8032"
 		"BaseClass" 						"item_datadriven"
+		"ItemKillable" 						"0"
+		"ItemPurchasable"				    "0"
+		"ItemDisassembleRule"				"DOTA_ITEM_DISASSEMBLE_ALWAYS"
 		"AbilityTextureName" 				"item_0032"
 		"AbilityBehavior" 					"DOTA_ABILITY_BEHAVIOR_POINT"
 		"AbilityCastRange"					"100"
 		"ItemCost"							"10000"
 		"Model"								"models/thd_hero/flandre/item/item_flandre.vmdl"
-		"ItemPurchasable"				    "0"
+		 
+		
 		"ItemShareability"					"ITEM_PARTIALLY_SHAREABLE"
 		
 		//-------------------------------------------------------------------------------------------------------------
@@ -1762,12 +1901,16 @@
 		// General
 		"ID" 								"8033"
 		"BaseClass" 						"item_datadriven"
+		"ItemKillable" 						"0"
+		"ItemPurchasable"				    "0"
+		"ItemDisassembleRule"				"DOTA_ITEM_DISASSEMBLE_ALWAYS"
 		"AbilityTextureName" 				"item_0033"
 		"AbilityBehavior" 					"DOTA_ABILITY_BEHAVIOR_POINT"
 		"AbilityCastRange"					"100"
 		"ItemCost"							"2000"
 		"Model"								"models/thd_hero/koakuma/item/item_koakuma.vmdl"
-		"ItemPurchasable"				    "0"
+		 
+		
 		"ItemShareability"					"ITEM_PARTIALLY_SHAREABLE"
 		
 		//-------------------------------------------------------------------------------------------------------------
@@ -1792,12 +1935,16 @@
 		// General
 		"ID" 								"8034"
 		"BaseClass" 						"item_datadriven"
+		"ItemKillable" 						"0"
+		"ItemPurchasable"				    "0"
+		"ItemDisassembleRule"				"DOTA_ITEM_DISASSEMBLE_ALWAYS"
 		"AbilityTextureName" 				"item_0034"
 		"AbilityBehavior" 					"DOTA_ABILITY_BEHAVIOR_POINT"
 		"AbilityCastRange"					"100"
 		"ItemCost"							"2000"
 		"Model"								"models/thd_hero/meirin/item/item_meirin.vmdl"
-		"ItemPurchasable"				    "0"
+		 
+		
 		"ItemShareability"					"ITEM_PARTIALLY_SHAREABLE"
 		
 		//-------------------------------------------------------------------------------------------------------------
@@ -1822,12 +1969,16 @@
 		// General
 		"ID" 								"8035"
 		"BaseClass" 						"item_datadriven"
+		"ItemKillable" 						"0"
+		"ItemPurchasable"				    "0"
+		"ItemDisassembleRule"				"DOTA_ITEM_DISASSEMBLE_ALWAYS"
 		"AbilityTextureName" 				"item_0035"
 		"AbilityBehavior" 					"DOTA_ABILITY_BEHAVIOR_POINT"
 		"AbilityCastRange"					"100"
 		"ItemCost"							"10000"
 		"Model"								"models/thd_hero/yuuka/item/item_yuuka.vmdl"
-		"ItemPurchasable"				    "0"
+		 
+		
 		"ItemShareability"					"ITEM_PARTIALLY_SHAREABLE"
 		
 		//-------------------------------------------------------------------------------------------------------------
@@ -1852,12 +2003,16 @@
 		// General
 		"ID" 								"8036"
 		"BaseClass" 						"item_datadriven"
+		"ItemKillable" 						"0"
+		"ItemPurchasable"				    "0"
+		"ItemDisassembleRule"				"DOTA_ITEM_DISASSEMBLE_ALWAYS"
 		"AbilityTextureName" 				"item_0036"
 		"AbilityBehavior" 					"DOTA_ABILITY_BEHAVIOR_POINT"
 		"AbilityCastRange"					"100"
 		"ItemCost"							"10000"
 		"Model"								"models/thd_hero/yukari/item/item_yukari.vmdl"
-		"ItemPurchasable"				    "0"
+		 
+		
 		"ItemShareability"					"ITEM_PARTIALLY_SHAREABLE"
 		
 		//-------------------------------------------------------------------------------------------------------------
@@ -1882,12 +2037,16 @@
 		// General
 		"ID" 								"8037"
 		"BaseClass" 						"item_datadriven"
+		"ItemKillable" 						"0"
+		"ItemPurchasable"				    "0"
+		"ItemDisassembleRule"				"DOTA_ITEM_DISASSEMBLE_ALWAYS"
 		"AbilityTextureName" 				"item_0037"
 		"AbilityBehavior" 					"DOTA_ABILITY_BEHAVIOR_POINT"
 		"AbilityCastRange"					"100"
 		"ItemCost"							"5000"
 		"Model"								"models/thd_hero/ran/item/item_ran.vmdl"
-		"ItemPurchasable"				    "0"
+		 
+		
 		"ItemShareability"					"ITEM_PARTIALLY_SHAREABLE"
 		
 		//-------------------------------------------------------------------------------------------------------------
@@ -1911,12 +2070,16 @@
 		// General
 		"ID" 								"8038"
 		"BaseClass" 						"item_datadriven"
+		"ItemKillable" 						"0"
+		"ItemPurchasable"				    "0"
+		"ItemDisassembleRule"				"DOTA_ITEM_DISASSEMBLE_ALWAYS"
 		"AbilityTextureName" 				"item_0038"
 		"AbilityBehavior" 					"DOTA_ABILITY_BEHAVIOR_POINT"
 		"AbilityCastRange"					"100"
 		"ItemCost"							"2000"
 		"Model"								"models/thd_hero/chen/item/item_chen.vmdl"
-		"ItemPurchasable"				    "0"
+		 
+		
 		"ItemShareability"					"ITEM_PARTIALLY_SHAREABLE"
 		
 		//-------------------------------------------------------------------------------------------------------------
@@ -1940,12 +2103,16 @@
 		// General
 		"ID" 								"8039"
 		"BaseClass" 						"item_datadriven"
+		"ItemKillable" 						"0"
+		"ItemPurchasable"				    "0"
+		"ItemDisassembleRule"				"DOTA_ITEM_DISASSEMBLE_ALWAYS"
 		"AbilityTextureName" 				"item_0039"
 		"AbilityBehavior" 					"DOTA_ABILITY_BEHAVIOR_POINT"
 		"AbilityCastRange"					"100"
 		"ItemCost"							"10000"
 		"Model"								"models/thd_hero/eirin/item/item_eirin.vmdl"
-		"ItemPurchasable"				    "0"
+		 
+		
 		"ItemShareability"					"ITEM_PARTIALLY_SHAREABLE"
 		
 		//-------------------------------------------------------------------------------------------------------------
@@ -1969,12 +2136,16 @@
 		// General
 		"ID" 								"8040"
 		"BaseClass" 						"item_datadriven"
+		"ItemKillable" 						"0"
+		"ItemPurchasable"				    "0"
+		"ItemDisassembleRule"				"DOTA_ITEM_DISASSEMBLE_ALWAYS"
 		"AbilityTextureName" 				"item_0040"
 		"AbilityBehavior" 					"DOTA_ABILITY_BEHAVIOR_POINT"
 		"AbilityCastRange"					"100"
 		"ItemCost"							"5000"
 		"Model"								"models/thd_hero/mokou/item/item_mokou.vmdl"
-		"ItemPurchasable"				    "0"
+		 
+		
 		"ItemShareability"					"ITEM_PARTIALLY_SHAREABLE"
 		
 		//-------------------------------------------------------------------------------------------------------------
@@ -1998,12 +2169,16 @@
 		// General
 		"ID" 								"8041"
 		"BaseClass" 						"item_datadriven"
+		"ItemKillable" 						"0"
+		"ItemPurchasable"				    "0"
+		"ItemDisassembleRule"				"DOTA_ITEM_DISASSEMBLE_ALWAYS"
 		"AbilityTextureName" 				"item_0041"
 		"AbilityBehavior" 					"DOTA_ABILITY_BEHAVIOR_POINT"
 		"AbilityCastRange"					"100"
 		"ItemCost"							"5000"
 		"Model"								"models/thd_hero/kaguya/item/item_kaguya.vmdl"
-		"ItemPurchasable"				    "0"
+		 
+		
 		"ItemShareability"					"ITEM_PARTIALLY_SHAREABLE"
 		
 		//-------------------------------------------------------------------------------------------------------------
@@ -2027,12 +2202,16 @@
 		// General
 		"ID" 								"8042"
 		"BaseClass" 						"item_datadriven"
+		"ItemKillable" 						"0"
+		"ItemPurchasable"				    "0"
+		"ItemDisassembleRule"				"DOTA_ITEM_DISASSEMBLE_ALWAYS"
 		"AbilityTextureName" 				"item_0042"
 		"AbilityBehavior" 					"DOTA_ABILITY_BEHAVIOR_POINT"
 		"AbilityCastRange"					"100"
 		"ItemCost"							"5000"
 		"Model"								"models/thd_hero/aya/item/item_aya.vmdl"
-		"ItemPurchasable"				    "0"
+		 
+		
 		"ItemShareability"					"ITEM_PARTIALLY_SHAREABLE"
 		
 		//-------------------------------------------------------------------------------------------------------------
@@ -2056,12 +2235,16 @@
 		// General
 		"ID" 								"8043"
 		"BaseClass" 						"item_datadriven"
+		"ItemKillable" 						"0"
+		"ItemPurchasable"				    "0"
+		"ItemDisassembleRule"				"DOTA_ITEM_DISASSEMBLE_ALWAYS"
 		"AbilityTextureName" 				"item_0043"
 		"AbilityBehavior" 					"DOTA_ABILITY_BEHAVIOR_POINT"
 		"AbilityCastRange"					"100"
 		"ItemCost"							"2000"
 		"Model"								"models/thd_hero/hatate/item/item_hatate.vmdl"
-		"ItemPurchasable"				    "0"
+		 
+		
 		"ItemShareability"					"ITEM_PARTIALLY_SHAREABLE"
 		
 		//-------------------------------------------------------------------------------------------------------------
@@ -2085,12 +2268,16 @@
 		// General
 		"ID" 								"8044"
 		"BaseClass" 						"item_datadriven"
+		"ItemKillable" 						"0"
+		"ItemPurchasable"				    "0"
+		"ItemDisassembleRule"				"DOTA_ITEM_DISASSEMBLE_ALWAYS"
 		"AbilityTextureName" 				"item_0044"
 		"AbilityBehavior" 					"DOTA_ABILITY_BEHAVIOR_POINT"
 		"AbilityCastRange"					"100"
 		"ItemCost"							"2000"
 		"Model"								"models/thd_hero/momiji/item/item_momiji.vmdl"
-		"ItemPurchasable"				    "0"
+		 
+		
 		"ItemShareability"					"ITEM_PARTIALLY_SHAREABLE"
 		
 		//-------------------------------------------------------------------------------------------------------------
@@ -2114,12 +2301,16 @@
 		// General
 		"ID" 								"8046"
 		"BaseClass" 						"item_datadriven"
+		"ItemKillable" 						"0"
+		"ItemPurchasable"				    "0"
+		"ItemDisassembleRule"				"DOTA_ITEM_DISASSEMBLE_ALWAYS"
 		"AbilityTextureName" 				"item_0046"
 		"AbilityBehavior" 					"DOTA_ABILITY_BEHAVIOR_POINT"
 		"AbilityCastRange"					"100"
 		"ItemCost"							"5000"
 		"Model"								"models/thd_hero/sanae/item/item_sanae.vmdl"
-		"ItemPurchasable"				    "0"
+		 
+		
 		"ItemShareability"					"ITEM_PARTIALLY_SHAREABLE"
 		
 		//-------------------------------------------------------------------------------------------------------------
@@ -2143,12 +2334,16 @@
 		// General
 		"ID" 								"8047"
 		"BaseClass" 						"item_datadriven"
+		"ItemKillable" 						"0"
+		"ItemPurchasable"				    "0"
+		"ItemDisassembleRule"				"DOTA_ITEM_DISASSEMBLE_ALWAYS"
 		"AbilityTextureName" 				"item_0047"
 		"AbilityBehavior" 					"DOTA_ABILITY_BEHAVIOR_POINT"
 		"AbilityCastRange"					"100"
 		"ItemCost"							"10000"
 		"Model"								"models/thd_hero/kanako/item/item_kanako.vmdl"
-		"ItemPurchasable"				    "0"
+		 
+		
 		"ItemShareability"					"ITEM_PARTIALLY_SHAREABLE"
 		
 		//-------------------------------------------------------------------------------------------------------------
@@ -2173,12 +2368,16 @@
 		// General
 		"ID" 								"8048"
 		"BaseClass" 						"item_datadriven"
+		"ItemKillable" 						"0"
+		"ItemPurchasable"				    "0"
+		"ItemDisassembleRule"				"DOTA_ITEM_DISASSEMBLE_ALWAYS"
 		"AbilityTextureName" 				"item_0048"
 		"AbilityBehavior" 					"DOTA_ABILITY_BEHAVIOR_POINT"
 		"AbilityCastRange"					"100"
 		"ItemCost"							"5000"
 		"Model"								"models/thd_hero/suwako/item/item_suwako.vmdl"
-		"ItemPurchasable"				    "0"
+		 
+		
 		"ItemShareability"					"ITEM_PARTIALLY_SHAREABLE"
 		
 		//-------------------------------------------------------------------------------------------------------------
@@ -2203,12 +2402,16 @@
 		// General
 		"ID" 								"8049"
 		"BaseClass" 						"item_datadriven"
+		"ItemKillable" 						"0"
+		"ItemPurchasable"				    "0"
+		"ItemDisassembleRule"				"DOTA_ITEM_DISASSEMBLE_ALWAYS"
 		"AbilityTextureName" 				"item_0049"
 		"AbilityBehavior" 					"DOTA_ABILITY_BEHAVIOR_POINT"
 		"AbilityCastRange"					"100"
 		"ItemCost"							"5000"
 		"Model"								"models/thd_hero/minamitsu/item/item_minamitsu.vmdl"
-		"ItemPurchasable"				    "0"
+		 
+		
 		"ItemShareability"					"ITEM_PARTIALLY_SHAREABLE"
 		
 		//-------------------------------------------------------------------------------------------------------------
@@ -2233,12 +2436,16 @@
 		// General
 		"ID" 								"8050"
 		"BaseClass" 						"item_datadriven"
+		"ItemKillable" 						"0"
+		"ItemPurchasable"				    "0"
+		"ItemDisassembleRule"				"DOTA_ITEM_DISASSEMBLE_ALWAYS"
 		"AbilityTextureName" 				"item_0050"
 		"AbilityBehavior" 					"DOTA_ABILITY_BEHAVIOR_POINT"
 		"AbilityCastRange"					"100"
 		"ItemCost"							"5000"
 		"Model"								"models/thd_hero/nue/item/item_nue.vmdl"
-		"ItemPurchasable"				    "0"
+		 
+		
 		"ItemShareability"					"ITEM_PARTIALLY_SHAREABLE"
 		
 		//-------------------------------------------------------------------------------------------------------------
@@ -2263,12 +2470,16 @@
 		// General
 		"ID" 								"8051"
 		"BaseClass" 						"item_datadriven"
+		"ItemKillable" 						"0"
+		"ItemPurchasable"				    "0"
+		"ItemDisassembleRule"				"DOTA_ITEM_DISASSEMBLE_ALWAYS"
 		"AbilityTextureName" 				"item_0051"
 		"AbilityBehavior" 					"DOTA_ABILITY_BEHAVIOR_POINT"
 		"AbilityCastRange"					"100"
 		"ItemCost"							"10000"
 		"Model"								"models/thd_hero/byakuren/item/item_byakuren.vmdl"
-		"ItemPurchasable"				    "0"
+		 
+		
 		"ItemShareability"					"ITEM_PARTIALLY_SHAREABLE"
 		
 		//-------------------------------------------------------------------------------------------------------------
@@ -2293,12 +2504,254 @@
 		// General
 		"ID" 								"8052"
 		"BaseClass" 						"item_datadriven"
+		"ItemKillable" 						"0"
+		"ItemPurchasable"				    "0"
+		"ItemDisassembleRule"				"DOTA_ITEM_DISASSEMBLE_ALWAYS"
 		"AbilityTextureName" 				"item_0052"
 		"AbilityBehavior" 					"DOTA_ABILITY_BEHAVIOR_POINT"
 		"AbilityCastRange"					"100"
 		"ItemCost"							"10000"
 		"Model"								"models/thd_hero/miko/item/item_miko.vmdl"
+		 
+		
+		"ItemShareability"					"ITEM_PARTIALLY_SHAREABLE"
+		
+		//-------------------------------------------------------------------------------------------------------------
+		// Item Info
+		
+		"OnSpellStart"
+		{
+			"RunScript"
+			{
+				"ScriptFile"	"scripts/vscripts/abilities/abilityCommon.lua"
+				"Function"		"PutTowerToPoint"
+				"Target"		"POINT"
+			}
+		}
+	}
+
+	//-------------------------------------------------------------------------------------------------------------
+	// 秦心
+	"item_0053"
+	{
+		//-------------------------------------------------------------------------------------------------------------
+		// General
+		"ID" 								"8053"
+		"BaseClass" 						"item_datadriven"
+		"ItemKillable" 						"0"
 		"ItemPurchasable"				    "0"
+		"ItemDisassembleRule"				"DOTA_ITEM_DISASSEMBLE_ALWAYS"
+		"AbilityTextureName" 				"item_0053"
+		"AbilityBehavior" 					"DOTA_ABILITY_BEHAVIOR_POINT"
+		"AbilityCastRange"					"100"
+		"ItemCost"							"5000"
+		"Model"								"models/thd_hero/kokoro/kokoro.vmdl"		
+		 
+		
+		"ItemShareability"					"ITEM_PARTIALLY_SHAREABLE"
+		
+		//-------------------------------------------------------------------------------------------------------------
+		// Item Info
+		
+		"OnSpellStart"
+		{
+			"RunScript"
+			{
+				"ScriptFile"	"scripts/vscripts/abilities/abilityCommon.lua"
+				"Function"		"PutTowerToPoint"
+				"Target"		"POINT"
+			}
+		}
+	}
+
+	//-------------------------------------------------------------------------------------------------------------
+	// 星熊勇仪
+	"item_0054"
+	{
+		//-------------------------------------------------------------------------------------------------------------
+		// General
+		"ID" 								"8054"
+		"BaseClass" 						"item_datadriven"
+		"ItemKillable" 						"0"
+		"ItemPurchasable"				    "0"
+		"ItemDisassembleRule"				"DOTA_ITEM_DISASSEMBLE_ALWAYS"
+		"AbilityTextureName" 				"item_0054"
+		"AbilityBehavior" 					"DOTA_ABILITY_BEHAVIOR_POINT"
+		"AbilityCastRange"					"100"
+		"ItemCost"							"5000"
+		"Model"								"models/thd_hero/yuugi/item/item_yuugi.vmdl"
+		 
+		
+		"ItemShareability"					"ITEM_PARTIALLY_SHAREABLE"
+		
+		//-------------------------------------------------------------------------------------------------------------
+		// Item Info
+		
+		"OnSpellStart"
+		{
+			"RunScript"
+			{
+				"ScriptFile"	"scripts/vscripts/abilities/abilityCommon.lua"
+				"Function"		"PutTowerToPoint"
+				"Target"		"POINT"
+			}
+		}
+	}
+
+	//-------------------------------------------------------------------------------------------------------------
+	// 伊吹萃香
+	"item_0055"
+	{
+		//-------------------------------------------------------------------------------------------------------------
+		// General
+		"ID" 								"8055"
+		"BaseClass" 						"item_datadriven"
+		"ItemKillable" 						"0"
+		"ItemPurchasable"				    "0"
+		"ItemDisassembleRule"				"DOTA_ITEM_DISASSEMBLE_ALWAYS"
+		"AbilityTextureName" 				"item_0055"
+		"AbilityBehavior" 					"DOTA_ABILITY_BEHAVIOR_POINT"
+		"AbilityCastRange"					"100"
+		"ItemCost"							"5000"
+		"Model"								"models/thd_hero/suika/item/item_suika.vmdl"
+		 
+		
+		"ItemShareability"					"ITEM_PARTIALLY_SHAREABLE"
+		
+		//-------------------------------------------------------------------------------------------------------------
+		// Item Info
+		
+		"OnSpellStart"
+		{
+			"RunScript"
+			{
+				"ScriptFile"	"scripts/vscripts/abilities/abilityCommon.lua"
+				"Function"		"PutTowerToPoint"
+				"Target"		"POINT"
+			}
+		}
+	}
+
+	//-------------------------------------------------------------------------------------------------------------
+	// 斯塔·萨菲雅
+	"item_0056"
+	{
+		//-------------------------------------------------------------------------------------------------------------
+		// General
+		"ID" 								"8056"
+		"BaseClass" 						"item_datadriven"
+		"ItemKillable" 						"0"
+		"ItemPurchasable"				    "0"
+		"ItemDisassembleRule"				"DOTA_ITEM_DISASSEMBLE_ALWAYS"
+		"AbilityTextureName" 				"item_0056"
+		"AbilityBehavior" 					"DOTA_ABILITY_BEHAVIOR_POINT"
+		"AbilityCastRange"					"100"
+		"ItemCost"							"2000"
+		"Model"								"models/thd_hero/star/item/item_star.vmdl"
+		 
+		
+		"ItemShareability"					"ITEM_PARTIALLY_SHAREABLE"
+		
+		//-------------------------------------------------------------------------------------------------------------
+		// Item Info
+		
+		"OnSpellStart"
+		{
+			"RunScript"
+			{
+				"ScriptFile"	"scripts/vscripts/abilities/abilityCommon.lua"
+				"Function"		"PutTowerToPoint"
+				"Target"		"POINT"
+			}
+		}
+	}
+
+	//-------------------------------------------------------------------------------------------------------------
+	// 桑妮·米尔克
+	"item_0057"
+	{
+		//-------------------------------------------------------------------------------------------------------------
+		// General
+		"ID" 								"8057"
+		"BaseClass" 						"item_datadriven"
+		"ItemKillable" 						"0"
+		"ItemPurchasable"				    "0"
+		"ItemDisassembleRule"				"DOTA_ITEM_DISASSEMBLE_ALWAYS"
+		"AbilityTextureName" 				"item_0057"
+		"AbilityBehavior" 					"DOTA_ABILITY_BEHAVIOR_POINT"
+		"AbilityCastRange"					"100"
+		"ItemCost"							"2000"
+		"Model"								"models/thd_hero/sunny/item/item_sunny.vmdl"
+		 
+		
+		"ItemShareability"					"ITEM_PARTIALLY_SHAREABLE"
+		
+		//-------------------------------------------------------------------------------------------------------------
+		// Item Info
+		
+		"OnSpellStart"
+		{
+			"RunScript"
+			{
+				"ScriptFile"	"scripts/vscripts/abilities/abilityCommon.lua"
+				"Function"		"PutTowerToPoint"
+				"Target"		"POINT"
+			}
+		}
+	}
+
+	//-------------------------------------------------------------------------------------------------------------
+	// 露娜·切露德
+	"item_0058"
+	{
+		//-------------------------------------------------------------------------------------------------------------
+		// General
+		"ID" 								"8058"
+		"BaseClass" 						"item_datadriven"
+		"ItemKillable" 						"0"
+		"ItemPurchasable"				    "0"
+		"ItemDisassembleRule"				"DOTA_ITEM_DISASSEMBLE_ALWAYS"
+		"AbilityTextureName" 				"item_0058"
+		"AbilityBehavior" 					"DOTA_ABILITY_BEHAVIOR_POINT"
+		"AbilityCastRange"					"100"
+		"ItemCost"							"2000"
+		"Model"								"models/thd_hero/luna/item/item_luna.vmdl"
+		 
+		
+		"ItemShareability"					"ITEM_PARTIALLY_SHAREABLE"
+		
+		//-------------------------------------------------------------------------------------------------------------
+		// Item Info
+		
+		"OnSpellStart"
+		{
+			"RunScript"
+			{
+				"ScriptFile"	"scripts/vscripts/abilities/abilityCommon.lua"
+				"Function"		"PutTowerToPoint"
+				"Target"		"POINT"
+			}
+		}
+	}
+
+	//-------------------------------------------------------------------------------------------------------------
+	// 爱丽丝·玛格特罗依德
+	"item_0059"
+	{
+		//-------------------------------------------------------------------------------------------------------------
+		// General
+		"ID" 								"8059"
+		"BaseClass" 						"item_datadriven"
+		"ItemKillable" 						"0"
+		"ItemPurchasable"				    "0"
+		"ItemDisassembleRule"				"DOTA_ITEM_DISASSEMBLE_ALWAYS"
+		"AbilityTextureName" 				"item_0059"
+		"AbilityBehavior" 					"DOTA_ABILITY_BEHAVIOR_POINT"
+		"AbilityCastRange"					"100"
+		"ItemCost"							"5000"
+		"Model"								"models/thd_hero/alice/item/item_alice.vmdl"
+		 
+		
 		"ItemShareability"					"ITEM_PARTIALLY_SHAREABLE"
 		
 		//-------------------------------------------------------------------------------------------------------------
@@ -2323,12 +2776,16 @@
 		// General
 		"ID" 								"8061"
 		"BaseClass" 						"item_datadriven"
+		"ItemKillable" 						"0"
+		"ItemPurchasable"				    "0"
+		"ItemDisassembleRule"				"DOTA_ITEM_DISASSEMBLE_ALWAYS"
 		"AbilityTextureName" 				"item_0061"
 		"AbilityBehavior" 					"DOTA_ABILITY_BEHAVIOR_POINT"
 		"AbilityCastRange"					"100"
 		"ItemCost"							"5000"
-		"Model"								"models/thd_hero/keine/keine.vmdl"
-		"ItemPurchasable"				    "0"
+		"Model"								"models/thd_hero/keine/item/item_keine.vmdl"
+		 
+		
 		"ItemShareability"					"ITEM_PARTIALLY_SHAREABLE"
 		
 		//-------------------------------------------------------------------------------------------------------------
@@ -2353,12 +2810,85 @@
 		// General
 		"ID" 								"8069"
 		"BaseClass" 						"item_datadriven"
+		"ItemKillable" 						"0"
+		"ItemPurchasable"				    "0"
+		"ItemDisassembleRule"				"DOTA_ITEM_DISASSEMBLE_ALWAYS"
 		"AbilityTextureName" 				"item_0069"
 		"AbilityBehavior" 					"DOTA_ABILITY_BEHAVIOR_POINT"
 		"AbilityCastRange"					"100"
 		"ItemCost"							"2000"
 		"Model"								"models/thd_hero/toramarushou/item/item_toramarushou.vmdl"
+		 
+		
+		"ItemShareability"					"ITEM_PARTIALLY_SHAREABLE"
+		
+		//-------------------------------------------------------------------------------------------------------------
+		// Item Info
+		
+		"OnSpellStart"
+		{
+			"RunScript"
+			{
+				"ScriptFile"	"scripts/vscripts/abilities/abilityCommon.lua"
+				"Function"		"PutTowerToPoint"
+				"Target"		"POINT"
+			}
+		}
+	}
+
+	//-------------------------------------------------------------------------------------------------------------
+	// 纯狐
+	"item_0073"
+	{
+		//-------------------------------------------------------------------------------------------------------------
+		// General
+		"ID" 								"8073"
+		"BaseClass" 						"item_datadriven"
+		"ItemKillable" 						"0"
 		"ItemPurchasable"				    "0"
+		"ItemDisassembleRule"				"DOTA_ITEM_DISASSEMBLE_ALWAYS"
+		"AbilityTextureName" 				"item_0073"
+		"AbilityBehavior" 					"DOTA_ABILITY_BEHAVIOR_POINT"
+		"AbilityCastRange"					"100"
+		"ItemCost"							"10000"
+		// "Model"								"models/items/courier/jin_yin_white_fox/jin_yin_white_fox.vmdl"
+		"Model"								"models/new_touhou_model/junko/item/item_junko.vmdl"
+		 
+		
+		"ItemShareability"					"ITEM_PARTIALLY_SHAREABLE"
+		
+		//-------------------------------------------------------------------------------------------------------------
+		// Item Info
+		
+		"OnSpellStart"
+		{
+			"RunScript"
+			{
+				"ScriptFile"	"scripts/vscripts/abilities/abilityCommon.lua"
+				"Function"		"PutTowerToPoint"
+				"Target"		"POINT"
+			}
+		}
+	}
+
+	//-------------------------------------------------------------------------------------------------------------
+	// 赫卡提亚
+	"item_0074"
+	{
+		//-------------------------------------------------------------------------------------------------------------
+		// General
+		"ID" 								"8074"
+		"BaseClass" 						"item_datadriven"
+		"ItemKillable" 						"0"
+		"ItemPurchasable"				    "0"
+		"ItemDisassembleRule"				"DOTA_ITEM_DISASSEMBLE_ALWAYS"
+		"AbilityTextureName" 				"item_0074"
+		"AbilityBehavior" 					"DOTA_ABILITY_BEHAVIOR_POINT"
+		"AbilityCastRange"					"100"
+		"ItemCost"							"10000"
+		"Model"								"models/new_touhou_model/hecatia/item/item_hecatia.vmdl"
+		 
+		
 		"ItemShareability"					"ITEM_PARTIALLY_SHAREABLE"
 		
 		//-------------------------------------------------------------------------------------------------------------
@@ -2383,12 +2913,16 @@
 		// General
 		"ID" 								"8080"
 		"BaseClass" 						"item_datadriven"
+		"ItemKillable" 						"0"
+		"ItemPurchasable"				    "0"
+		"ItemDisassembleRule"				"DOTA_ITEM_DISASSEMBLE_ALWAYS"
 		"AbilityTextureName" 				"item_0080"
 		"AbilityBehavior" 					"DOTA_ABILITY_BEHAVIOR_POINT"
 		"AbilityCastRange"					"100"
 		"ItemCost"							"10000"
 		"Model"								"models/thd_hero/shinki/item/item_shinki.vmdl"
-		"ItemPurchasable"				    "0"
+		 
+		
 		"ItemShareability"					"ITEM_PARTIALLY_SHAREABLE"
 		
 		//-------------------------------------------------------------------------------------------------------------
@@ -2413,12 +2947,84 @@
 		// General
 		"ID" 								"8088"
 		"BaseClass" 						"item_datadriven"
+		"ItemKillable" 						"0"
+		"ItemPurchasable"				    "0"
+		"ItemDisassembleRule"				"DOTA_ITEM_DISASSEMBLE_ALWAYS"
 		"AbilityTextureName" 				"item_0088"
 		"AbilityBehavior" 					"DOTA_ABILITY_BEHAVIOR_POINT"
 		"AbilityCastRange"					"100"
 		"ItemCost"							"2000"
 		"Model"								"models/thd_hero/sizuha/item/item_sizuha.vmdl"
+		 
+		
+		"ItemShareability"					"ITEM_PARTIALLY_SHAREABLE"
+		
+		//-------------------------------------------------------------------------------------------------------------
+		// Item Info
+		
+		"OnSpellStart"
+		{
+			"RunScript"
+			{
+				"ScriptFile"	"scripts/vscripts/abilities/abilityCommon.lua"
+				"Function"		"PutTowerToPoint"
+				"Target"		"POINT"
+			}
+		}
+	}
+
+	//-------------------------------------------------------------------------------------------------------------
+	// 键山雏
+	"item_0091"
+	{
+		//-------------------------------------------------------------------------------------------------------------
+		// General
+		"ID" 								"8088"
+		"BaseClass" 						"item_datadriven"
+		"ItemKillable" 						"0"
 		"ItemPurchasable"				    "0"
+		"ItemDisassembleRule"				"DOTA_ITEM_DISASSEMBLE_ALWAYS"
+		"AbilityTextureName" 				"item_0091"
+		"AbilityBehavior" 					"DOTA_ABILITY_BEHAVIOR_POINT"
+		"AbilityCastRange"					"100"
+		"ItemCost"							"2000"
+		"Model"								"models/thd_hero/hina/item/item_hina.vmdl"
+		 
+		
+		"ItemShareability"					"ITEM_PARTIALLY_SHAREABLE"
+		
+		//-------------------------------------------------------------------------------------------------------------
+		// Item Info
+		
+		"OnSpellStart"
+		{
+			"RunScript"
+			{
+				"ScriptFile"	"scripts/vscripts/abilities/abilityCommon.lua"
+				"Function"		"PutTowerToPoint"
+				"Target"		"POINT"
+			}
+		}
+	}
+
+	//-------------------------------------------------------------------------------------------------------------
+	// 梅蒂欣·梅兰可莉
+	"item_0092"
+	{
+		//-------------------------------------------------------------------------------------------------------------
+		// General
+		"ID" 								"8092"
+		"BaseClass" 						"item_datadriven"
+		"ItemKillable" 						"0"
+		"ItemPurchasable"				    "0"
+		"ItemDisassembleRule"				"DOTA_ITEM_DISASSEMBLE_ALWAYS"
+		"AbilityTextureName" 				"item_0092"
+		"AbilityBehavior" 					"DOTA_ABILITY_BEHAVIOR_POINT"
+		"AbilityCastRange"					"100"
+		"ItemCost"							"2000"
+		"Model"								"models/thd_hero/medicine/item/item_medicine.vmdl"
+		 
+		
 		"ItemShareability"					"ITEM_PARTIALLY_SHAREABLE"
 		
 		//-------------------------------------------------------------------------------------------------------------
@@ -2443,12 +3049,16 @@
 		// General
 		"ID" 								"8094"
 		"BaseClass" 						"item_datadriven"
+		"ItemKillable" 						"0"
+		"ItemPurchasable"				    "0"
+		"ItemDisassembleRule"				"DOTA_ITEM_DISASSEMBLE_ALWAYS"
 		"AbilityTextureName" 				"item_0094"
 		"AbilityBehavior" 					"DOTA_ABILITY_BEHAVIOR_POINT"
 		"AbilityCastRange"					"100"
 		"ItemCost"							"5000"
 		"Model"								"models/thd_hero/soga/item/item_soga.vmdl"
-		"ItemPurchasable"				    "0"
+		 
+		
 		"ItemShareability"					"ITEM_PARTIALLY_SHAREABLE"
 		
 		//-------------------------------------------------------------------------------------------------------------
@@ -2473,12 +3083,16 @@
 		// General
 		"ID" 								"8095"
 		"BaseClass" 						"item_datadriven"
+		"ItemKillable" 						"0"
+		"ItemPurchasable"				    "0"
+		"ItemDisassembleRule"				"DOTA_ITEM_DISASSEMBLE_ALWAYS"
 		"AbilityTextureName" 				"item_0095"
 		"AbilityBehavior" 					"DOTA_ABILITY_BEHAVIOR_POINT"
 		"AbilityCastRange"					"100"
 		"ItemCost"							"5000"
 		"Model"								"models/thd_hero/futo/item/item_futo.vmdl"
-		"ItemPurchasable"				    "0"
+		 
+		
 		"ItemShareability"					"ITEM_PARTIALLY_SHAREABLE"
 		
 		//-------------------------------------------------------------------------------------------------------------
@@ -2503,12 +3117,16 @@
 		// General
 		"ID" 								"8096"
 		"BaseClass" 						"item_datadriven"
+		"ItemKillable" 						"0"
+		"ItemPurchasable"				    "0"
+		"ItemDisassembleRule"				"DOTA_ITEM_DISASSEMBLE_ALWAYS"
 		"AbilityTextureName" 				"item_0096"
 		"AbilityBehavior" 					"DOTA_ABILITY_BEHAVIOR_POINT"
 		"AbilityCastRange"					"100"
 		"ItemCost"							"5000"
 		"Model"								"models/thd_hero/seiga/item/item_seiga.vmdl"
-		"ItemPurchasable"				    "0"
+		 
+		
 		"ItemShareability"					"ITEM_PARTIALLY_SHAREABLE"
 		
 		//-------------------------------------------------------------------------------------------------------------
@@ -2533,12 +3151,16 @@
 		// General
 		"ID" 								"8097"
 		"BaseClass" 						"item_datadriven"
+		"ItemKillable" 						"0"
+		"ItemPurchasable"				    "0"
+		"ItemDisassembleRule"				"DOTA_ITEM_DISASSEMBLE_ALWAYS"
 		"AbilityTextureName" 				"item_0097"
 		"AbilityBehavior" 					"DOTA_ABILITY_BEHAVIOR_POINT"
 		"AbilityCastRange"					"100"
 		"ItemCost"							"2000"
 		"Model"								"models/thd_hero/yoshika/yoshika.vmdl"
-		"ItemPurchasable"				    "0"
+		 
+		
 		"ItemShareability"					"ITEM_PARTIALLY_SHAREABLE"
 		
 		//-------------------------------------------------------------------------------------------------------------
@@ -2554,55 +3176,4 @@
 			}
 		}
 	}
-	//-------------------------------------------------------------------------------------------------------------
-	// Max Tower Tool
-	"item_2222"
-	{
-		//-------------------------------------------------------------------------------------------------------------
-		// General
-		"ID" 								"7222"
-		"BaseClass" 						"item_datadriven"
-		"AbilityTextureName" 				"item_2023"
-		"AbilityBehavior" 					"DOTA_ABILITY_BEHAVIOR_UNIT_TARGET"
-		"AbilityUnitTargetType"				"DOTA_UNIT_TARGET_HERO | DOTA_UNIT_TARGET_BASIC"
-		"AbilityUnitTargetTeam"				"DOTA_UNIT_TARGET_TEAM_FRIENDLY"
-		"AbilityCooldown"					"0"
-		"ItemCost"							"0"
-		"ItemSellable"						"0"
-
-		"OnSpellStart"
-		{
-			"RunScript"
-			{
-				"ScriptFile"	"scripts/vscripts/abilities/abilityItem.lua"
-				"Function"		"OnItem2222_SpellStart"
-				"Target"		"TARGET"
-			}
-		}
-	}
-	
-	//-------------------------------------------------------------------------------------------------------------
-	// Test Dummy Spawner
-	"item_6666"
-	{
-		//-------------------------------------------------------------------------------------------------------------
-		// General
-		"ID" 								"7666"
-		"BaseClass" 						"item_datadriven"
-		"AbilityTextureName" 				"item_z00000"
-		"AbilityBehavior" 					"DOTA_ABILITY_BEHAVIOR_POINT"
-		"AbilityCooldown"					"0"
-		"ItemCost"							"0"
-		"ItemSellable"						"0"
-
-		"OnSpellStart"
-		{
-			"RunScript"
-			{
-				"ScriptFile"	"scripts/vscripts/abilities/abilityItem.lua"
-				"Function"		"OnItem6666_SpellStart"
-				"Target"		"POINT"
-			}
-		}
-	}	
 }

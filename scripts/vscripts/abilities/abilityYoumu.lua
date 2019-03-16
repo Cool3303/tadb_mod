@@ -97,20 +97,22 @@ function OnYoumu03Damage(keys,targetPoint,vecCaster)
 			ParticleManager:DestroyParticleSystem(effectIndex,false)
 			vecCaster = effect2VecForward
 
-			local damage = caster:THTD_GetPower() * caster:THTD_GetStar() / 10 * 4
+			local damage = caster:THTD_GetPower() * caster:THTD_GetStar() * 5
 
 			local targets = THTD_FindUnitsInRadius(caster,targetPoint,550)
 
 			for k,v in pairs(targets) do
-				local DamageTable = {
-		   			ability = keys.ability,
-		            victim = v, 
-		            attacker = caster, 
-		            damage = damage, 
-		            damage_type = keys.ability:GetAbilityDamageType(), 
-		            damage_flags = DOTA_DAMAGE_FLAG_NONE
-			   	}
-			   	UnitDamageTarget(DamageTable)
+				if count % 2 == 0 then
+					local DamageTable = {
+						ability = keys.ability,
+						victim = v, 
+						attacker = caster, 
+						damage = damage, 
+						damage_type = keys.ability:GetAbilityDamageType(), 
+						damage_flags = DOTA_DAMAGE_FLAG_NONE
+					}
+					UnitDamageTarget(DamageTable)
+				end
 
 				if count%5 == 0 then
 				   	local effectIndex2 = ParticleManager:CreateParticle("particles/heroes/youmu/youmu_02_effect_explosion.vpcf", PATTACH_CUSTOMORIGIN, caster)
@@ -119,10 +121,8 @@ function OnYoumu03Damage(keys,targetPoint,vecCaster)
 				end
 			end
 
-			if count>20 then
-				return nil
-			end
-			count = count + 1
+			if count > 20 then return nil end
+			count = count + 1			
 			return 0.12
 		end, 
 	0)

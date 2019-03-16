@@ -6,11 +6,12 @@ function OnReisen01AttackLanded(keys)
 end
 
 function ReisenRepelUnit(target)
+	if target.thtd_is_fearing == true then return end
 	if target.next_move_point ~= nil and target.thtd_is_feared_by_reisen_01 ~= true then
 		
 		local next_move_point =  target.next_move_point
 		target.thtd_is_feared_by_reisen_01 = true
-		target.thtd_ability_reisen_01_fearing = true
+		target.thtd_is_fearing = true
 
 		target.next_move_point = target:GetOrigin() - target:GetForwardVector() * 500
 
@@ -29,7 +30,7 @@ function ReisenRepelUnit(target)
 							target.next_move_point = next_move_point
 						end
 					elseif GetDistanceBetweenTwoVec2D(target:GetOrigin(),next_move_point) < 300 then
-						target.thtd_ability_reisen_01_fearing = false
+						target.thtd_is_fearing = false
 						return nil
 					end
 				end
@@ -70,7 +71,7 @@ function OnReisen02AttackLanded(keys)
 		keys.ability:ApplyDataDrivenModifier(caster, illusion, "modifier_reisen_02_illusion", nil)
 		illusion:SetBaseDamageMax(caster:GetAttackDamage())
 		illusion:SetBaseDamageMin(caster:GetAttackDamage())
-
+		illusion:MoveToPositionAggressive(illusion:GetOrigin() + illusion:GetForwardVector() * 100)
 		illusion:SetContextThink(DoUniqueString("thtd_reisen02_illusion"), 
 			function()
 				if GameRules:IsGamePaused() then return 0.03 end
@@ -78,11 +79,7 @@ function OnReisen02AttackLanded(keys)
 					illusion:AddNoDraw()
 					illusion:ForceKill(true)
 					caster.thtd_reisen_02_illusion_count = caster.thtd_reisen_02_illusion_count - 1
-					return nil
-				else
-				    if illusion:IsAttacking() == false then
-						illusion:MoveToPositionAggressive(illusion:GetOrigin() + Vector(0,-100,0))
-					end
+					return nil				
 				end
 				count = count + 1
 				return 0.5
@@ -101,12 +98,12 @@ function OnReisen03SpellStart(keys)
 	local targets = THTD_FindUnitsInRadius(caster,target:GetOrigin(),450)
 
 	for k,v in pairs(targets) do
-		ReisenRepelUnit(v)
+		Reisen03RepelUnit(v)
 		local DamageTable = {
    			ability = keys.ability,
             victim = v, 
             attacker = caster, 
-            damage = 5 * caster:THTD_GetPower(), 
+            damage = caster:THTD_GetPower() * caster:THTD_GetStar() * 5, 
             damage_type = keys.ability:GetAbilityDamageType(), 
             damage_flags = DOTA_DAMAGE_FLAG_NONE
 	   	}
@@ -120,4 +117,39 @@ function OnReisen03SpellStart(keys)
 	ParticleManager:SetParticleControl(effectIndex, 9, caster:GetOrigin())
 	ParticleManager:DestroyParticleSystemTime(effectIndex,2.0)
 	
+end
+
+function Reisen03RepelUnit(target)
+	if target.thtd_is_fearing == true then return end
+	if target.next_move_point ~= nil then		
+		local next_move_point =  target.next_move_point
+		target.thtd_is_feared_by_reisen_01 = true
+		target.thtd_is_fearing = true
+
+		target.next_move_point = target:GetOrigin() - target:GetForwardVector() * 500
+
+		local count = 0
+		local targetOrigin = target:GetOrigin()
+
+		target:EmitSound("Hero_Sniper.ProjectileImpact")
+
+		target:SetContextThink(DoUniqueString("thtd_reisen01_move_next_point"), 
+			function()
+				if GameRules:IsGamePaused() then return 0.03 end
+				if count > 20 then 
+					if GetDistanceBetweenTwoVec2D(next_move_point,targetOrigin) > 50 and GetDistanceBetweenTwoVec2D(target.next_move_point,next_move_point) > 50 then
+						target.next_move_point = targetOrigin
+						if GetDistanceBetweenTwoVec2D(target:GetOrigin(),targetOrigin) < 50 then
+							target.next_move_point = next_move_point
+						end
+					elseif GetDistanceBetweenTwoVec2D(target:GetOrigin(),next_move_point) < 300 then
+						target.thtd_is_fearing = false
+						return nil
+					end
+				end
+				count = count + 1
+				return 0.1
+			end, 
+		0)		
+	end
 end

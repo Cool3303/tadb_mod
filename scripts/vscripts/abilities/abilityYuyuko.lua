@@ -37,7 +37,7 @@ function OnYuyuko01SpellHit(keys)
 		ability = keys.ability,
         victim = target, 
         attacker = caster, 
-        damage = caster:THTD_GetPower() * 0.6, 
+        damage = caster:THTD_GetPower() * caster:THTD_GetStar(), 
         damage_type = keys.ability:GetAbilityDamageType(), 
         damage_flags = DOTA_DAMAGE_FLAG_NONE
    	}
@@ -51,7 +51,7 @@ function OnYuyuko04SpellStart(keys)
 	local vecCaster = caster:GetOrigin()
 	local vecForward = caster:GetForwardVector() 
 	local targetPoint = keys.target_points[1]
-	caster.thtd_yuyuko_04_target_point = targetPoint
+	caster.thtd_yuyuko_04_target_point = targetPoint	
 
 	caster:EmitSound("Voice_Thdots_Yuyuko.AbilityYuyuko04")
 
@@ -95,10 +95,13 @@ function OnYuyuko04SpellThink(keys)
 	local caster = EntIndexToHScript(keys.caster_entindex)
 	local targetPoint = caster.thtd_yuyuko_04_target_point
 
-	if GameRules:IsGamePaused() then return end
+	if GameRules:IsGamePaused() then return end	
 
-	local targets = THTD_FindUnitsInRadius(caster,targetPoint,keys.damage_radius)
- 
+	local hero = caster:GetOwner()
+	if hero.thtd_yuyuko_kill_count == nil then hero.thtd_yuyuko_kill_count = 0 end
+	local maxDamage = 3768000 * 0.3
+
+	local targets = THTD_FindUnitsInRadius(caster,targetPoint,keys.damage_radius) 
 	for _,v in pairs(targets) do  
 
 		if v.thtd_ability_yuyuko_04_damaged ~= true then
@@ -127,16 +130,12 @@ function OnYuyuko04SpellThink(keys)
 			ParticleManager:SetParticleControl(effectIndex2, 0, v:GetOrigin())
 			ParticleManager:DestroyParticleSystemTime(effectIndex2,2.0)
 
-			v:SetHealth(1)
-			local DamageTable = {
-	   			ability = keys.ability,
-	            victim = v, 
-	            attacker = caster, 
-	            damage = caster:THTD_GetPower() * caster:THTD_GetStar(), 
-	            damage_type = keys.ability:GetAbilityDamageType(), 
-	            damage_flags = DOTA_DAMAGE_FLAG_NONE
-		   	}
-		   	UnitDamageTarget(DamageTable)
+			if SpawnSystem.CurWave > 120 and hero.thtd_yuyuko_kill_count > 3 and v:GetHealth() > maxDamage then					
+				THTD_Kill(caster, v, maxDamage/2)
+			else
+				hero.thtd_yuyuko_kill_count = hero.thtd_yuyuko_kill_count + 1
+				THTD_Kill(caster, v, nil)												
+			end
 	   	end
 	end
 end

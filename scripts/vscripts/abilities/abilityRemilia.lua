@@ -1,6 +1,5 @@
 function OnRemilia01SpellStart(keys)
 	local caster = EntIndexToHScript(keys.caster_entindex)
-
 	OnRemilia01AbsorbSoul(keys)
 end
 
@@ -30,7 +29,7 @@ function OnRemilia01AbsorbSoul(keys)
 		ParticleManager:SetParticleControlEnt(effectIndex , 7, caster, 5, "follow_origin", Vector(0,0,0), true)
 		ParticleManager:SetParticleControlEnt(effectIndex , 10, caster, 5, "follow_origin", Vector(0,0,0), true)
 
-		OnRemilia02SpellStart(caster)
+		OnRemilia02SpellStart(caster, 1)
 	end
 
 	local effectIndex = ParticleManager:CreateParticle("particles/heroes/thtd_remilia/ability_remilia_03_end.vpcf", PATTACH_CUSTOMORIGIN, caster)
@@ -43,26 +42,28 @@ function OnRemilia01AbsorbSoul(keys)
 	
 end
 
-function OnRemilia02SpellStart( caster )
+function OnRemilia02SpellStart(caster, factor)
 	local ability = caster:FindAbilityByName("thtd_remilia_02")
 	local modifier = caster:FindModifierByName("modifier_reimilia_02_buff")
-	local outgoing = GetMagicalDamageOutgoingPercentage(caster,ability)
-
+	
 	if caster.thtd_remilia_02_count == nil then
 		caster.thtd_remilia_02_count = 1
 	end
+	if caster.thtd_remilia_02_outgoing == nil then
+		caster.thtd_remilia_02_outgoing = 0
+	end
 
-	local count = caster.thtd_remilia_02_count
-
-	if ability:GetLevel()>0 and outgoing<50 then
-		ModifyMagicalDamageOutgoingPercentage(caster,count,ability)
-		modifier:SetStackCount(outgoing+count)
+	local count = math.min(caster.thtd_remilia_02_count * factor, 50 - caster.thtd_remilia_02_outgoing)
+	if ability:GetLevel() > 0 and count > 0 then		
+		ModifyMagicalDamageOutgoingPercentage(caster,count)
+		caster.thtd_remilia_02_outgoing = caster.thtd_remilia_02_outgoing + count
+		modifier:SetStackCount(caster.thtd_remilia_02_outgoing)
 		caster:SetContextThink(DoUniqueString("modifier_reimilia_02_buff_count"), 
 			function()
-				if GameRules:IsGamePaused() then return 0.03 end
-				ModifyMagicalDamageOutgoingPercentage(caster,-count,ability)
-				local outgoing_current = GetMagicalDamageOutgoingPercentage(caster,ability)
-				modifier:SetStackCount(outgoing_current-count)
+				if GameRules:IsGamePaused() then return 0.03 end				
+				ModifyMagicalDamageOutgoingPercentage(caster,-count)
+				caster.thtd_remilia_02_outgoing = caster.thtd_remilia_02_outgoing - count
+				modifier:SetStackCount(caster.thtd_remilia_02_outgoing)
 				return nil
 			end, 
 		20.0)
@@ -73,7 +74,6 @@ function OnRemilia03SpellStart(keys)
 	local caster = EntIndexToHScript(keys.caster_entindex)
 	local target = keys.target
 	local targetPoint = keys.target_points[1]
-
 	local forward = (keys.target_points[1] - caster:GetOrigin()):Normalized()
 
 	local info = 
@@ -112,32 +112,47 @@ end
 
 function OnRemilia03SpellHit(keys)
 	local caster = EntIndexToHScript(keys.caster_entindex)
-	local target = keys.target
-	local chance = RandomInt(0,100)
+	local target = keys.target	
+	local hero = caster:GetOwner()
 
 	if caster.thtd_remilia_03_chance == nil then
 		caster.thtd_remilia_03_chance = 5
 	end
+	
+	if caster.thtd_remilia_03_chanceBonus == nil then
+		caster.thtd_remilia_03_chanceBonus = 0
+	end
+	
+	local chance = RandomInt(0, math.max(0, 100 - caster.thtd_remilia_03_chanceBonus))
+	caster.thtd_remilia_03_chanceBonus = caster.thtd_remilia_03_chanceBonus + caster.thtd_remilia_03_chance	
 
-	if chance <= caster.thtd_remilia_03_chance and caster:FindAbilityByName("thtd_remilia_04"):GetLevel()>0 then
-		local dealdamage = caster:THTD_GetPower() * caster:THTD_GetStar() * 48.0
+	if chance <= caster.thtd_remilia_03_chance and caster:FindAbilityByName("thtd_remilia_04"):GetLevel()>0 then	
+		caster.thtd_remilia_03_chanceBonus = 0
+		
+		local dealdamage = caster:THTD_GetPower() * caster:THTD_GetStar() * 48			
 		local damage_table = {
 				ability = keys.ability,
 				victim = target,
 				attacker = caster,
 				damage = dealdamage,
 				damage_type = keys.ability:GetAbilityDamageType(), 
-		    	amage_flags = keys.ability:GetAbilityTargetFlags()
+				amage_flags = keys.ability:GetAbilityTargetFlags()
 		}
-   		local olddamage = ReturnAfterTaxDamage(damage_table)
+		local olddamage = ReturnAfterTaxDamageAfterAbility(damage_table)
 		if olddamage > (target:GetHealth()*0.95) then
-			target:SetHealth(target:GetMaxHealth()*0.05)
+			if target:GetHealth() > target:GetMaxHealth()*0.05 then 
+				caster.thtd_tower_damage = caster.thtd_tower_damage + (target:GetHealth() - target:GetMaxHealth()*0.05) / 100
+				target:SetHealth(target:GetMaxHealth()*0.05)				
+			end
 		else
 			UnitDamageTarget(damage_table)
+		end		
+		
+		if not target:HasModifier("modifier_remilia_03_debuff") then
+			keys.ability:ApplyDataDrivenModifier(caster, target, "modifier_remilia_03_debuff",nil)			
 		end
-		keys.ability:ApplyDataDrivenModifier(caster, target, "modifier_remilia_03_debuff",nil)
 	else
-		local dealdamage = caster:THTD_GetPower() * caster:THTD_GetStar() * 2.5
+		local dealdamage = caster:THTD_GetPower() * caster:THTD_GetStar() * 5
 		local damage_table = {
 				ability = keys.ability,
 				victim = target,
@@ -147,7 +162,7 @@ function OnRemilia03SpellHit(keys)
 		    	amage_flags = keys.ability:GetAbilityTargetFlags()
 		}
 		UnitDamageTarget(damage_table)
-		OnRemilia02SpellStart(caster)
+		OnRemilia02SpellStart(caster, 1)
 	end
 
 	local effectIndex = ParticleManager:CreateParticle("particles/heroes/remilia/ability_remilia_01_explosion.vpcf", PATTACH_CUSTOMORIGIN, caster)
@@ -163,17 +178,18 @@ function OnRemilia03Destroy(keys)
 	local caster = EntIndexToHScript(keys.caster_entindex)
 	local target = keys.unit
 
-	local dealdamage = caster:THTD_GetPower() * caster:THTD_GetStar() / 4
+	local dealdamage = caster:THTD_GetPower() * caster:THTD_GetStar() * 3
 
-	local count = 0
+	local time = 3.0
 
 	caster:EmitSound("Sound_THTD.thtd_remilia_04")
 	
 	caster:SetContextThink(DoUniqueString("ability_remilia_03_effect_destroy"), 
 		function()
 			if GameRules:IsGamePaused() then return 0.03 end
-			local targets = THTD_FindUnitsInRadius(caster,target:GetOrigin(),500)
+			if time <= 0 then return nil end
 
+			local targets = THTD_FindUnitsInRadius(caster,target:GetOrigin(),500)
 			for k,target in pairs(targets) do
 				local damage_table={
 					ability = ability,
@@ -186,13 +202,10 @@ function OnRemilia03Destroy(keys)
 				UnitDamageTarget(damage_table)
 			end
 
-			OnRemilia02SpellStart(caster)
-			if count > 30 then
-				return nil
-			else
-				count = count + 1
-				return 0.1
-			end
+			OnRemilia02SpellStart(caster, 3)			
+
+			time = time - 0.3
+			return 0.3			
 		end, 
 	0)
 

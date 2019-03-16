@@ -9,8 +9,8 @@ local thtd_toramaru_star_bouns_constant =
 
 
 function OnToramaru01SpellStart(keys)
-	if SpawnSystem:GetWave() > 51 then return end
-
+	if SpawnSystem.IsUnLimited then return end
+	if GameRules:GetCustomGameDifficulty() == 10 then return end
 	local caster = EntIndexToHScript(keys.caster_entindex)
 	local target = keys.target
 
@@ -25,6 +25,7 @@ function OnToramaru01SpellStart(keys)
 	UnitDamageTarget(damage_table)
 
 	local gold = thtd_toramaru_star_bouns_constant[caster:THTD_GetStar()]
+	if GameRules:GetCustomGameDifficulty() == 7 or GameRules:GetCustomGameDifficulty() == 9 then gold = math.floor(gold*1.3) end
 	PlayerResource:ModifyGold(caster:GetPlayerOwnerID(), gold , true, DOTA_ModifyGold_CreepKill)
 	SendOverheadEventMessage(caster:GetPlayerOwner(), OVERHEAD_ALERT_GOLD, target, gold, caster:GetPlayerOwner() )
 	caster:EmitSound("Sound_THTD.thtd_nazrin_01")
@@ -36,32 +37,9 @@ function OnToramaru01SpellStart(keys)
 	ParticleManager:DestroyParticleSystem(effectIndex,false)
 end
 
-function OnToramaru02SpellStartDown(keys)
+function OnToramaru02SpellStart(keys)
 	local caster = EntIndexToHScript(keys.caster_entindex)
-
-	if SpawnSystem:GetWave() > 51 then
-		return
-	end
-	
-	if caster:GetModifierStackCount("thtd_toramaru_02", caster) == nil then
-		caster:SetModifierStackCount("modifier_toramaru_02_money_stack", caster, 0)
-	end
-
-	local interest = caster:GetModifierStackCount("modifier_toramaru_02_money_stack", caster) * 5000 * 0.02 * caster:THTD_GetStar () or 0
-	keys.ability:ApplyDataDrivenModifier( caster, caster, "modifier_toramaru_02_money_stack", {} )
-	caster:SetModifierStackCount("modifier_toramaru_02_money_stack", caster, caster:GetModifierStackCount("modifier_toramaru_02_money_stack", caster)+1)
-	CustomGameEventManager:Send_ServerToPlayer( caster:GetPlayerOwner() , "show_message", {msg="toramaru_interest" , interest , duration=5, params={count=1}, color="#0ff"} )
-
-	local effectIndex = ParticleManager:CreateParticle("particles/thd2/items/item_donation_box.vpcf", PATTACH_CUSTOMORIGIN, caster)
-	ParticleManager:SetParticleControl(effectIndex, 0, caster:GetAbsOrigin())
-	ParticleManager:SetParticleControl(effectIndex, 1, caster:GetAbsOrigin())
-	ParticleManager:DestroyParticleSystem(effectIndex,false)
-end
-
-
-function OnToramaru03SpellStart(keys)
-	local caster = EntIndexToHScript(keys.caster_entindex)
-	if SpawnSystem:GetWave() > 51 then
+	if SpawnSystem.IsUnLimited then
 		keys.ability:EndCooldown()
 	end
 
@@ -79,7 +57,7 @@ function OnToramaru03SpellStart(keys)
 		damage_type = keys.ability:GetAbilityDamageType(), 
 		damage_flags = 0
 	}
-	if SpawnSystem:GetWave() > 51 then
+	if SpawnSystem.IsUnLimited then
 		damage_table.damage = damage_table.damage * 4
 	end
 	UnitDamageTarget(damage_table)
@@ -89,14 +67,10 @@ function OnToramaru03SpellStart(keys)
 	ParticleManager:DestroyParticleSystem(effectIndex,false)
 end
 
-function OnToramaru04SpellStart(keys)
+function OnToramaru03SpellStart(keys)
 	local caster = EntIndexToHScript(keys.caster_entindex)
-	if SpawnSystem:GetWave() > 51 then
+	if SpawnSystem.IsUnLimited then
 		keys.ability:EndCooldown()
-		if caster:GetModifierStackCount("thtd_toramaru_02", caster) >= 0 then
-			PlayerResource:ModifyGold(caster:GetPlayerOwnerID(), 5000, true, DOTA_ModifyGold_CreepKill)
-			caster:SetModifierStackCount("modifier_toramaru_02_money_stack", caster, caster:GetModifierStackCount("modifier_toramaru_02_money_stack", caster)-1)
-		end
 	end
 
 	if caster:HasModifier("modifier_byakuren_03_buff") then
@@ -114,7 +88,7 @@ function OnToramaru04SpellStart(keys)
 			damage_type = keys.ability:GetAbilityDamageType(), 
 			damage_flags = 0
 		}
-		if SpawnSystem:GetWave() > 51 then
+		if SpawnSystem.IsUnLimited then
 			damage_table.damage = damage_table.damage * 4
 		end
 		UnitDamageTarget(damage_table)
@@ -125,3 +99,31 @@ function OnToramaru04SpellStart(keys)
 	end
 end
 
+function OnSpellStartToramaru04(keys)
+	local caster = EntIndexToHScript(keys.caster_entindex)
+	
+	local damage = caster:THTD_GetStar() * caster:THTD_GetPower() * 3
+	if SpawnSystem.IsUnLimited then
+		damage = damage + PlayerResource:GetGold(caster:GetPlayerOwnerID())*caster:THTD_GetStar()*0.02*4
+	else
+		damage = damage + PlayerResource:GetGold(caster:GetPlayerOwnerID())*caster:THTD_GetStar()*0.02
+	end
+	local targets = THTD_FindUnitsInRadius(caster,caster:GetAbsOrigin(),keys.ability:GetCastRange())
+	for k,v in pairs(targets) do
+		local effectIndex = ParticleManager:CreateParticle("particles/heroes/sunny/ability_sunny_01_laser.vpcf", PATTACH_CUSTOMORIGIN, caster)
+		ParticleManager:SetParticleControlEnt(effectIndex , 0, v, 5, "attach_hitloc", Vector(0,0,0), true)
+		ParticleManager:SetParticleControlEnt(effectIndex , 1, caster, 5, "attach_hitloc", Vector(0,0,0), true)
+		ParticleManager:SetParticleControlEnt(effectIndex , 9, v, 5, "attach_hitloc", Vector(0,0,0), true)
+		ParticleManager:DestroyParticleSystem(effectIndex,false)
+
+		local DamageTable = {
+			ability = keys.ability,
+			victim = v, 
+			attacker = caster, 
+			damage = damage, 
+			damage_type = keys.ability:GetAbilityDamageType(), 
+			damage_flags = DOTA_DAMAGE_FLAG_NONE
+		}
+		UnitDamageTarget(DamageTable)
+	end
+end

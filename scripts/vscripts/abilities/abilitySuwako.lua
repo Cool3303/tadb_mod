@@ -75,7 +75,7 @@ function OnSuwako02Think(keys)
 	if caster.thtd_suwako_02_rect == nil then
 		caster.thtd_suwako_02_rect = {}
 	end
-	if keys.ability:GetLevel() < 1 or caster:HasModifier("modifier_touhoutd_release_hidden") then 
+	if keys.ability:GetLevel() < 1 or caster:THTD_IsHidden() then 
 		if caster.thtd_suwako_02_rect["effectIndex"]~=nil then
 			ParticleManager:DestroyParticleSystem(caster.thtd_suwako_02_rect["effectIndex"],true)
 		end
@@ -94,7 +94,7 @@ function OnSuwako02Think(keys)
 				v.thtd_suwako_02_lock = false
 			end
 			v.thtd_suwako_02_count = v.thtd_suwako_02_count + 1
-			if v.thtd_suwako_02_count > 20 and v.thtd_suwako_02_lock == false then
+			if v.thtd_suwako_02_count > 10 and v.thtd_suwako_02_lock == false then
 				keys.ability:ApplyDataDrivenModifier(caster,v,"modifier_suwako_rooted",{Duration = 1.0})
 				v.thtd_suwako_02_lock = true
 
@@ -109,13 +109,13 @@ function OnSuwako02Think(keys)
 								ability = keys.ability,
 								victim = v,
 								attacker = caster,
-								damage = caster:THTD_GetStar() * caster:THTD_GetPower() / 4  * (1 + caster:THTD_GetFaith()/500),
+								damage = caster:THTD_GetStar() * caster:THTD_GetPower() * 0.5  * (1 + caster:THTD_GetFaith()/200),
 								damage_type = keys.ability:GetAbilityDamageType(), 
 								damage_flags = 0
 							}
 							UnitDamageTarget(damage_table)
 						end
-						return 0.1
+						return 0.2
 					end, 
 				0)
 			end
@@ -132,7 +132,7 @@ function OnSuwako03SpellStart(keys)
 			local g = -10
 			local vh = 120
 			local t = math.abs(2*vh/g)
-			local targetPoint = v:GetOrigin() + RandomVector(200)
+			local targetPoint = v:GetOrigin()
 			local rad = GetRadBetweenTwoVec2D(v:GetOrigin(),targetPoint)
 			local dis = GetDistanceBetweenTwoVec2D(v:GetOrigin(),targetPoint)
 			local speed = dis/t
@@ -147,10 +147,10 @@ function OnSuwako03SpellStart(keys)
 
 			v:SetContextThink(DoUniqueString("thtd_suwako_03_unit_up"), 
 				function()
-					if GameRules:IsGamePaused() then return end
+					if GameRules:IsGamePaused() then return 0.03 end
 					vh = vh + g
 					curOrigin = Vector(curOrigin.x + math.cos(rad) * speed,curOrigin.y + math.sin(rad) * speed,curOrigin.z + vh)
-					v:SetOrigin(curOrigin)
+					v:SetAbsOrigin(curOrigin)
 
 					if curOrigin.z >= originz then
 						return 0.03
@@ -160,7 +160,7 @@ function OnSuwako03SpellStart(keys)
 							ability = keys.ability,
 							victim = v,
 							attacker = caster,
-							damage = caster:THTD_GetStar() * caster:THTD_GetPower() * 5,
+							damage = caster:THTD_GetStar() * caster:THTD_GetPower() * 5 * (1 + caster:THTD_GetFaith()/200),
 							damage_type = keys.ability:GetAbilityDamageType(), 
 							damage_flags = 0
 						}
@@ -177,11 +177,35 @@ end
 function OnSuwakoKill(keys)
 	local caster = EntIndexToHScript(keys.caster_entindex)
 	if caster:HasModifier("modifier_thtd_ss_kill") then
-		local modifier = caster:FindModifierByName("modifier_thtd_ss_faith")
-		if modifier==nil then
-			caster:AddNewModifier(caster, nil, "modifier_thtd_ss_faith", {})
-		elseif modifier:GetStackCount() < caster:THTD_GetStar() * 100 then
-			modifier:SetStackCount(modifier:GetStackCount()+1)
+		caster:THTD_AddFaith(1)
+	end
+end
+
+function OnSuwako04SpellStart(keys)
+	local caster = EntIndexToHScript(keys.caster_entindex)
+	local target = keys.target
+	local targetPoint = keys.target:GetOrigin()	
+
+	local isUsed = false
+	if target:THTD_IsTower() and target:HasModifier("modifier_suwako_04_buff") == false then		
+		caster.thtd_last_cast_unit = target
+		for i=2,5 do
+			local ability = target:GetAbilityByIndex(i)
+			if ability~=nil and ability:IsCooldownReady() == false and ability:GetCooldownTimeRemaining() > 3 then	
+				local bonus = ability:GetCooldown(ability:GetLevel()) * RandomInt(20, 30) / 100
+				local cooldown = ability:GetCooldownTimeRemaining() - bonus							
+				ability:EndCooldown()				
+				if cooldown > 0 then 
+					ability:StartCooldown(cooldown)
+				end
+				isUsed = true
+			end
 		end
+	end
+	if isUsed then
+		keys.ability:ApplyDataDrivenModifier(caster, target, "modifier_suwako_04_buff", {duration=keys.ability:GetCooldown(keys.ability:GetLevel())})
+		caster:EmitSound("Sound_THTD.thtd_suwako_04")
+	else
+		keys.ability:EndCooldown()
 	end
 end

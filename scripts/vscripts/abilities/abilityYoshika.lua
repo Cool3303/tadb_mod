@@ -5,7 +5,7 @@ function OnYoshika01AttackLanded(keys)
 	local targets = THTD_FindUnitsInRadius(caster,target:GetOrigin(),300)
 
 	for k,v in pairs(targets) do
-		local count = 0
+		local time = 5.2
 		local debuff_count = 1
 		if caster:HasModifier("modifier_miko_02_buff") then
 			debuff_count = 2
@@ -14,28 +14,28 @@ function OnYoshika01AttackLanded(keys)
 		v:SetContextThink(DoUniqueString("thtd_yoshika01_debuff"), 
 			function()
 				if GameRules:IsGamePaused() then return 0.03 end
-				if count > 25 then 
+				if time < 0 then 
 					v.thtd_poison_buff = v.thtd_poison_buff - debuff_count
 					return nil 
 				end
-				count = count + 1
-				local damage = caster:THTD_GetStar() * caster:THTD_GetPower() / 5
-
+								
 				local DamageTable = {
-						ability = keys.ability,
-				        victim = v, 
-				        attacker = caster, 
-				        damage = damage, 
-				        damage_type = keys.ability:GetAbilityDamageType(), 
-				        damage_flags = DOTA_DAMAGE_FLAG_NONE
+					ability = keys.ability,
+					victim = v, 
+					attacker = caster, 
+					damage = caster:THTD_GetStar() * caster:THTD_GetPower() * 0.4, 
+					damage_type = keys.ability:GetAbilityDamageType(), 
+					damage_flags = DOTA_DAMAGE_FLAG_NONE
 			   	}
-			   	UnitDamageTarget(DamageTable)
-				return 0.2
+				UnitDamageTarget(DamageTable)
+				   
+				time = time - 0.4
+				return 0.4
 			end, 
-		0.2)
+		0)
 
-	   	local modifier = caster:FindModifierByName("modifier_yoshika_01_slow")
-	   	if modifier==nil then
+	   	local modifier = v:FindModifierByName("modifier_yoshika_01_slow")
+		if modifier==nil then			
 			keys.ability:ApplyDataDrivenModifier(caster, v, "modifier_yoshika_01_slow", nil)
 		else
 			modifier:SetDuration(5.0,false)

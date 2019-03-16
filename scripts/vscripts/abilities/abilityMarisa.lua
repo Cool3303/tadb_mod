@@ -2,6 +2,19 @@ function OnMarisa01SpellStart(keys)
 	local caster = EntIndexToHScript(keys.caster_entindex)
 	local targetPoint = keys.target_points[1]
 
+	if caster.spelling_lock == true then return end	
+	caster.factor = 0
+
+	if caster.ability_dummy_unit~=nil then
+		caster.ability_dummy_unit:RemoveSelf()
+		keys.ability.effectcircle = -1
+		ParticleManager:DestroyParticleSystem(keys.ability.effectcircle,true)
+		keys.ability.effectIndex = -1
+		ParticleManager:DestroyParticleSystem(keys.ability.effectIndex,true)
+		keys.ability.effectIndex_b = -1
+		ParticleManager:DestroyParticleSystem(keys.ability.effectIndex_b,true)
+	end
+
 	local unit = CreateUnitByName(
 		"npc_dota2x_unit_marisa04_spark"
 		,caster:GetOrigin()
@@ -19,11 +32,24 @@ function OnMarisa01SpellStart(keys)
 	keys.ability:SetContextNum("ability_marisa_04_spark_unit",unit:GetEntityIndex(),0)
 
 	MarisaSparkParticleControl(caster,keys.ability,targetPoint)
-	keys.ability:SetContextNum("ability_marisa_04_spark_lock",FALSE,0)
+	keys.ability:SetContextNum("ability_marisa_04_spark_lock",0,0)
 
 	caster.thtd_marisa_01_count = 1
 	caster.thtd_marisa_01_last_distance = 10
-	caster.thtd_marisa_01_currentForward = caster:GetForwardVector()
+	caster.thtd_marisa_01_currentForward = caster:GetForwardVector()	
+	caster.ability_dummy_unit = unit
+	caster.spelling_lock = true	
+	local locktime = 5
+	if keys.ability:GetLevel() == 2 then locktime = 7 end	
+	caster:SetContextThink(DoUniqueString("thtd_marisa_lock"), 
+		function()
+			if GameRules:IsGamePaused() then return 0.03 end	
+			if caster.spelling_lock == true then return nil end
+			if caster == nil or caster:IsNull() or caster:IsAlive() == false then return nil end		
+			caster.spelling_lock = false
+			return nil
+		end,
+	locktime)	
 end
 
 function MarisaSparkParticleControl(caster,ability,targetPoint)
@@ -45,7 +71,7 @@ function MarisaSparkParticleControl(caster,ability,targetPoint)
 	unit:SetForwardVector(vecForward)
 	vecUnit = caster:GetOrigin() + Vector(caster:GetForwardVector().x * 100,caster:GetForwardVector().y * 100,160)
 	vecColor = Vector(255,255,255)
-	unit:SetOrigin(vecUnit)
+	unit:SetAbsOrigin(vecUnit)
 
 	ParticleManager:SetParticleControl(ability.effectcircle, 0, caster:GetOrigin())
 	
@@ -68,7 +94,7 @@ function OnMarisa01SpellRemove(keys)
 	local unitIndex = keys.ability:GetContext("ability_marisa_04_spark_unit")
 
 	local unit = EntIndexToHScript(unitIndex)
-	if(unit~=nil)then
+	if unit~=nil then
 		unit:RemoveSelf()
 		keys.ability.effectcircle = -1
 		ParticleManager:DestroyParticleSystem(keys.ability.effectcircle,true)
@@ -77,13 +103,16 @@ function OnMarisa01SpellRemove(keys)
 		keys.ability.effectIndex_b = -1
 		ParticleManager:DestroyParticleSystem(keys.ability.effectIndex_b,true)
 	end
-	keys.ability:SetContextNum("ability_marisa_04_spark_lock",TRUE,0)
+	keys.ability:SetContextNum("ability_marisa_04_spark_lock",1,0)
 
 	if keys.ability:GetAbilityName() == "thtd_marisa_03" then
 		caster:StopSound("Sound_THTD.thtd_marisa_03")
 	else
 		caster:StopSound("Sound_THTD.thtd_marisa_01")
 	end
+
+	caster.ability_dummy_unit = nil
+	caster.spelling_lock = false
 end
 
 
@@ -127,11 +156,15 @@ end
 
 function OnMarisa01SpellThink(keys)
 	if GameRules:IsGamePaused() then return end
-	if(keys.ability:GetContext("ability_marisa_04_spark_lock")==TRUE)then
+	if(keys.ability:GetContext("ability_marisa_04_spark_lock")==1)then
 		return
-	end
+	end	
 	local caster = EntIndexToHScript(keys.caster_entindex)
 	local vecCaster = caster:GetOrigin()
+
+	if caster.factor == nil then 
+		caster.factor = 0
+	end
 
 	if keys.ability:GetAbilityName() == "thtd_marisa_03" then
 		local nextForward,maxCount = FindMarisa01MaxCountEnemeiesForward(keys)
@@ -175,38 +208,43 @@ function OnMarisa01SpellThink(keys)
 	end
 
 	local targetPoint =  vecCaster + caster.thtd_marisa_01_currentForward
+	
+	if caster.factor % 7 == 0 then 
+		local DamageTargets = 
+			FindUnitsInLine(
+				caster:GetTeamNumber(), 
+				caster:GetOrigin(), 
+				caster:GetOrigin() + keys.DamageLenth * caster.thtd_marisa_01_currentForward, 
+				nil, 
+				keys.DamageWidth,
+				keys.ability:GetAbilityTargetTeam(), 
+				keys.ability:GetAbilityTargetType(), 
+				keys.ability:GetAbilityTargetFlags()
+			)
 
-	local DamageTargets = 
-		FindUnitsInLine(
-			caster:GetTeamNumber(), 
-			caster:GetOrigin(), 
-			caster:GetOrigin() + keys.DamageLenth * caster.thtd_marisa_01_currentForward, 
-			nil, 
-			keys.DamageWidth,
-			keys.ability:GetAbilityTargetTeam(), 
-			keys.ability:GetAbilityTargetType(), 
-			keys.ability:GetAbilityTargetFlags()
-		)
-
-	for _,v in pairs(DamageTargets) do
-		local deal_damage = caster:THTD_GetStar() * 0.35 * caster:THTD_GetPower() * 0.2
-		if keys.ability:GetAbilityName() == "thtd_marisa_03" then
-			deal_damage = deal_damage * 2
-		end
-		local damage_table = {
-			ability = keys.ability,
-			victim = v,
-			attacker = caster,
-			damage = deal_damage,
-			damage_type = keys.ability:GetAbilityDamageType(), 
-			damage_flags = 0
-		}
-		UnitDamageTarget(damage_table)
+		for _,v in pairs(DamageTargets) do
+			local deal_damage = caster:THTD_GetStar() * caster:THTD_GetPower() * 0.5
+			if keys.ability:GetAbilityName() == "thtd_marisa_03" then
+				deal_damage = deal_damage * 2
+			end
+			if caster.thtd_marisa_alice_crit == true then 
+				deal_damage = deal_damage * (1 + 0.01 * caster.factor)
+			end
+			local damage_table = {
+				ability = keys.ability,
+				victim = v,
+				attacker = caster,
+				damage = deal_damage,
+				damage_type = keys.ability:GetAbilityDamageType(), 
+				damage_flags = DOTA_DAMAGE_FLAG_NONE
+			}
+			UnitDamageTarget(damage_table)
+		end		
 	end
+	caster.factor = caster.factor + 1
 	MarisaSparkParticleControl(caster,keys.ability,targetPoint)
 end
 
--- 0.1Ãë´´½¨Ò»¸öÐÇÐÇ£¬Ò»´Î´´½¨2¸ö
 
 local marisa_star_table = 
 {
@@ -228,40 +266,40 @@ function OnMarisa02AttackLanded(keys)
    	local targets = THTD_FindUnitsInRadius(caster,caster:GetOrigin(),750)
 
    	caster:SetContextThink(DoUniqueString("thtd_marisa02_projectile"), 
-			function()
-				if GameRules:IsGamePaused() then return 0.03 end
-				if #targets > 0 then
-					local index = RandomInt(1,#targets)
-					local info = 
-					{
-						Target = targets[index],
-						Source = caster,
-						Ability = keys.ability,	
-						EffectName = marisa_star_table[RandomInt(1,#marisa_star_table)],
-				        iMoveSpeed = 1400,
-						vSourceLoc= caster:GetAbsOrigin(),                -- Optional (HOW)
-						bDrawsOnMinimap = false,                          -- Optional
-					    bDodgeable = true,                                -- Optional
-					  	bIsAttack = false,                                -- Optional
-					    bVisibleToEnemies = true,                         -- Optional
-					    bReplaceExisting = false,                         -- Optional
-					    flExpireTime = GameRules:GetGameTime() + 10,      -- Optional but recommended
-						bProvidesVision = true,                           -- Optional
-						iVisionRadius = 400,                              -- Optional
-						iVisionTeamNumber = caster:GetTeamNumber()        -- Optional
-					}
-					local projectile = ProjectileManager:CreateTrackingProjectile(info)
-					ParticleManager:DestroyLinearProjectileSystem(projectile,false)
-					caster:EmitSound("Hero_Marisa.PreAttack")
-					
-					if count > 0 then
-						count = count - 1
-						return 0.1
-					end
+		function()
+			if GameRules:IsGamePaused() then return 0.03 end
+			if #targets > 0 then
+				local index = RandomInt(1,#targets)
+				local info = 
+				{
+					Target = targets[index],
+					Source = caster,
+					Ability = keys.ability,	
+					EffectName = marisa_star_table[RandomInt(1,#marisa_star_table)],
+					iMoveSpeed = 1400,
+					vSourceLoc= caster:GetAbsOrigin(),                -- Optional (HOW)
+					bDrawsOnMinimap = false,                          -- Optional
+					bDodgeable = true,                                -- Optional
+					bIsAttack = false,                                -- Optional
+					bVisibleToEnemies = true,                         -- Optional
+					bReplaceExisting = false,                         -- Optional
+					flExpireTime = GameRules:GetGameTime() + 10,      -- Optional but recommended
+					bProvidesVision = true,                           -- Optional
+					iVisionRadius = 400,                              -- Optional
+					iVisionTeamNumber = caster:GetTeamNumber()        -- Optional
+				}
+				local projectile = ProjectileManager:CreateTrackingProjectile(info)
+				ParticleManager:DestroyLinearProjectileSystem(projectile,false)
+				caster:EmitSound("Hero_Marisa.PreAttack")
+				
+				if count > 0 then
+					count = count - 1
+					return 0.1
 				end
-				return nil
-			end, 
-		0.1)
+			end
+			return nil
+		end, 
+	0.1)
 end
 
 function OnMarisa02SpellHit(keys)
@@ -274,12 +312,10 @@ function OnMarisa02SpellHit(keys)
 			ability = keys.ability,
 	        victim = target, 
 	        attacker = caster, 
-	        damage = caster:THTD_GetPower() / 2, 
+	        damage = caster:THTD_GetPower() * caster:THTD_GetStar(), 
 	        damage_type = keys.ability:GetAbilityDamageType(), 
 	        damage_flags = DOTA_DAMAGE_FLAG_NONE
    	}
-   	UnitDamageTarget(DamageTable)
-   	if target:IsAlive() == false then
-   		caster:SetMana(caster:GetMana()+1)
-   	end
+   	UnitDamageTarget(DamageTable)   	
+   	caster:SetMana(caster:GetMana()+1)   
  end

@@ -35,7 +35,7 @@ function OnLetty01SpellStart(keys)
 		   			ability = keys.ability,
 		            victim = v, 
 		            attacker = caster, 
-		            damage = caster:THTD_GetPower(), 
+		            damage = caster:THTD_GetPower() * caster:THTD_GetStar(), 
 		            damage_type = keys.ability:GetAbilityDamageType(), 
 		            damage_flags = DOTA_DAMAGE_FLAG_NONE
 			   	}

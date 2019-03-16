@@ -37,12 +37,21 @@ function OnKogasa01SpellStart(keys)
 	   	if caster:HasModifier("modifier_byakuren_03_buff") then
 	   		DamageTable.damage = caster:THTD_GetPower() * caster:THTD_GetStar() * 4
 	   	end
-	   	UnitDamageTarget(DamageTable)
-		if caster:HasModifier("modifier_byakuren_03_buff") then
-	   		keys.ability:ApplyDataDrivenModifier(caster,v,"modifier_kogasa_upgrade_debuff", nil)
+		UnitDamageTarget(DamageTable)
+		   
+		local modifier = v:FindModifierByName("modifier_kogasa_upgrade_debuff")
+		if modifier==nil then		
+			modifier = v:FindModifierByName("modifier_kogasa_debuff")
+		end
+		if modifier==nil then			
+			if caster:HasModifier("modifier_byakuren_03_buff") then
+				keys.ability:ApplyDataDrivenModifier(caster,v,"modifier_kogasa_upgrade_debuff", nil)
+			else
+				keys.ability:ApplyDataDrivenModifier(caster,v,"modifier_kogasa_debuff", nil)
+			end
 		else
-	   		keys.ability:ApplyDataDrivenModifier(caster,v,"modifier_kogasa_debuff", nil)
-	   	end
+			modifier:SetDuration(5.0,false)
+		end		
 	end
 
 	local effectIndex = ParticleManager:CreateParticle("particles/heroes/kogasa/ability_kogasa_01.vpcf", PATTACH_CUSTOMORIGIN, caster)

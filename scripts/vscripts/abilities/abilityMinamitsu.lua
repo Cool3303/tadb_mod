@@ -98,19 +98,18 @@ function OnMinamitsu02SpellStart(keys)
 		caster.thtd_minamitsu_02_bonus = 1.0
 	end
 
-	local bonus = caster:THTD_GetPower()/2 * caster.thtd_minamitsu_02_bonus
+	local bonus = math.floor(caster:THTD_GetPower()/2 * caster.thtd_minamitsu_02_bonus)
 
-	if caster:THTD_IsTower() and caster.thtd_minamitsu_02_bonus == false then
+	if caster:THTD_IsTower() and caster.thtd_minamitsu_02_spelled ~= true then
+		caster.thtd_minamitsu_02_spelled = true
 		caster:THTD_AddPower(bonus)
 		caster:THTD_AddAttack(bonus)
-		caster.thtd_minamitsu_02_bonus = true
-
 		caster:SetContextThink(DoUniqueString("thtd_minamitsu_02_buff_remove"), 
 			function()
 				if GameRules:IsGamePaused() then return 0.03 end
 				caster:THTD_AddPower(-bonus)
 				caster:THTD_AddAttack(-bonus)
-				caster.thtd_minamitsu_02_bonus = false
+				caster.thtd_minamitsu_02_spelled = false
 			end,
 		7.0)
 	end
@@ -238,12 +237,12 @@ function OnMinamitsu02Vortex(keys,origin,forward)
 					    	local distance = GetDistanceBetweenTwoVec2D(vecTarget,targetPoint)
 					    	local targetRad = GetRadBetweenTwoVec2D(targetPoint,vecTarget)
 					    	if distance>30 then
-					    		v:SetOrigin(Vector(vecTarget.x - math.cos(targetRad - math.pi/3) * 11 *1.5, vecTarget.y - math.sin(targetRad - math.pi/3) * 11 *1.5, vecTarget.z))
+					    		v:SetAbsOrigin(Vector(vecTarget.x - math.cos(targetRad - math.pi/3) * 11 *1.5, vecTarget.y - math.sin(targetRad - math.pi/3) * 11 *1.5, vecTarget.z))
 					    	else
 					    		v:AddNoDraw()
 					    		keys.ability:ApplyDataDrivenModifier( caster, v, "modifier_minamitsu02_vortex_target", {} )
 					    		keys.ability:ApplyDataDrivenModifier( caster, v, "modifier_minamitsu02_vortex_pause_target", {} )
-					    		v:SetOrigin(v:GetOrigin()+RandomVector(100)+Vector(0,0,128))
+					    		v:SetAbsOrigin(v:GetOrigin()+RandomVector(100)+Vector(0,0,128))
 					    	end
 					    end
 				    end
@@ -276,7 +275,7 @@ function OnMinamitsu02VortexEnd(keys,origin,forward)
 			if v.thtd_is_minamitsu_03_damaged ~= true then
 				v.thtd_is_minamitsu_03_damaged = true
 		    	local random = RandomVector(150)
-		    	v:SetOrigin(targetPoint+random)
+		    	v:SetAbsOrigin(targetPoint+random)
 		    end
 	    end
     end
@@ -299,7 +298,7 @@ function OnMinamitsu02VortexEnd(keys,origin,forward)
 				    		end
 				    		if v:HasModifier("modifier_minamitsu02_vortex_pause_target") then
 				    			if v:GetOrigin().z >= GetGroundHeight(v:GetOrigin(),nil) then
-				    				v:SetOrigin(v:GetOrigin() + Vector(0,0,speed))
+				    				v:SetAbsOrigin(v:GetOrigin() + Vector(0,0,speed))
 				    			end
 				    		end
 					    end
@@ -351,7 +350,7 @@ function OnMinamitsu04SpellStart(keys)
 			   			ability = keys.ability,
 			            victim = v, 
 			            attacker = caster,
-			            damage = caster:THTD_GetPower() * caster:THTD_GetStar() * 6 * GetStarLotusTowerCount(caster:GetOwner()) * 0.5,
+			            damage = caster:THTD_GetPower() * caster:THTD_GetStar() * 10 * (1 + THTD_GetStarLotusTowerCount(caster) * 0.5),
 			            damage_type = keys.ability:GetAbilityDamageType(), 
 			            damage_flags = DOTA_DAMAGE_FLAG_NONE
 				   	}

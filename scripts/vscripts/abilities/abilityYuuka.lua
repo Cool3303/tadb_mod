@@ -11,8 +11,7 @@ function OnYuuka01SpellStart(keys)
 
 	local targets = THTD_FindUnitsInRadius(caster,caster:GetOrigin(),800)
 
-	for k,v in pairs(targets) do
-		local damage = caster:THTD_GetPower()
+	for k,v in pairs(targets) do		
 		local DamageTable = {
 			ability = keys.ability,
 	        victim = v, 
@@ -48,7 +47,7 @@ function OnYuuka02AttackLanded(keys)
 		forward = (caster.thtd_yuuka_03_illusion:GetAbsOrigin() - caster:GetAbsOrigin()):Normalized()
 	end
 
-	if caster:HasModifier("modifier_touhoutd_release_hidden") then return end
+	if caster:THTD_IsHidden() then return end
 
 	if caster.thtd_yuuka_seeds == nil then
 		caster.thtd_yuuka_seeds = {}
@@ -95,7 +94,6 @@ function Yuuka02CreatePlant(keys,vec,seed)
 	local effectIndex = ParticleManager:CreateParticle("particles/heroes/thtd_yuuka/ability_yuuka_01_spawn.vpcf", PATTACH_CUSTOMORIGIN, nil)
 	ParticleManager:SetParticleControl(effectIndex, 0, vec)
 	ParticleManager:DestroyParticleSystem(effectIndex,false)
-
 	
 	local effectIndex2 = ParticleManager:CreateParticle("particles/heroes/thtd_yuuka/ability_yuuka_01_flower.vpcf", PATTACH_CUSTOMORIGIN, flower)
 	ParticleManager:SetParticleControlEnt(effectIndex2 , 0, flower, 5, "follow_origin", Vector(0,0,0), true)
@@ -103,10 +101,9 @@ function Yuuka02CreatePlant(keys,vec,seed)
 	ParticleManager:SetParticleControlEnt(effectIndex2 , 2, flower, 5, "follow_origin", Vector(0,0,0), true)
 	ParticleManager:SetParticleControlEnt(effectIndex2 , 3, flower, 5, "follow_origin", Vector(0,0,0), true)
 	ParticleManager:DestroyParticleSystemTime(effectIndex2,5.0)
-	
-
-	flower:SetBaseDamageMax(caster:GetAttackDamage()*GetYuuka03Increase(caster))
-	flower:SetBaseDamageMin(caster:GetAttackDamage()*GetYuuka03Increase(caster))
+		
+	flower:SetBaseDamageMax(caster:GetAverageTrueAttackDamage(caster)*GetYuuka03Increase(caster))
+	flower:SetBaseDamageMin(caster:GetAverageTrueAttackDamage(caster)*GetYuuka03Increase(caster))
 
 	local count = 0
 	flower:SetContextThink(DoUniqueString("thtd_yuuka_02_plant"), 
@@ -118,7 +115,7 @@ function Yuuka02CreatePlant(keys,vec,seed)
 				return nil
 			else
 			    if flower:IsAttacking() == false then
-					flower:MoveToPositionAggressive(flower:GetOrigin() + Vector(0,-100,0))
+					flower:MoveToPositionAggressive(flower:GetOrigin() + flower:GetForwardVector() * 100)
 				end
 			end
 			count = count + 1
@@ -156,18 +153,19 @@ function Yuuka03SpellStart(keys)
 
 		illusion.effect = effectIndex
 
-		illusion:SetBaseDamageMax(caster:GetAttackDamage())
-		illusion:SetBaseDamageMin(caster:GetAttackDamage())
+		illusion:SetBaseDamageMax(caster:GetAverageTrueAttackDamage(caster))
+		illusion:SetBaseDamageMin(caster:GetAverageTrueAttackDamage(caster))
 
 		illusion:SetContextThink(DoUniqueString("thtd_yuuka_03_illusion"), 
 			function()
 				if GameRules:IsGamePaused() then return 0.03 end
-				if caster==nil or caster:IsNull() or caster:HasModifier("modifier_touhoutd_release_hidden") or caster:IsAlive()==false then 
+				if caster==nil or caster:IsNull() or caster:THTD_IsHidden() or caster:IsAlive()==false then 
 					illusion:AddNoDraw()
 					illusion:ForceKill(true)
-					return nil
-				elseif illusion:IsAttacking() == false and caster:IsChanneling() == false then
-					illusion:MoveToPositionAggressive(illusion:GetOrigin() + Vector(0,-100,0))
+					return nil				
+				elseif illusion:IsAttacking() == false and caster:IsChanneling() == false and caster:THTD_IsAggressiveLock()==false then
+					illusion:MoveToPositionAggressive(illusion:GetOrigin() + illusion:GetForwardVector() * 100)
+					illusion:THTD_SetAggressiveLock()
 				end
 				return 0.5
 			end, 
@@ -176,7 +174,7 @@ function Yuuka03SpellStart(keys)
 		local midOrigin = (caster:GetAbsOrigin() + targetPoint)/2
 		ParticleManager:SetParticleControl(caster.thtd_yuuka_03_illusion.effect, 0, midOrigin)
 		ParticleManager:SetParticleControl(caster.thtd_yuuka_03_illusion.effect, 7, midOrigin)
-		caster.thtd_yuuka_03_illusion:SetOrigin(targetPoint)
+		caster.thtd_yuuka_03_illusion:SetAbsOrigin(targetPoint)
 		FindClearSpaceForUnit(caster.thtd_yuuka_03_illusion, targetPoint, false)
 	end
 end
@@ -186,20 +184,19 @@ function OnYuuka03Kill(keys)
 
 	if caster.thtd_yuuka_03_illusion ~= nil and caster.thtd_yuuka_03_illusion:IsNull()==false and caster.thtd_yuuka_03_illusion:IsAlive() then
 		local midOrigin = (caster:GetAbsOrigin() + caster.thtd_yuuka_03_illusion:GetAbsOrigin())/2
-		local dis = GetDistance(caster,caster.thtd_yuuka_03_illusion)
+		local dis = GetDistanceBetweenTwoEntity(caster,caster.thtd_yuuka_03_illusion)
 
-		local targets = THTD_FindUnitsInRadius(caster,midOrigin,dis/2)
-		
+		local targets = THTD_FindUnitsInRadius(caster,midOrigin,dis/2)	
+		local damage = caster:THTD_GetPower() * caster:THTD_GetStar() * 0.6
 		for k,v in pairs(targets) do
-			if v~=nil and v:IsNull()==false and v:IsAlive() then
-				local damage = caster:THTD_GetPower() * caster:THTD_GetStar()
+			if v~=nil and v:IsNull()==false and v:IsAlive() then				
 				local DamageTable = {
 					ability = keys.ability,
 			        victim = v, 
 			        attacker = caster, 
 			        damage = damage/10, 
 			        damage_type = keys.ability:GetAbilityDamageType(), 
-			        damage_flags = DOTA_DAMAGE_FLAG_NONE
+					damage_flags = DOTA_DAMAGE_FLAG_NONE
 			   	}
 			   	UnitDamageTarget(DamageTable)
 			   	if v:HasModifier("modifier_thtd_yuuka_03_death") == false then
@@ -242,6 +239,16 @@ end
 function OnYuuka04SpellStart(keys)
 	local caster = EntIndexToHScript(keys.caster_entindex)
 	local targetPoint = keys.target_points[1]
+	caster.cool_down_bonus_count = 0
+	if caster.ability_dummy_unit~=nil then
+		caster.ability_dummy_unit:RemoveSelf()
+		keys.ability.effectcircle = -1
+		ParticleManager:DestroyParticleSystem(keys.ability.effectcircle,true)
+		keys.ability.effectIndex = -1
+		ParticleManager:DestroyParticleSystem(keys.ability.effectIndex,true)
+		keys.ability.effectIndex_b = -1
+		ParticleManager:DestroyParticleSystem(keys.ability.effectIndex_b,true)		
+	end
 
 	local unit = CreateUnitByName(
 		"npc_dota2x_unit_yuuka04_spark"
@@ -260,19 +267,33 @@ function OnYuuka04SpellStart(keys)
 	keys.ability:SetContextNum("ability_yuuka_04_spark_unit",unit:GetEntityIndex(),0)
 
 	YuukaSparkParticleControl(caster,keys.ability,targetPoint)
-	keys.ability:SetContextNum("ability_yuuka_04_spark_lock",FALSE,0)
+	keys.ability:SetContextNum("ability_yuuka_04_spark_lock",0,0)
 
 	caster.thtd_Yuuka_04_count = 1
 	caster.thtd_Yuuka_04_last_distance = 10
-	caster.thtd_Yuuka_04_currentForward = caster:GetForwardVector()
+	caster.thtd_Yuuka_04_currentForward = caster:GetForwardVector()	
+	caster.ability_dummy_unit = unit
 
 	if caster.thtd_yuuka_03_illusion ~= nil and caster.thtd_yuuka_03_illusion:IsNull()==false and caster.thtd_yuuka_03_illusion:IsAlive() then
 		local ability = caster.thtd_yuuka_03_illusion:FindAbilityByName("thtd_yuuka_04")
 		if ability == nil then
 			ability = caster.thtd_yuuka_03_illusion:AddAbility("thtd_yuuka_04")
 		end
-		ability:SetLevel(1)
-		caster.thtd_yuuka_03_illusion:CastAbilityOnPosition(targetPoint,ability,caster:GetPlayerOwnerID())
+		if ability:GetLevel() ~= 1 then 
+			ability:SetLevel(1)
+		end		
+		ability:EndCooldown()		
+		local count = 1
+		caster.thtd_yuuka_03_illusion:SetContextThink(DoUniqueString("thtd_yuuka_02_plant"), 
+			function()
+				if GameRules:IsGamePaused() then return 0.03 end
+				if count > 50 then return nil end
+				if not ability:IsCooldownReady() then return nil end
+				caster.thtd_yuuka_03_illusion:CastAbilityOnPosition(targetPoint,ability,caster:GetPlayerOwnerID())
+				count = count + 1
+				return 0.1
+			end, 
+		0)		
 	end
 end
 
@@ -295,7 +316,7 @@ function YuukaSparkParticleControl(caster,ability,targetPoint)
 	unit:SetForwardVector(vecForward)
 	vecUnit = caster:GetOrigin() + Vector(caster:GetForwardVector().x * 100,caster:GetForwardVector().y * 100,160)
 	vecColor = Vector(255,255,255)
-	unit:SetOrigin(vecUnit)
+	unit:SetAbsOrigin(vecUnit)
 
 	ParticleManager:SetParticleControl(ability.effectcircle, 0, caster:GetOrigin())
 	
@@ -318,7 +339,7 @@ function OnYuuka04SpellRemove(keys)
 	local unitIndex = keys.ability:GetContext("ability_yuuka_04_spark_unit")
 
 	local unit = EntIndexToHScript(unitIndex)
-	if(unit~=nil)then
+	if unit~=nil then
 		unit:RemoveSelf()
 		keys.ability.effectcircle = -1
 		ParticleManager:DestroyParticleSystem(keys.ability.effectcircle,true)
@@ -327,50 +348,97 @@ function OnYuuka04SpellRemove(keys)
 		keys.ability.effectIndex_b = -1
 		ParticleManager:DestroyParticleSystem(keys.ability.effectIndex_b,true)
 	end
-	keys.ability:SetContextNum("ability_yuuka_04_spark_lock",TRUE,0)
+	keys.ability:SetContextNum("ability_yuuka_04_spark_lock",1,0)
 	caster:StopSound("Sound_THTD.thtd_yuuka_04")
+	caster.ability_dummy_unit = nil
 end
 
 function OnYuuka04SpellThink(keys)
 	if GameRules:IsGamePaused() then return end
-	if(keys.ability:GetContext("ability_yuuka_04_spark_lock")==TRUE)then
+	if (keys.ability:GetContext("ability_yuuka_04_spark_lock")==1) then
 		return
 	end
 	local caster = EntIndexToHScript(keys.caster_entindex)
 	local vecCaster = caster:GetOrigin()
 	local targetPoint =  vecCaster + caster:GetForwardVector()
+	
+	local nextForward,maxCount = FindYuuka04MaxCountEnemeiesForward(keys)
+	if nextForward ~= nil then
+		local forward = GetYuuka04ForwardMove(caster.thtd_Yuuka_04_currentForward,nextForward,caster.thtd_Yuuka_04_count * math.pi/180)
+		local distance = GetDistanceBetweenTwoVec2D(forward, nextForward)
 
-	local DamageTargets = 
-		FindUnitsInLine(
-			caster:GetTeamNumber(), 
-			caster:GetOrigin(), 
-			caster:GetOrigin() + keys.DamageLenth * caster.thtd_Yuuka_04_currentForward, 
-			nil, 
-			keys.DamageWidth,
-			keys.ability:GetAbilityTargetTeam(), 
-			keys.ability:GetAbilityTargetType(), 
-			keys.ability:GetAbilityTargetFlags()
-		)
+		if caster.thtd_Yuuka_04_last_distance <= distance then
+			caster.thtd_Yuuka_04_count = caster.thtd_Yuuka_04_count * -1
+		end
+		caster.thtd_Yuuka_04_last_distance = distance
 
-	for _,v in pairs(DamageTargets) do
-		local deal_damage = 0
-		if caster:GetUnitName() == "yuuka_illusion" then
-			if caster.thtd_yuuka_03_owner~=nil then
-				deal_damage = caster.thtd_yuuka_03_owner:THTD_GetStar() * 0.5 * caster.thtd_yuuka_03_owner:THTD_GetPower() * 0.2 * GetYuuka03Increase(caster.thtd_yuuka_03_owner)
+		local NowDamageTargets = 
+			FindUnitsInLine(
+				caster:GetTeamNumber(), 
+				caster:GetOrigin(), 
+				caster:GetOrigin() + keys.DamageLenth * caster.thtd_Yuuka_04_currentForward, 
+				nil, 
+				keys.DamageWidth,
+				keys.ability:GetAbilityTargetTeam(), 
+				keys.ability:GetAbilityTargetType(), 
+				keys.ability:GetAbilityTargetFlags()
+			)
+
+		local NowCount = 0
+
+		for k,v in pairs(NowDamageTargets) do
+			if v~=nil and v:IsNull()==false and v:IsAlive() then
+				NowCount = NowCount + 1
 			end
-		else
-			deal_damage = caster:THTD_GetStar() * 0.5 * caster:THTD_GetPower() * 0.2 * GetYuuka03Increase(caster)
 		end
 
-		local damage_table = {
-			ability = keys.ability,
-			victim = v,
-			attacker = caster,
-			damage = deal_damage,
-			damage_type = keys.ability:GetAbilityDamageType(), 
-			damage_flags = 0
-		}
-		UnitDamageTarget(damage_table)
+		if distance > math.sin(math.pi/18) and distance < 1.86 and NowCount~=maxCount then
+			caster:SetForwardVector(forward)
+			caster.thtd_Yuuka_04_currentForward = forward
+		end
+	else
+		caster:SetForwardVector(caster.thtd_Yuuka_04_currentForward)
+	end	
+
+	local targetPoint =  vecCaster + caster.thtd_Yuuka_04_currentForward
+
+	if caster.thtd_effect_count == nil then 
+		caster.thtd_effect_count = 1
+	end
+
+	if caster.thtd_effect_count >= 10 then 
+		local attacker = caster
+		if caster.thtd_yuuka_03_owner~=nil then
+			attacker = caster.thtd_yuuka_03_owner
+		end
+		local deal_damage = attacker:THTD_GetStar() * attacker:THTD_GetPower() * 2 * GetYuuka03Increase(attacker)		
+
+		local DamageTargets = 
+			FindUnitsInLine(
+				attacker:GetTeamNumber(), 
+				caster:GetOrigin(), 
+				caster:GetOrigin() + keys.DamageLenth * caster.thtd_Yuuka_04_currentForward, 
+				nil, 
+				keys.DamageWidth,
+				keys.ability:GetAbilityTargetTeam(), 
+				keys.ability:GetAbilityTargetType(), 
+				keys.ability:GetAbilityTargetFlags()
+			)
+
+		for _,v in pairs(DamageTargets) do
+			local damage_table = {
+				ability = keys.ability,
+				victim = v,
+				attacker = attacker,
+				damage = deal_damage,
+				damage_type = keys.ability:GetAbilityDamageType(), 
+				damage_flags = DOTA_DAMAGE_FLAG_NONE
+			}
+			UnitDamageTarget(damage_table)
+		end
+		caster.thtd_effect_count = 1
+	else 
+		caster.thtd_effect_count = caster.thtd_effect_count + 1
 	end
 	YuukaSparkParticleControl(caster,keys.ability,targetPoint)
 end
@@ -380,4 +448,41 @@ function GetYuuka03Increase(caster)
 		caster.thtd_yuuka_03_kill_count = 0
 	end
 	return (1+caster.thtd_yuuka_03_kill_count/200)
+end
+
+function FindYuuka04MaxCountEnemeiesForward(keys)
+	local caster = EntIndexToHScript(keys.caster_entindex)
+	local forwardVector = caster.thtd_Yuuka_04_currentForward
+
+	local targets = THTD_FindUnitsInRadius(caster,caster:GetOrigin(),keys.DamageLenth)
+
+	if #targets <= 0 then
+		return nil,0
+	end
+
+	local maxCount = 0
+	for i=1,120 do
+		local sparkRad = math.pi * i/60
+		local count = 0
+		for k,v in pairs(targets) do
+			if v~=nil and v:IsNull()==false and v:IsAlive() then
+				if IsRadInRect(v:GetOrigin(),caster:GetOrigin(),keys.DamageWidth,keys.DamageLenth,sparkRad) then
+					count = count + 1
+				end
+			end
+		end
+		if count > maxCount then
+			forwardVector = Vector(math.cos(sparkRad),math.sin(sparkRad),forwardVector.z)
+			maxCount = count
+		end
+	end
+
+	return forwardVector,maxCount
+end
+
+function GetYuuka04ForwardMove(forward,nextForward,rad)
+	local forwardVector = Vector(math.cos(rad)*forward.x - math.sin(rad)*forward.y,
+								 forward.y*math.cos(rad) + forward.x*math.sin(rad),
+								0)
+	return forwardVector
 end

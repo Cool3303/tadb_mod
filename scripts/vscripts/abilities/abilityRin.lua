@@ -61,7 +61,7 @@ function OnRin01ProjectileHit(keys)
 	local caster = EntIndexToHScript(keys.caster_entindex)
 	local target = keys.target
 
-	local damage = caster:THTD_GetPower()
+	local damage = caster:THTD_GetPower() * caster:THTD_GetStar()
 
 	local DamageTable = {
 			ability = keys.ability,
@@ -99,8 +99,8 @@ function OnRin01Death(keys)
 	ParticleManager:DestroyParticleSystem(effectIndex,false)
 
 	local damage = target:GetMaxHealth() * thtd_rin_star_bouns[caster:THTD_GetStar()]
+	local maxHealth = 3768000
 	local targets = THTD_FindUnitsInRadius(caster,target:GetOrigin(),300)
-	
 	for k,v in pairs(targets) do
 		local DamageTable = {
    			ability = keys.ability,
@@ -109,10 +109,15 @@ function OnRin01Death(keys)
             damage = damage, 
             damage_type = keys.ability:GetAbilityDamageType(), 
             damage_flags = DOTA_DAMAGE_FLAG_NONE
-	   	}
-	   	local olddamage = ReturnAfterTaxDamage(DamageTable)
-		if olddamage > (caster:THTD_GetStar()*caster:THTD_GetPower()*5) then
-			DamageTable.damage = caster:THTD_GetStar()*caster:THTD_GetPower()*15
+		}	   
+		if SpawnSystem.CurWave <= 120 then 
+			local olddamage = ReturnAfterTaxDamageAfterAbility(DamageTable)
+			if olddamage > (caster:THTD_GetStar()*caster:THTD_GetPower()*5) then
+				DamageTable.damage = caster:THTD_GetStar()*caster:THTD_GetPower()*15
+			end
+		else
+			local damageMax = maxHealth * thtd_rin_star_bouns[caster:THTD_GetStar()]
+			DamageTable.damage = math.min(damage, damageMax)
 		end
 		UnitDamageTarget(DamageTable)
 	end

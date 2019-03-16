@@ -1,44 +1,3 @@
-function OnTouhouReleaseTowerSpellStart(keys)
-	local caster = keys.caster
-	local target = keys.target
-
-	if target:THTD_IsTower() and target:GetOwner() == caster then
-		for i=0,8 do
-			local targetItem = target:GetItemInSlot(i)
-			if targetItem~=nil and targetItem:IsNull()==false then
-				target:DropItemAtPositionImmediate(targetItem, target:GetOrigin())
-			end
-		end
-
-		target:AddNewModifier(caster, nil, "modifier_touhoutd_release_hidden", {})
-		target:SetOrigin(Vector(0,0,0))
-		target:AddNoDraw()
-		target:THTD_DestroyLevelEffect()
-		target:RemoveModifierByName("modifier_touhoutd_no_health_bar")
-		target.thtd_tower_damage = 0
-
-		local item = EntIndexToHScript(target.thtd_item)
-		caster:AddItem(item)
-
-		if target:THTD_GetStar() > 1 then
-			item.thtd_item_owner = caster
-		end
-
-		for k,v in pairs(caster.thtd_hero_tower_list) do
-			if v == target then
-				table.remove(caster.thtd_hero_tower_list,k)
-			end
-		end
-
-		-- 组合刷新
-		local combo = target:THTD_GetCombo()
-		local func = target["THTD_"..target:GetUnitName().."_thtd_combo"]
-		if func then
-			func(target,combo)
-		end
-	end
-end
-
 THTD_MAX_BONUS_TOWER = 3
 
 local thtd_skin_list = 
@@ -73,26 +32,120 @@ local thtd_skin_list =
 	},
 }
 
+function OnTouhouReleaseTowerSpellStart(keys)
+	local caster = keys.caster
+	local target = keys.target
+
+	if caster:GetNumItemsInInventory()>=9 then 
+		CustomGameEventManager:Send_ServerToPlayer(caster:GetPlayerOwner(), "show_message", {msg="not_enough_item_slot", duration=10, params={}, color="#ff0"})
+		EmitSoundOnClient("Sound_THTD.thtd_star_up_fail", caster:GetPlayerOwner())
+		return 
+	end
+
+	if target:THTD_IsTower() and target:GetOwner() == caster then	
+		local item = target.thtd_item
+		if item == nil then return end
+		
+		if item.locked_by_player_id == nil then 
+			target:THTD_DropItemAll()
+		end
+		target:AddNewModifier(caster, nil, "modifier_touhoutd_release_hidden", {})
+		target:SetAbsOrigin(Vector(0,0,0))
+		target:AddNoDraw()
+		target:THTD_DestroyLevelEffect()
+		target:RemoveModifierByName("modifier_touhoutd_no_health_bar")
+		target.thtd_tower_damage = 0	
+		
+		item:THTD_ItemStarLevelUpdate()
+		caster:AddItem(item)
+
+		for k,v in pairs(caster.thtd_hero_tower_list) do
+			if v == target then
+				table.remove(caster.thtd_hero_tower_list,k)
+				break
+			end
+		end
+
+		for k,v in pairs(caster.thtd_hero_tower_list) do
+			if v==nil or v:IsNull() or v:IsAlive()==false or v:THTD_IsHidden() then
+				table.remove(caster.thtd_hero_tower_list,k)				
+			end
+		end
+
+		caster.thtd_game_info["food_count"] = #caster.thtd_hero_tower_list
+		SetNetTableTowerList(caster)
+
+		for k,v in pairs(caster.thtd_hero_tower_list) do
+			if v ~= target then
+				local modifiers = v:FindAllModifiers()
+				for _, modifier in pairs(modifiers) do
+					if modifier:GetCaster() == target and THTD_IsRemainBuff(modifier:GetName()) == false then modifier:Destroy() end
+				end
+			end			
+		end		
+
+		local entities = Entities:FindAllByClassname("npc_dota_creature")						
+		for k,v in pairs(entities) do
+			if v~=nil and v:IsNull()==false and v:IsAlive() and v.thtd_spawn_unit_owner~=nil and v.thtd_spawn_unit_owner==target then 
+				v:AddNoDraw()
+				v:ForceKill(false)
+			end
+		end
+
+		caster:THTD_HeroComboRefresh()
+
+		if SpawnSystem.CurWave > 120 and SpawnSystem.CurTime <= 3 and caster.is_change_card ~= true then
+			caster.is_change_card = true 
+			GameRules:SendCustomMessage("<font color='red'>最后3秒内回收过塔的这一波不计入有效波数。</font>", DOTA_TEAM_GOODGUYS, 0)
+			caster:SetContextThink(DoUniqueString("change_card") ,
+				function()
+					if GameRules:IsGamePaused() then return 0.1 end
+					caster.is_change_card = false
+					return nil
+				end,
+			5)
+		end	
+
+	end
+end
+
 function PutTowerToPoint(keys)
 	local caster = keys.caster
+	if caster:GetUnitName()~="npc_dota_hero_lina" then return end
 	local targetPoint = keys.target_points[1]
 	local itemName = keys.ability:GetAbilityName()
 	local tower = keys.ability.tower
 
-	if caster:GetUnitName()~="npc_dota_hero_lina" and keys.ability.thtd_item_owner ~= nil and keys.ability.thtd_item_owner ~= caster then return end
-
-	if caster.food >= caster.thtd_game_info["food_count_max"] then 
+	if caster.thtd_game_info["food_count"] ~= #caster.thtd_hero_tower_list then
+		caster.thtd_game_info["food_count"] = #caster.thtd_hero_tower_list
+		SetNetTableTowerList(caster)
+	end
+	if caster.thtd_game_info["food_count"] >= THTD_MAX_FOOD then 
 		CustomGameEventManager:Send_ServerToPlayer( caster:GetPlayerOwner() , "show_message", {msg="not_enough_food", duration=5, params={count=1}, color="#0ff"} )
 		return 
 	end
 
-	if IsBonusTower(itemName) and GetBonusTowerCount(caster) >= THTD_MAX_BONUS_TOWER then
+	if SpawnSystem.IsUnLimited == false and IsBonusTower(itemName) and GetBonusTowerCount(caster) >= THTD_MAX_BONUS_TOWER then
 		CustomGameEventManager:Send_ServerToPlayer( caster:GetPlayerOwner() , "show_message", {msg="bonus_tower_limit", duration=5, params={count=1}, color="#0ff"} )
 		return 
 	end
 
+	if GameRules:GetCustomGameDifficulty() == 10 and SpawnSystem.IsUnLimited == false and IsBonusTower(itemName) and towerNameList[itemName]["cardname"] ~= "shinki" then 
+		GameRules:SendCustomMessage("<font color='yellow'>娱乐模式下，神绮之外的收益卡收益无效。</font>", DOTA_TEAM_GOODGUYS, 0)		
+	end
+
+	if itemName == "item_0050" and GameRules:GetCustomGameDifficulty() > 5 then 
+		GameRules:SendCustomMessage("<font color='red'>封兽鵺只能在难度6以下使用。</font>", DOTA_TEAM_GOODGUYS, 0)
+		return 
+	end
+
+	if itemName == "item_0069" and SpawnSystem.CurWave > 120 then 
+		GameRules:SendCustomMessage("<font color='red'>寅丸星只能在无尽70波以前使用。</font>", DOTA_TEAM_GOODGUYS, 0)
+		return 
+	end
+
 	if tower == nil then
-		local spawnTowerName = towerNameList[itemName]["kind"]
+		local spawnTowerName = towerNameList[itemName]["cardname"]
 		tower = CreateUnitByName(
 			spawnTowerName, 
 			targetPoint, 
@@ -116,13 +169,13 @@ function PutTowerToPoint(keys)
 		FindClearSpaceForUnit(tower, targetPoint, false)
 
 		tower:SetForwardVector(Vector(0,-1,tower:GetForwardVector().z))
-		keys.ability.tower = tower
+		keys.ability.tower = tower		
 	else
 		if tower:GetOwner() ~= caster then
 			tower:SetOwner(caster)
 			tower:SetControllableByPlayer(caster:GetPlayerOwnerID(), true) 
 		end
-		tower:SetOrigin(targetPoint)
+		tower:SetAbsOrigin(targetPoint)
 		tower:SetContextThink(DoUniqueString("FindClearSpaceForUnit"), 
 			function()
 				if GetDistanceBetweenTwoVec2D(tower:GetOrigin(),targetPoint) < 100 then
@@ -130,12 +183,12 @@ function PutTowerToPoint(keys)
 					tower:RemoveNoDraw()
 					FindClearSpaceForUnit(tower, targetPoint, false)
 					tower:THTD_DestroyLevelEffect()
-					tower:THTD_CreateLevelEffect()
+					tower:THTD_CreateLevelEffect()					
 					return nil
 				end
 				return 0.1
 			end,
-		0.1)
+		0)
 		tower:SetForwardVector(Vector(0,-1,tower:GetForwardVector().z))
 	end
 
@@ -158,17 +211,17 @@ function PutTowerToPoint(keys)
 	tower:SetHealth(1)
 
 	if keys.ability:THTD_IsCardHasVoice() == true then
-		EmitSoundOn(THTD_GetVoiceEvent(towerNameList[itemName]["kind"],"spawn"),tower)
+		EmitSoundOn(THTD_GetVoiceEvent(towerNameList[itemName]["cardname"],"spawn"),tower)
 	end
 
-	tower.thtd_item = keys.ability:GetEntityIndex()
+	tower.thtd_item = keys.ability
 	caster:TakeItem(keys.ability)
 	tower:SetMana(0)
 	caster:EmitSound("Sound_THTD.thtd_set_tower")
 
 	table.insert(caster.thtd_hero_tower_list,tower)
-	caster.food = #caster.thtd_hero_tower_list
-	caster:THTD_CreateFoodEffect()
+	caster.thtd_game_info["food_count"] = #caster.thtd_hero_tower_list	
+	SetNetTableTowerList(caster)	
 
 	tower:AddNewModifier(caster, nil, "modifier_touhoutd_building", {})
 	tower:SetContextThink(DoUniqueString("thtd_modifier_touhoutd_building"), 
@@ -179,7 +232,8 @@ function PutTowerToPoint(keys)
 				if noHealthBar ~= nil then
 					noHealthBar:ApplyDataDrivenModifier(tower, tower, "modifier_touhoutd_no_health_bar", nil)
 				end
-				tower:RemoveModifierByName("modifier_touhoutd_building")
+				tower:RemoveModifierByName("modifier_touhoutd_building")				
+				caster:THTD_HeroComboRefresh()				
 				return nil 
 			end
 			tower:SetHealth(tower:GetHealth()+4)
@@ -194,6 +248,13 @@ function PutTowerToPoint(keys)
 	else
 		tower:THTD_DestroyLevelEffect()
 		tower:THTD_CreateLevelEffect()
+	end	
+
+	local modifiers = tower:FindAllModifiers()
+	for _, modifier in pairs(modifiers) do
+		if THTD_IsRemainBuff(modifier:GetName()) == false and modifier:GetCaster() ~= tower and THTD_IsValid(modifier:GetCaster()) == false then 			
+			modifier:Destroy() 
+		end
 	end
 end
 
@@ -230,13 +291,15 @@ function StarUp(keys)
 	composeItem = {}
 	
 	for item_slot = 0,5 do
-		item = caster:GetItemInSlot(item_slot)
-		if item ~= nil and item.thtd_exp_up_lock ~= 0 then
+		local item = caster:GetItemInSlot(item_slot)		
+		if item ~= nil and item.locked_by_player_id == nil then
 			local tower = item:THTD_GetTower()
-			if tower ~= nil then
-				if tower:THTD_GetStar() == star and tower:THTD_GetLevel() == THTD_MAX_LEVEL then
+			if tower ~= nil and tower:THTD_GetStar() == star and tower:THTD_GetLevel() == THTD_MAX_LEVEL then	
+				if GameRules:GetCustomGameDifficulty() == 10 and tower:GetUnitName() == "minoriko" then 
+					GameRules:SendCustomMessage("<font color='yellow'>娱乐模式下秋穣子不能当作素材。</font>", DOTA_TEAM_GOODGUYS, 0)				
+				else
 					table.insert(composeItem,item)
-				end
+				end							
 			end
 			if item:GetAbilityName() == THTD_STAR_ITEM[star] or item:GetAbilityName() == THTD_SEIGA_STAR_ITEM[star] then
 				table.insert(composeItem,item)
@@ -245,13 +308,15 @@ function StarUp(keys)
 	end
 
 	for item_slot = 0,5 do
-		item = hero:GetItemInSlot(item_slot)
-		if item ~= nil and item.thtd_exp_up_lock ~= 0 then
+		local item = hero:GetItemInSlot(item_slot)				
+		if item ~= nil and item.locked_by_player_id == nil then
 			local tower = item:THTD_GetTower()
-			if tower ~= nil then
-				if tower:THTD_GetStar() == star and tower:THTD_GetLevel() == THTD_MAX_LEVEL then
+			if tower ~= nil and tower:THTD_GetStar() == star and tower:THTD_GetLevel() == THTD_MAX_LEVEL then					
+				if GameRules:GetCustomGameDifficulty() == 10 and tower:GetUnitName() == "minoriko" then 
+					GameRules:SendCustomMessage("<font color='yellow'>娱乐模式下秋穣子不能当作素材。</font>", DOTA_TEAM_GOODGUYS, 0)				
+				else
 					table.insert(composeItem,item)
-				end
+				end			
 			end
 			if item:GetAbilityName() == THTD_STAR_ITEM[star] or item:GetAbilityName() == THTD_SEIGA_STAR_ITEM[star] then
 				table.insert(composeItem,item)
@@ -260,10 +325,10 @@ function StarUp(keys)
 	end
 
 	if (#composeItem >= star) then
-		for i=1,star do
-			composeItem[i]:THTD_RemoveSelf()
+		for i=1,star do			
+			OnItemDestroyed(caster, composeItem[i], false)
 		end
-		caster:THTD_UpgradeStar()
+		caster:THTD_UpgradeStar()		
 	else
 		if player then
 			EmitSoundOnClient("Sound_THTD.thtd_star_up_fail",player)
@@ -277,23 +342,44 @@ function ExpUp(keys)
 	local player = caster:GetPlayerOwner()
 	local hero = player:GetAssignedHero()
 
-	item = caster:GetItemInSlot(0)
-	if item ~= nil and item.thtd_exp_up_lock ~= true then
-		caster:EmitSound("Sound_THTD.thtd_exp_up")
+	item = caster:GetItemInSlot(0)	
+
+	if item ~= nil then		
+		if item:THTD_GetCardName() == nil or string.find(item:THTD_GetCardName(),"item_20") ~= nil then
+			if player then
+				EmitSoundOnClient("Sound_THTD.thtd_star_up_fail",player)
+			end
+			return
+		end
+			
+		if item.locked_by_player_id ~= nil then		
+			if player then
+				CustomGameEventManager:Send_ServerToPlayer(player , "show_message", {msg="item_is_locked", duration=5, params={}, color="#fff"} )
+				EmitSoundOnClient("Sound_THTD.thtd_star_up_fail",player)
+			end
+			return		
+		end	
+		
+		caster:EmitSound("Sound_THTD.thtd_exp_up")		
 		local tower = item:THTD_GetTower()
 		local exp = 3000
 		if tower ~= nil then
+			if tower:GetUnitName() == "minoriko" and GameRules:GetCustomGameDifficulty() == 10 then 
+				GameRules:SendCustomMessage("<font color='yellow'>娱乐模式下秋穣子不能当作素材。</font>", DOTA_TEAM_GOODGUYS, 0)	
+				if player then
+					EmitSoundOnClient("Sound_THTD.thtd_star_up_fail",player)
+				end
+				return	
+			end
 			exp = (1000 + tower:THTD_GetExp()/5)*1500*(item:THTD_GetCardQuality()+1)/1000
 		end
 		if item:THTD_GetCardName() == caster:GetUnitName() then
 			caster:THTD_SetAbilityLevelUp()
 		elseif item:THTD_GetCardName() == "BonusEgg" then
-			exp = (1000 + 5400/5)*1500*(item:THTD_GetCardQuality()+1)/1000
-		elseif item:THTD_GetCardName() == nil or string.find(item:THTD_GetCardName(),"item_20") ~= nil then
-			return
+			exp = (1000 + 5400/5)*1500*(item:THTD_GetCardQuality()+1)/1000		
 		end
-		caster:THTD_AddExp(exp)
-		item:THTD_RemoveSelf()
+		caster:THTD_AddExp(exp)		
+		OnItemDestroyed(caster, item, false)
 	else
 		if player then
 			EmitSoundOnClient("Sound_THTD.thtd_star_up_fail",player)
@@ -313,6 +399,11 @@ function OnKillUnitSpellStart(keys)
 	local caster = EntIndexToHScript(keys.caster_entindex)
 	local target = keys.target
 
+	if target.thtd_damage_lock == true then
+		keys.ability:EndCooldown()
+		return
+	end
+	
 	target:SetHealth(1)
 	local DamageTable = {
 			ability = keys.ability,
@@ -340,21 +431,32 @@ function CloseStar(keys)
 	else
 		caster.thtd_close_star = false
 	end
+
+	for index,tower in pairs(caster.thtd_hero_tower_list) do
+		if tower ~= nil and tower:IsNull() == false then
+			if caster.thtd_close_star == true and tower.thtd_is_effect_open == true and caster.focusTarget ~= tower then
+				tower:THTD_DestroyLevelEffect()
+			elseif caster.thtd_close_star == false and tower.thtd_is_effect_open == false then
+				tower:THTD_CreateLevelEffect()
+			end			
+		end
+	end	
 end
 
 function OnTouhoutdExUp(keys)
 	local caster = EntIndexToHScript(keys.caster_entindex)
 	local target = keys.target
 
-	if target:THTD_IsTower() and target:GetUnitName() == "rumia" and target:THTD_GetStar() == 5 and target:GetOwner() == caster and caster.thtd_ability_rumia_ex_lock ~= true then
+	if target:THTD_IsTower() and target:GetUnitName() == "rumia" and target:THTD_GetStar() == 5 and target:GetOwner() == caster and caster.thtd_ability_rumia_ex_lock ~= true then		
 		target:EmitSound("Hero_Wisp.Tether")
 		caster.thtd_ability_rumia_ex_lock = true
-		target:THTD_UpgradeEx()
-		target:SetBaseAttackTime(0.4)
+		target:THTD_UpgradeEx()	
 		target:SetAttackCapability(DOTA_UNIT_CAP_MELEE_ATTACK)
 		target:SetModel("models/thd2/rumia_ex/rumia_ex.vmdl")
 		target:SetOriginalModel("models/thd2/rumia_ex/rumia_ex.vmdl")
 		target:SetModelScale(0.7)
+		local modifier = target:AddNewModifier(target, nil, "modifier_attack_time", {})
+		modifier:SetStackCount(4)
 
 		local attack_power_ability=target:FindAbilityByName("ability_common_power_buff")
 
@@ -375,19 +477,18 @@ function DrawNormalCard(keys)
 		local player = caster:GetPlayerOwner()
 		if player then
 			EmitSoundOnClient("Sound_THTD.thtd_star_up_fail",player)
+			if caster:GetNumItemsInInventory()>=9 then 
+				CustomGameEventManager:Send_ServerToPlayer(player, "show_message", {msg="not_enough_item_slot", duration=10, params={}, color="#ff0"})
+			end
 		end
 		return 
 	end
-	local itemName = keys.ability:GetAbilityName()
-
-	local drawList = {}
-
-	--caster:EmitSound("Sound_THTD.thtd_draw_normal_card")
-
+	
+	local drawList = {}	
 	drawList[1] = {}
 	drawList[2] = {}
-
-	for k,v in pairs(towerPlayerList[caster:GetPlayerOwnerID()+1]) do
+	
+	for k,v in pairs(towerPlayerList[caster.thtd_player_id+1]) do
 		if v["quality"] == 1 and v["itemName"] ~= "BonusEgg" then
 			for i=1,v["count"] do
 				table.insert(drawList[1],v["itemName"])
@@ -400,69 +501,21 @@ function DrawNormalCard(keys)
 	end
 
 	local chance = RandomInt(0,100)
-	local item = nil
+	local itemName = nil
 	if chance <=20 then
 		if #drawList[2] > 0 then
-			item = CreateItem(drawList[2][RandomInt(1,#drawList[2])], nil, nil)
+			itemName = drawList[2][RandomInt(1,#drawList[2])]
 		else
 			PlayerResource:ModifyGold(caster:GetPlayerOwnerID(), 1000 , true, DOTA_ModifyGold_SellItem) 
 		end
 	elseif chance > 20 then
 		if #drawList[1] > 0 then
-			item = CreateItem(drawList[1][RandomInt(1,#drawList[1])], nil, nil)
+			itemName = drawList[1][RandomInt(1,#drawList[1])]
 		else
 			PlayerResource:ModifyGold(caster:GetPlayerOwnerID(), 250 , true, DOTA_ModifyGold_SellItem) 
 		end
 	end
-
-	if item~=nil then
-		caster:AddItem(item)
-		item:THTD_RemoveItemInList(caster:GetPlayerOwnerID())
-
-		-- 回收
-		local itemNameRelease = item:GetAbilityName()
-		caster:SetContextThink(DoUniqueString("thtd_item_release"), 
-			function()
-				if item==nil or item:IsNull() then
-					THTD_AddItemToListByName(caster:GetPlayerOwnerID(),itemNameRelease)
-					return nil
-				end
-				return 0.1
-			end,
-		0.1)
-
-		local cardName = item:THTD_GetCardName()
-		local index = item:GetEntityIndex()
-
-		if caster~=nil and caster:IsNull()==false then
-			caster.thtd_hero_star_list[tostring(index)] = 1
-			caster.thtd_hero_level_list[tostring(index)] = 1
-		end
-
-		if item:THTD_IsCardHasVoice() == true then
-			local player = caster:GetPlayerOwner()
-			if player then
-				EmitSoundOnClient(THTD_GetVoiceEvent(cardName,"spawn"),player)
-			end
-		end
-
-		if item:THTD_IsCardHasPortrait() == true then
-			local portraits= item:THTD_GetPortraitPath(cardName)
-			if item:THTD_GetCardQuality() == 1 then
-				local effectIndex = ParticleManager:CreateParticleForPlayer(portraits, PATTACH_WORLDORIGIN, caster, caster:GetPlayerOwner())
-				ParticleManager:SetParticleControl(effectIndex, 0, Vector(-58,-80,0))
-				ParticleManager:SetParticleControl(effectIndex, 1, Vector(80,0,0))
-				ParticleManager:DestroyParticleSystemTime(effectIndex,6.0)
-				caster:EmitSound("Sound_THTD.thtd_draw_n")
-			elseif item:THTD_GetCardQuality() == 2 then
-				local effectIndex = ParticleManager:CreateParticleForPlayer(portraits, PATTACH_WORLDORIGIN, caster, caster:GetPlayerOwner())
-				ParticleManager:SetParticleControl(effectIndex, 0, Vector(-58,-80,0))
-				ParticleManager:SetParticleControl(effectIndex, 1, Vector(80,0,0))
-				ParticleManager:DestroyParticleSystemTime(effectIndex,6.0)
-				caster:EmitSound("Sound_THTD.thtd_draw_r")
-			end
-		end
-	end
+	caster:THTD_AddCardPoolItem(itemName)	
 
 	if keys.ability:IsItem() then
 		local charge = keys.ability:GetCurrentCharges()
@@ -485,15 +538,14 @@ function DrawSeniorCard(keys)
 		local player = caster:GetPlayerOwner()
 		if player then
 			EmitSoundOnClient("Sound_THTD.thtd_star_up_fail",player)
+			if caster:GetNumItemsInInventory()>=9 then 
+				CustomGameEventManager:Send_ServerToPlayer(player, "show_message", {msg="not_enough_item_slot", duration=10, params={}, color="#ff0"})
+			end
 		end
 		return 
 	end
-	local itemName = keys.ability:GetAbilityName()
-
-	--caster:EmitSound("Sound_THTD.thtd_draw_senior_card")
-
+	
 	local drawList = {}
-
 	drawList[2] = {}
 	drawList[3] = {}
 	drawList[4] = {}
@@ -515,158 +567,37 @@ function DrawSeniorCard(keys)
 	end
 
 	local chance = RandomInt(0,100)
-	local item = nil
+	if caster.thtd_chance_count["SSR"] == nil then 
+		caster.thtd_chance_count["SSR"] = 0
+	end
+	if caster.thtd_chance_count["SSR"] >= 20 then 
+		chance = 0
+	end
+	if chance > 5 then
+		caster.thtd_chance_count["SSR"] = caster.thtd_chance_count["SSR"] + 1
+	end
+	local itemName = nil
 	if chance <=5 then
+		caster.thtd_chance_count["SSR"] = 0
 		if #drawList[4] > 0 then
-			item = CreateItem(drawList[4][RandomInt(1,#drawList[4])], nil, nil)
+			itemName = drawList[4][RandomInt(1,#drawList[4])]
 		else
 			PlayerResource:ModifyGold(caster:GetPlayerOwnerID(), 5000 , true, DOTA_ModifyGold_SellItem) 
 		end
 	elseif chance <= 25 then
 		if #drawList[3] > 0 then
-			item = CreateItem(drawList[3][RandomInt(1,#drawList[3])], nil, nil)
+			itemName = drawList[3][RandomInt(1,#drawList[3])]
 		else
 			PlayerResource:ModifyGold(caster:GetPlayerOwnerID(), 2500 , true, DOTA_ModifyGold_SellItem) 
 		end
 	elseif chance > 25 then
 		if #drawList[2] > 0 then
-			item = CreateItem(drawList[2][RandomInt(1,#drawList[2])], nil, nil)
+			itemName = drawList[2][RandomInt(1,#drawList[2])]
 		else
 			PlayerResource:ModifyGold(caster:GetPlayerOwnerID(), 1000 , true, DOTA_ModifyGold_SellItem) 
 		end
 	end
-
-	if item~=nil then
-		caster:AddItem(item)
-		item:THTD_RemoveItemInList(caster:GetPlayerOwnerID())
-
-		local itemNameRelease = item:GetAbilityName()
-		if itemNameRelease ~= "item_2001" then
-			caster:SetContextThink(DoUniqueString("thtd_item_release"), 
-				function()
-					if item==nil or item:IsNull() then
-						THTD_AddItemToListByName(caster:GetPlayerOwnerID(),itemNameRelease)
-						return nil
-					end
-					return 0.1
-				end,
-			0.1)
-		end
-
-		local cardName = item:THTD_GetCardName()
-		local index = item:GetEntityIndex()
-
-		if caster~=nil and caster:IsNull()==false then
-			caster.thtd_hero_star_list[tostring(index)] = 1
-			caster.thtd_hero_level_list[tostring(index)] = 1
-		end
-
-		if item:THTD_IsCardHasVoice() == true then
-			local player = caster:GetPlayerOwner()
-			if player then
-				EmitSoundOnClient(THTD_GetVoiceEvent(cardName,"spawn"),player)
-			end
-		end
-
-		if item:THTD_IsCardHasPortrait() == true then
-			local portraits= item:THTD_GetPortraitPath(cardName)
-			if item:THTD_GetCardQuality() == 3 then
-				local effectIndex = ParticleManager:CreateParticleForPlayer(portraits, PATTACH_WORLDORIGIN, caster, caster:GetPlayerOwner())
-				ParticleManager:SetParticleControl(effectIndex, 0, Vector(-58,-80,0))
-				ParticleManager:SetParticleControl(effectIndex, 1, Vector(80,0,0))
-				ParticleManager:DestroyParticleSystemTime(effectIndex,6.0)
-				caster:EmitSound("Sound_THTD.thtd_draw_sr")
-			elseif item:THTD_GetCardQuality() == 4 then
-				local effectIndex = ParticleManager:CreateParticle(portraits, PATTACH_WORLDORIGIN, nil)
-				ParticleManager:SetParticleControl(effectIndex, 0, Vector(-58,-80,0))
-				ParticleManager:SetParticleControl(effectIndex, 1, Vector(80,0,0))
-				ParticleManager:DestroyParticleSystemTime(effectIndex,6.0)
-				effectIndex = ParticleManager:CreateParticle("particles/portraits/portraits_ssr_get_screen_effect.vpcf", PATTACH_WORLDORIGIN, nil)
-				ParticleManager:DestroyParticleSystemTime(effectIndex,4.0)
-				caster:EmitSound("Sound_THTD.thtd_draw_ssr")
-			end
-		end
-	end
-
-	if keys.ability:IsItem() then
-		local charge = keys.ability:GetCurrentCharges()
-		if charge > 1 then
-			keys.ability:SetCurrentCharges(charge-1)
-		else
-			caster:RemoveItem(keys.ability)
-		end
-	end
-
-	drawList = {}
-end
-
-function DrawUltimaCard(keys)
-	local caster = keys.caster
-	if caster:GetNumItemsInInventory()>=9 or caster:GetUnitName()~="npc_dota_hero_lina" then 
-		if keys.ability:IsItem()==false then
-			PlayerResource:ModifyGold(caster:GetPlayerOwnerID(), keys.ability:GetGoldCost(keys.ability:GetLevel()) , true, DOTA_ModifyGold_SellItem) 
-		end
-		local player = caster:GetPlayerOwner()
-		if player then
-			EmitSoundOnClient("Sound_THTD.thtd_star_up_fail",player)
-		end
-		return 
-	end
-
-	local drawList = {}
-
-	drawList[4] = {}
-
-	for k,v in pairs(towerNameList) do
-		if v["quality"] == 4 and v["kind"] ~= "BonusEgg" and string.find(v["kind"], 'item_20') == nil then
-			table.insert(drawList[4],k)
-		end
-	end
-
-	local item = nil
-	if #drawList[4] > 0 then
-		item = CreateItem(drawList[4][RandomInt(1,#drawList[4])], nil, nil)
-	end
-
-	if item~=nil then
-		caster:AddItem(item)
-		item.thtd_exp_up_lock = true
-		caster:SetContextThink(DoUniqueString("thtd_item_release"), 
-			function()
-				if item==nil or item:IsNull() then
-					caster:SpendGold(5000,DOTA_ModifyGold_Unspecified)
-					return nil
-				end
-				return 0.1
-			end,
-		0.1)
-
-		local cardName = item:THTD_GetCardName()
-		local index = item:GetEntityIndex()
-
-		if caster~=nil and caster:IsNull()==false then
-			caster.thtd_hero_star_list[tostring(index)] = 1
-			caster.thtd_hero_level_list[tostring(index)] = 1
-		end
-
-		if item:THTD_IsCardHasVoice() == true then
-			local player = caster:GetPlayerOwner()
-			if player then
-				EmitSoundOnClient(THTD_GetVoiceEvent(cardName,"spawn"),player)
-			end
-		end
-
-		if item:THTD_IsCardHasPortrait() == true then
-			local portraits= item:THTD_GetPortraitPath(cardName)
-			local effectIndex = ParticleManager:CreateParticle(portraits, PATTACH_WORLDORIGIN, nil)
-			ParticleManager:SetParticleControl(effectIndex, 0, Vector(-58,-80,0))
-			ParticleManager:SetParticleControl(effectIndex, 1, Vector(80,0,0))
-			ParticleManager:DestroyParticleSystemTime(effectIndex,6.0)
-			effectIndex = ParticleManager:CreateParticle("particles/portraits/portraits_ssr_get_screen_effect.vpcf", PATTACH_WORLDORIGIN, nil)
-			ParticleManager:DestroyParticleSystemTime(effectIndex,4.0)
-			caster:EmitSound("Sound_THTD.thtd_draw_ssr")
-		end
-	end
+	caster:THTD_AddCardPoolItem(itemName)		
 
 	if keys.ability:IsItem() then
 		local charge = keys.ability:GetCurrentCharges()
@@ -684,128 +615,79 @@ function BuyNormalCard(keys)
 	local caster = keys.caster
 	if caster.hero:GetNumItemsInInventory()>=9 then 
 		PlayerResource:ModifyGold(caster.hero:GetPlayerOwnerID(), keys.ability:GetGoldCost(keys.ability:GetLevel()) , true, DOTA_ModifyGold_SellItem) 
+		CustomGameEventManager:Send_ServerToPlayer(caster.hero:GetPlayerOwner(), "show_message", {msg="not_enough_item_slot", duration=10, params={}, color="#ff0"})
 		return
 	end
 
 	caster:EmitSound("Sound_THTD.thtd_buy")
 	local item = CreateItem("item_1001", caster.hero, caster.hero)
-	caster.hero:AddItem(item)
-	if item~=nil and item:IsNull()==false then
-		local index = item:GetEntityIndex()
-		if caster.hero~=nil and caster.hero:IsNull()==false then
-			caster.hero.thtd_hero_star_list[tostring(index)] = 1
-			caster.hero.thtd_hero_level_list[tostring(index)] = 1
-		end
-	end
+	item.owner_player_id = caster.hero.thtd_player_id
+	caster.hero:AddItem(item)	
 end
 
 function BuySeniorCard(keys)
 	local caster = keys.caster
 	if caster.hero:GetNumItemsInInventory()>=9 then 
 		PlayerResource:ModifyGold(caster.hero:GetPlayerOwnerID(), keys.ability:GetGoldCost(keys.ability:GetLevel()) , true, DOTA_ModifyGold_SellItem) 
+		CustomGameEventManager:Send_ServerToPlayer(caster.hero:GetPlayerOwner(), "show_message", {msg="not_enough_item_slot", duration=10, params={}, color="#ff0"})
 		return
 	end
 	caster:EmitSound("Sound_THTD.thtd_buy")
 	local item = CreateItem("item_1002", caster.hero, caster.hero)
-	caster.hero:AddItem(item)
-	if item~=nil and item:IsNull()==false then
-		local index = item:GetEntityIndex()
-		if caster.hero~=nil and caster.hero:IsNull()==false then
-			caster.hero.thtd_hero_star_list[tostring(index)] = 1
-			caster.hero.thtd_hero_level_list[tostring(index)] = 1
-		end
-	end
+	item.owner_player_id = caster.hero.thtd_player_id
+	caster.hero:AddItem(item)	
 end
 
 function BuyEggLevel1(keys)
 	local caster = keys.caster
 	if caster.hero:GetNumItemsInInventory()>=9 then 
 		PlayerResource:ModifyGold(caster.hero:GetPlayerOwnerID(), keys.ability:GetGoldCost(keys.ability:GetLevel()) , true, DOTA_ModifyGold_SellItem) 
+		CustomGameEventManager:Send_ServerToPlayer(caster.hero:GetPlayerOwner(), "show_message", {msg="not_enough_item_slot", duration=10, params={}, color="#ff0"})
 		return
 	end
 	caster:EmitSound("Sound_THTD.thtd_buy")
 	local item = CreateItem("item_1003", caster.hero, caster.hero)
-	caster.hero:AddItem(item)
-	local index = item:GetEntityIndex()
-	if caster.hero~=nil and caster.hero:IsNull()==false then
-		caster.hero.thtd_hero_star_list[tostring(index)] = 1
-		caster.hero.thtd_hero_level_list[tostring(index)] = 10
-	end
+	item.owner_player_id = caster.hero.thtd_player_id
+	caster.hero:AddItem(item)	
 end
 
 function BuyEggLevel2(keys)
 	local caster = keys.caster
 	if caster.hero:GetNumItemsInInventory()>=9 then 
 		PlayerResource:ModifyGold(caster.hero:GetPlayerOwnerID(), keys.ability:GetGoldCost(keys.ability:GetLevel()) , true, DOTA_ModifyGold_SellItem) 
+		CustomGameEventManager:Send_ServerToPlayer(caster.hero:GetPlayerOwner(), "show_message", {msg="not_enough_item_slot", duration=10, params={}, color="#ff0"})
 		return
 	end
 	caster:EmitSound("Sound_THTD.thtd_buy")
 	local item = CreateItem("item_1004", caster.hero, caster.hero)
-	caster.hero:AddItem(item)
-	local index = item:GetEntityIndex()
-	if caster.hero~=nil and caster.hero:IsNull()==false then
-		caster.hero.thtd_hero_star_list[tostring(index)] = 2
-		caster.hero.thtd_hero_level_list[tostring(index)] = 10
-	end
+	item.owner_player_id = caster.hero.thtd_player_id
+	caster.hero:AddItem(item)	
 end
 
 function BuyEggLevel3(keys)
 	local caster = keys.caster
 	if caster.hero:GetNumItemsInInventory()>=9 then 
 		PlayerResource:ModifyGold(caster.hero:GetPlayerOwnerID(), keys.ability:GetGoldCost(keys.ability:GetLevel()) , true, DOTA_ModifyGold_SellItem) 
+		CustomGameEventManager:Send_ServerToPlayer(caster.hero:GetPlayerOwner(), "show_message", {msg="not_enough_item_slot", duration=10, params={}, color="#ff0"})
 		return
 	end
 	caster:EmitSound("Sound_THTD.thtd_buy")
 	local item = CreateItem("item_1005", caster.hero, caster.hero)
-	caster.hero:AddItem(item)
-	local index = item:GetEntityIndex()
-	if caster.hero~=nil and caster.hero:IsNull()==false then
-		caster.hero.thtd_hero_star_list[tostring(index)] = 3
-		caster.hero.thtd_hero_level_list[tostring(index)] = 10
-	end
+	item.owner_player_id = caster.hero.thtd_player_id
+	caster.hero:AddItem(item)	
 end
 
 function BuyEggLevel4(keys)
 	local caster = keys.caster
 	if caster.hero:GetNumItemsInInventory()>=9 then 
 		PlayerResource:ModifyGold(caster.hero:GetPlayerOwnerID(), keys.ability:GetGoldCost(keys.ability:GetLevel()) , true, DOTA_ModifyGold_SellItem) 
+		CustomGameEventManager:Send_ServerToPlayer(caster.hero:GetPlayerOwner(), "show_message", {msg="not_enough_item_slot", duration=10, params={}, color="#ff0"})
 		return
 	end
 	caster:EmitSound("Sound_THTD.thtd_buy")
 	local item = CreateItem("item_1006", caster.hero, caster.hero)
-	caster.hero:AddItem(item)
-	local index = item:GetEntityIndex()
-	if caster.hero~=nil and caster.hero:IsNull()==false then
-		caster.hero.thtd_hero_star_list[tostring(index)] = 4
-		caster.hero.thtd_hero_level_list[tostring(index)] = 10
-	end
-end
-
-function ChooseIt(keys)
-	local caster = keys.caster
-	if caster:GetNumItemsInInventory()>=9 then
-		return
-	end
-	if keys.ability:GetAbilityName() == "item_1007" then
-		local item = CreateItem("item_0001", nil, nil)
-		caster:AddItem(item)
-	elseif keys.ability:GetAbilityName() == "item_1008" then
-		local item = CreateItem("item_0002", nil, nil)
-		caster:AddItem(item)
-	elseif keys.ability:GetAbilityName() == "item_1009" then
-		local item = CreateItem("item_0003", nil, nil)
-		caster:AddItem(item)
-	end
-
-	if caster.choose_item_1~=nil and caster.choose_item_1:IsNull()==false then
-		caster.choose_item_1:RemoveSelf()
-	end
-	if caster.choose_item_2~=nil and caster.choose_item_2:IsNull()==false then
-		caster.choose_item_2:RemoveSelf()
-	end
-	if caster.choose_item_3~=nil and caster.choose_item_3:IsNull()==false then
-		caster.choose_item_3:RemoveSelf()
-	end
+	item.owner_player_id = caster.hero.thtd_player_id
+	caster.hero:AddItem(item)	
 end
 
 function GetBonusTowerCount(hero)
@@ -816,10 +698,10 @@ function GetBonusTowerCount(hero)
 		end
 	end
 	return count
- end
+end
 
  function IsBonusTower(itemName)
- 	local towerName =  towerNameList[itemName]["kind"]
+ 	local towerName =  towerNameList[itemName]["cardname"]
 	if towerName == "minoriko" or towerName == "nazrin" or towerName == "lily" or towerName == "daiyousei" or towerName == "sizuha" or towerName == "toramaru" or towerName == "shinki" or towerName == "seiga" then
 		return true
 	end
@@ -848,9 +730,36 @@ function OnCloseAI(keys)
 	local caster = keys.caster
 
 	if caster.thtd_close_ai ~= true then
-		caster.thtd_close_ai = true
+		caster.thtd_close_ai = true		
+		CustomGameEventManager:Send_ServerToPlayer( caster:GetPlayerOwner() , "show_message", {msg="change_to_close_ai", duration=5, params={}, color="#0ff"} )		
 	else
-		caster.thtd_close_ai = false
+		caster.thtd_close_ai = false		
+		CustomGameEventManager:Send_ServerToPlayer( caster:GetPlayerOwner() , "show_message", {msg="change_to_open_ai", duration=5, params={}, color="#0ff"} )
+		-- 神子和幽幽子，是否开启大招
+		local unitName = caster:GetUnitName()
+		if unitName=="miko" then 
+			CustomGameEventManager:Send_ServerToPlayer(caster:GetPlayerOwner() , "ai_skill_enable", {entity=caster:GetEntityIndex(), name=unitName, skill=4})
+			-- thtd_miko_04_cast
+		elseif unitName=="yuyuko" then		
+			CustomGameEventManager:Send_ServerToPlayer(caster:GetPlayerOwner() , "ai_skill_enable", {entity=caster:GetEntityIndex(), name=unitName, skill=3})
+			-- thtd_yuyuko_03_cast		
+		elseif unitName=="keine" then		
+			CustomGameEventManager:Send_ServerToPlayer(caster:GetPlayerOwner() , "ai_skill_enable", {entity=caster:GetEntityIndex(), name=unitName, skill=2})
+			-- thtd_keine_02_cast		
+		elseif unitName=="patchouli" then		
+			CustomGameEventManager:Send_ServerToPlayer(caster:GetPlayerOwner() , "ai_skill_enable", {entity=caster:GetEntityIndex(), name=unitName, skill=2})
+			-- thtd_patchouli_02_cast		
+		elseif unitName=="medicine" then		
+			CustomGameEventManager:Send_ServerToPlayer(caster:GetPlayerOwner() , "ai_skill_enable", {entity=caster:GetEntityIndex(), name=unitName, skill=2})
+			-- thtd_medicine_02_cast	
+		elseif unitName=="sunny" then		
+			CustomGameEventManager:Send_ServerToPlayer(caster:GetPlayerOwner() , "ai_skill_enable", {entity=caster:GetEntityIndex(), name=unitName, skill=2})
+			-- thtd_sunny_02_cast	
+		elseif unitName=="alice" then		
+			CustomGameEventManager:Send_ServerToPlayer(caster:GetPlayerOwner() , "ai_skill_enable", {entity=caster:GetEntityIndex(), name=unitName, skill=1})
+			-- thtd_alice_01_cast
+		end
+		
 	end
 end
 
@@ -858,14 +767,25 @@ function AddMagicArmor(keys)
 	if keys.ability:GetLevel()<1 then return end
 	local caster = keys.caster
 	local unit = keys.target
-
 	unit:SetBaseMagicalResistanceValue(unit:GetBaseMagicalResistanceValue()+keys.magic_armor)
+
+	if caster:GetUnitName() == "patchouli" then
+		if unit.thtd_poison_buff == nil then 
+			unit.thtd_poison_buff = 0
+		end
+		unit.thtd_poison_buff = unit.thtd_poison_buff + 1
+	end	
 end
 
 function RemoveMagicArmor(keys)
 	if keys.ability:GetLevel()<1 then return end
 	local caster = keys.caster
 	local unit = keys.target
-
 	unit:SetBaseMagicalResistanceValue(unit:GetBaseMagicalResistanceValue()-keys.magic_armor)
+	if caster:GetUnitName() == "patchouli" then
+		if unit.thtd_poison_buff == nil then 
+			unit.thtd_poison_buff = 0
+		end		
+		unit.thtd_poison_buff = math.max(0, unit.thtd_poison_buff - 1)
+	end	
 end

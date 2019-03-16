@@ -46,7 +46,7 @@ function OnMomiji01Spawn(keys)
 					unit:ForceKill(false)
 					return nil
 				end
-				if caster==nil or caster:IsNull() or caster:IsAlive()==false or caster:HasModifier("modifier_touhoutd_release_hidden") then
+				if caster==nil or caster:IsNull() or caster:IsAlive()==false or caster:THTD_IsHidden() then
 					unit:AddNoDraw()
 					unit:ForceKill(false)
 					return nil
@@ -87,7 +87,7 @@ function OnMomiji02SpellStart(keys)
 	caster:SetContextThink("modifier_momiji_02_remove", 
 		function()
 			if GameRules:IsGamePaused() then return 0.03 end
-			if caster:HasModifier("modifier_touhoutd_release_hidden") or keys.ability:GetLevel()<1 then
+			if caster:THTD_IsHidden() or keys.ability:GetLevel()<1 then
 				caster.ability_momiji_02_target = nil
 				return nil
 			end

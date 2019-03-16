@@ -4,7 +4,7 @@ function OnPassTheCorner(data)
 	local findNum =  string.find(target:GetUnitName(), 'creature')
 	if findNum == nil and target:GetUnitName() ~= "yukari_train" then return end
 	if target == nil or target:IsNull() then return end
-	if target.thtd_ability_reisen_01_fearing == true then return end
+	if target.thtd_is_fearing == true then return end	
 
 	local caller = data.caller
 	local vecLocation = thisEntity:GetOrigin()
@@ -20,32 +20,7 @@ function OnPassTheCorner(data)
 			end, 
 		0.5) 
 	else
-		-- if target.thtd_last_corner == nil then
-		-- 	for k,v in pairs(THTD_EntitiesRect[target.thtd_next_corner]) do
-		-- 		if string.find(tostring(k),"corner") == nil then
-		-- 			if v==nil or v:IsNull() or v:IsAlive()==false then
-		-- 				table.remove(THTD_EntitiesRect[target.thtd_next_corner],k)
-		-- 			elseif v == target then
-		-- 				table.remove(THTD_EntitiesRect[target.thtd_next_corner],k)
-		-- 			end
-		-- 		end
-		-- 	end
-		-- elseif target.thtd_next_corner ~= nil then
-		-- 	for k,v in pairs(THTD_EntitiesRect[target.thtd_last_corner][target.thtd_next_corner]) do
-		-- 		if v==nil or v:IsNull() or v:IsAlive()==false then
-		-- 			table.remove(THTD_EntitiesRect[target.thtd_last_corner][target.thtd_next_corner],k)
-		-- 		elseif v == target then
-		-- 			table.remove(THTD_EntitiesRect[target.thtd_last_corner][target.thtd_next_corner],k)
-		-- 		end
-		-- 	end
-		-- end
-		-- target.thtd_last_corner = target.thtd_next_corner
-		
-		target.next_move_point = THTD_GetNextPathForUnit(target,thisEntity:GetName())
-		
-		-- if target.thtd_last_corner ~= nil and target.thtd_next_corner ~= nil then
-		-- 	table.insert(THTD_EntitiesRect[target.thtd_last_corner][target.thtd_next_corner],target)
-		-- end
+		target.next_move_point = THTD_GetNextPathForUnit(target,thisEntity:GetName())		
 	end
 end
 

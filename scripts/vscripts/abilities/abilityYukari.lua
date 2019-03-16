@@ -1,3 +1,155 @@
+-- 代替触发器
+local UnitMoveRect = {
+	[0] = {
+		[1] = {			
+			["center"] = {-2200, 1550},
+			["radius"] = 200,
+			["tag"] = {2}
+		},
+		[2] = {		
+			["center"] = {-4100, 1600},
+			["radius"] = 100,					
+			["tag"] = {3}
+		},
+		[3] = {			
+			["center"] = {-4100, 4120},
+			["radius"] = 100,		
+			["tag"] = {4}
+		},
+		[4] = {			
+			["center"] = {6750, 4120},
+			["radius"] = 100,		
+			["tag"] = {5}
+		},
+		[5] = {			
+			["center"] = {6750, -4120},
+			["radius"] = 100,		
+			["tag"] = {6}
+		},
+		[6] = {			
+			["center"] = {-6750, -4120},
+			["radius"] = 100,		
+			["tag"] = {7}
+		},
+		[7] = {			
+			["center"] = {-6750, 4120},
+			["radius"] = 100,		
+			["tag"] = {4}
+		},
+	}, 
+	[1] = {
+		[1] = {			
+			["center"] = {2200, 1550},
+			["radius"] = 200,
+			["tag"] = {2}
+		},
+		[2] = {		
+			["center"] = {4100, 1600},
+			["radius"] = 100,					
+			["tag"] = {3}
+		},
+		[3] = {			
+			["center"] = {4100, 4120},
+			["radius"] = 100,		
+			["tag"] = {4}
+		},
+		[4] = {			
+			["center"] = {6750, 4120},
+			["radius"] = 100,		
+			["tag"] = {5}
+		},
+		[5] = {			
+			["center"] = {6750, -4120},
+			["radius"] = 100,		
+			["tag"] = {6}
+		},
+		[6] = {			
+			["center"] = {-6750, -4120},
+			["radius"] = 100,		
+			["tag"] = {7}
+		},
+		[7] = {			
+			["center"] = {-6750, 4120},
+			["radius"] = 100,		
+			["tag"] = {4}
+		},
+	}, 
+	[2] = {
+		[1] = {			
+			["center"] = {2200, -1550},
+			["radius"] = 200,
+			["tag"] = {2}
+		},
+		[2] = {		
+			["center"] = {4100, -1600},
+			["radius"] = 100,					
+			["tag"] = {3}
+		},
+		[3] = {			
+			["center"] = {4100, -4120},
+			["radius"] = 100,		
+			["tag"] = {6}
+		},
+		[4] = {			
+			["center"] = {6750, 4120},
+			["radius"] = 100,		
+			["tag"] = {5}
+		},
+		[5] = {			
+			["center"] = {6750, -4120},
+			["radius"] = 100,		
+			["tag"] = {6}
+		},
+		[6] = {			
+			["center"] = {-6750, -4120},
+			["radius"] = 100,		
+			["tag"] = {7}
+		},
+		[7] = {			
+			["center"] = {-6750, 4120},
+			["radius"] = 100,		
+			["tag"] = {4}
+		},
+	}, 
+	[3] = {
+		[1] = {			
+			["center"] = {-2200, -1550},
+			["radius"] = 200,
+			["tag"] = {2}
+		},
+		[2] = {		
+			["center"] = {-4100, -1600},
+			["radius"] = 100,					
+			["tag"] = {3}
+		},
+		[3] = {			
+			["center"] = {-4100, -4120},
+			["radius"] = 100,		
+			["tag"] = {6}
+		},
+		[4] = {			
+			["center"] = {6750, 4120},
+			["radius"] = 100,		
+			["tag"] = {5}
+		},
+		[5] = {			
+			["center"] = {6750, -4120},
+			["radius"] = 100,		
+			["tag"] = {6}
+		},
+		[6] = {			
+			["center"] = {-6750, -4120},
+			["radius"] = 100,		
+			["tag"] = {7}
+		},
+		[7] = {			
+			["center"] = {-6750, 4120},
+			["radius"] = 100,		
+			["tag"] = {4}
+		},
+	}	
+}
+
 function OnYukari01SpellStart(keys)
 	local caster = EntIndexToHScript(keys.caster_entindex)
 	local target = keys.target
@@ -97,8 +249,12 @@ function OnYukari02SpellDropUnit(keys,unit)
 	local minHigh = caster:GetOrigin().z
 	local isRemove = false
 
-	unit:SetOrigin(currentOrigin)
+	unit:SetAbsOrigin(currentOrigin)
 	unit.thtd_is_yukari_01_hidden = false
+	if GetDistanceBetweenTwoVec2D(unit.first_move_point, targetPoint) < 2000 then 
+		unit.next_move_point = unit.first_move_point
+		unit.next_move_forward = unit.first_move_forward
+	end
 
 	local effectIndex = ParticleManager:CreateParticle("particles/heroes/yukari/ability_yukari_02_body.vpcf", PATTACH_CUSTOMORIGIN, caster)
 	ParticleManager:SetParticleControl(effectIndex, 3, targetPoint)
@@ -116,7 +272,7 @@ function OnYukari02SpellDropUnit(keys,unit)
 					unit:RemoveNoDraw()
 					isRemove = true
 				end
-				unit:SetOrigin(currentOrigin)
+				unit:SetAbsOrigin(currentOrigin)
 			end
 
 			if currentOrigin.z >= minHigh then
@@ -190,9 +346,9 @@ function OnYukari03SpellStart(keys)
 
 			for k,v in pairs(targets) do
 				if v:THTD_IsTower() and (v:GetUnitName()=="yukari" or v:GetUnitName()=="ran" or v:GetUnitName()=="chen") then
-					if v:HasModifier("modifier_touhoutd_release_hidden") == false then
+					if v:THTD_IsHidden() == false then
 						local vecOrigin = v:GetOrigin()
-						v:SetOrigin(targetPoint)
+						v:SetAbsOrigin(targetPoint)
 						v:AddNoDraw()
 						local unit = CreateUnitByName(
 							"npc_thdots_unit_yukari01_unit"
@@ -252,7 +408,7 @@ function OnYukari03SpellStart(keys)
 									v:SetContextThink(DoUniqueString("OnYuuka03SpellEnd"), 
 										function()
 											if GameRules:IsGamePaused() then return 0.03 end
-											if v:HasModifier("modifier_touhoutd_release_hidden") == false then
+											if v:THTD_IsHidden() == false then
 												local unit = CreateUnitByName(
 													"npc_thdots_unit_yukari01_unit"
 													,v:GetOrigin()
@@ -267,7 +423,7 @@ function OnYukari03SpellStart(keys)
 												ParticleManager:SetParticleControl(effectIndex, 0, targetPoint)
 												ParticleManager:DestroyParticleSystem(effectIndex,false)
 
-												v:SetOrigin(vecOrigin)
+												v:SetAbsOrigin(vecOrigin)
 												v:AddNoDraw()
 												v:EmitSound("Hero_Enigma.Black_Hole.Stop")
 												caster:StopSound("Hero_Enigma.BlackHole.Cast.Chasm")
@@ -353,6 +509,10 @@ local thtd_yukari_04_train_spwan =
 function OnYukari04SpellStart(keys)
 	local caster = EntIndexToHScript(keys.caster_entindex)
 
+	if caster.thtd_yukari_tram_count == nil then
+		caster.thtd_yukari_tram_count = 4
+	end
+	
 	local originSpawn = thtd_yukari_04_train_spwan[caster:GetOwner():GetPlayerOwnerID()+1]["spawn"]
 	local originPoint = thtd_yukari_04_train_spwan[caster:GetOwner():GetPlayerOwnerID()+1]["firstPoint"]
 	local originForward = thtd_yukari_04_train_spwan[caster:GetOwner():GetPlayerOwnerID()+1]["firstForward"]
@@ -378,7 +538,7 @@ function OnYukari04SpellStart(keys)
 	ParticleManager:DestroyParticleSystem(effectIndex,false)
 
 	train:AddNewModifier(train, nil, "modifier_move_max_speed", nil)
-	train:SetOrigin(originSpawn)
+	train:SetAbsOrigin(originSpawn)
 	train:SetForwardVector(forward)
 	train.next_move_point = originPoint
 	train.firstForward = originForward
@@ -390,7 +550,7 @@ function OnYukari04SpellStart(keys)
 		function ()
 			if GameRules:IsGamePaused() then return 0.03 end
 			if timecount > 0 then
-				local damage = caster:THTD_GetPower() * caster:THTD_GetStar() * 3
+				local damage = caster:THTD_GetPower() * caster:THTD_GetStar() * 3.3
 				local targets = THTD_FindUnitsInRadius(caster,train:GetOrigin(),200)
 
 				for k,v in pairs(targets) do
@@ -413,6 +573,21 @@ function OnYukari04SpellStart(keys)
 				if timecount%10 == 0 then
 					train:EmitSound("Sound_THTD.thtd_yukari_04.loop")
 				end
+
+				-- 替代触发器
+				-- local id = caster:GetPlayerOwnerID()
+				-- for k,v in pairs(UnitMoveRect[id]) do
+				-- 	if GetDistanceBetweenTwoVec2D(train:GetOrigin(), Vector(v["center"][1],v["center"][2]),0) <= v["radius"] then 
+				-- 		if train.current_rect_id ~= k then 
+				-- 			train.current_rect_id = k
+				-- 			local tagIndex = v["tag"][RandomInt(1, #v["tag"])]
+				-- 			train.next_move_point = Vector(UnitMoveRect[id][tagIndex]["center"][1],UnitMoveRect[id][tagIndex]["center"][2],0)
+				-- 			train:MoveToPosition(train.next_move_point)
+				-- 		end
+				-- 		break
+				-- 	end								
+				-- end
+
 				return 0.3
 			else
 				local effectIndex = ParticleManager:CreateParticle("particles/heroes/thtd_yukari/ability_yukari_04_door.vpcf", PATTACH_CUSTOMORIGIN, caster)
@@ -429,10 +604,6 @@ function OnYukari04SpellStart(keys)
 		end, 
 	0) 
 
-	if caster.thtd_yukari_tram_count == nil then
-		caster.thtd_yukari_tram_count = 4
-	end
-
 	local count = caster.thtd_yukari_tram_count
 	caster:SetContextThink(DoUniqueString("OnYukari04SpellStart"), 
 		function()
@@ -446,7 +617,7 @@ function OnYukari04SpellStart(keys)
 			)
 
 			nexttrain:AddNewModifier(nexttrain, nil, "modifier_move_max_speed", nil)
-			nexttrain:SetOrigin(originSpawn)
+			nexttrain:SetAbsOrigin(originSpawn)
 			nexttrain.next_move_point = originPoint
 			nexttrain.firstForward = originForward
 			nexttrain.FirstTrain = train
@@ -457,7 +628,7 @@ function OnYukari04SpellStart(keys)
 				function ()
 					if GameRules:IsGamePaused() then return 0.03 end
 					if nexttimecount > 0 and nexttrain~=nil and nexttrain:IsNull()==false and nexttrain:IsAlive() then
-						local damage = caster:THTD_GetPower() * caster:THTD_GetStar() * 3
+						local damage = caster:THTD_GetPower() * caster:THTD_GetStar() * 3.3
 						local targets = THTD_FindUnitsInRadius(caster,nexttrain:GetOrigin(),200)
 						
 						for k,v in pairs(targets) do
@@ -479,6 +650,21 @@ function OnYukari04SpellStart(keys)
 						if nexttrain.next_move_point ~= nil then
 							nexttrain:MoveToPosition(nexttrain.next_move_point)
 						end
+
+						-- 替代触发器
+						-- local id = caster:GetPlayerOwnerID()
+						-- for k,v in pairs(UnitMoveRect[id]) do
+						-- 	if GetDistanceBetweenTwoVec2D(nexttrain:GetOrigin(), Vector(v["center"][1],v["center"][2]),0) <= v["radius"] then 
+						-- 		if nexttrain.current_rect_id ~= k then 
+						-- 			nexttrain.current_rect_id = k
+						-- 			local tagIndex = v["tag"][RandomInt(1, #v["tag"])]
+						-- 			nexttrain.next_move_point = Vector(UnitMoveRect[id][tagIndex]["center"][1],UnitMoveRect[id][tagIndex]["center"][2],0)
+						-- 			nexttrain:MoveToPosition(nexttrain.next_move_point)
+						-- 		end
+						-- 		break
+						-- 	end								
+						-- end
+
 						return 0.3
 					else
 						nexttrain:ForceKill(true)

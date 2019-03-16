@@ -1,22 +1,32 @@
-function CDOTABaseAbility:THTD_GetTower()
-	return self.tower or nil
+
+item_star_level = {}
+
+function CDOTABaseAbility:THTD_ItemStarLevelUpdate()
+	local tower = self:THTD_GetTower()
+	if tower == nil then 
+		self:THTD_ItemStarLevelRemove()
+		return 
+	end
+	item_star_level[tostring(self:GetEntityIndex())] = {
+		item_name = self:GetAbilityName(),
+		star = tower:THTD_GetStar(),
+		level = tower:THTD_GetLevel()
+	}
+	CustomNetTables:SetTableValue("CustomGameInfo", "ItemStarLevel", item_star_level)
 end
 
-
-function CDOTABaseAbility:THTD_RemoveSelf()
-	local tower = self:THTD_GetTower()
-	local index = self:GetEntityIndex()
-
-	if tower ~= nil then
-		local hero = tower:GetOwner()
-		if hero~=nil and hero:IsNull()==false then
-			hero.thtd_hero_star_list[tostring(index)] = 1
-			hero.thtd_hero_level_list[tostring(index)] = 1
-		end
-		tower:ForceKill(false)
+function CDOTABaseAbility:THTD_ItemStarLevelRemove()
+	local new = {}
+	for k,v in pairs(item_star_level) do		
+		if k ~= tostring(self:GetEntityIndex()) then new[k] = v end		
 	end
+	item_star_level = new
+	new = {}
+	CustomNetTables:SetTableValue("CustomGameInfo", "ItemStarLevel", item_star_level)
+end
 
-	self:RemoveSelf()
+function CDOTABaseAbility:THTD_GetTower()
+	return self.tower or nil
 end
 
 function CDOTABaseAbility:THTD_RemoveItemInList(PlayerID)
@@ -28,32 +38,12 @@ function CDOTABaseAbility:THTD_RemoveItemInList(PlayerID)
 			if v["itemName"] == itemName then
 				v["count"] = v["count"] - 1
 				if v["count"] <= 0 then
-					table.remove(towerPlayerList[list_num],k)
+					table.remove(towerPlayerList[list_num],k)				
 				end
+				SetNetTableTowerPlayerList(PlayerID)
 				return
 			end
 		end
-	end
-end
-
-function CDOTABaseAbility:THTD_AddItemToList(PlayerID)
-	local list_num = PlayerID+1
-	local itemName = self:GetAbilityName()
-
-	if itemName~=nil then
-		for k,v in pairs(towerPlayerList[list_num]) do
-			if v["itemName"] == itemName then
-				v["count"] = v["count"] + 1
-				return
-			end
-		end
-		local itemTable = 
-		{
-			["itemName"] = itemName,
-			["quality"]= towerNameList[itemName]["quality"],
-			["count"]= 1,
-		}
-		table.insert(towerPlayerList[PlayerID+1],itemTable)
 	end
 end
 
@@ -65,6 +55,7 @@ function THTD_AddItemToListByName(PlayerID,itemNameRelease)
 		for k,v in pairs(towerPlayerList[list_num]) do
 			if v["itemName"] == itemName then
 				v["count"] = v["count"] + 1
+				SetNetTableTowerPlayerList(PlayerID)
 				return
 			end
 		end
@@ -75,12 +66,13 @@ function THTD_AddItemToListByName(PlayerID,itemNameRelease)
 			["count"]= 1,
 		}
 		table.insert(towerPlayerList[PlayerID+1],itemTable)
+		SetNetTableTowerPlayerList(PlayerID)
 	end
 end
 
 function CDOTABaseAbility:THTD_GetCardName()
 	if towerNameList[self:GetAbilityName()] ~= nil then
-		return towerNameList[self:GetAbilityName()]["kind"]
+		return towerNameList[self:GetAbilityName()]["cardname"]
 	else
 		return nil
 	end
@@ -101,6 +93,7 @@ function CDOTABaseAbility:THTD_IsCardHasPortrait()
 		return nil
 	end
 end
+
 function CDOTABaseAbility:THTD_GetPortraitPath(unitName)
 	return "particles/portraits/"..unitName.."/thtd_"..unitName.."_portraits.vpcf"
 end
@@ -115,4 +108,13 @@ end
 
 function THTD_GetVoiceEvent(cardName,key)
 	return "Voice_THTD."..cardName.."."..key
+end
+
+function THTD_GetItemCountByName(playerid,itemName)
+	for k,v in pairs(towerPlayerList[playerid+1]) do
+		if v["itemName"] == itemName then
+			return v["count"]
+		end
+	end
+	return 0
 end

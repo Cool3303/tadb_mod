@@ -80,14 +80,20 @@ function OnKoishi03SpellStart(keys)
 		target.thtd_koishi_03_bonus = true
 		target:EmitSound("Hero_OgreMagi.Bloodlust.Target")
 
+		local count = caster.thtd_koishi_03_duration * 2
 		caster:SetContextThink(DoUniqueString("thtd_koishi03_buff_remove"), 
 			function()
 				if GameRules:IsGamePaused() then return 0.03 end
-				target:THTD_AddPower(-bonus)
-				target:THTD_AddAttack(-bonus)
-				target.thtd_koishi_03_bonus = false
+				if count <= 0 or caster:THTD_IsHidden() then 
+					target:THTD_AddPower(-bonus)
+					target:THTD_AddAttack(-bonus)
+					target.thtd_koishi_03_bonus = false
+					return nil 
+				end
+				count = count - 1
+				return 0.5
 			end,
-		caster.thtd_koishi_03_duration)
+		0)
 	end
 end
 
@@ -148,8 +154,15 @@ function OnKoishi04SpellStart(keys)
 	local caster = EntIndexToHScript(keys.caster_entindex)
 	local target = keys.target
 
+	if caster.thtd_koishi_04_lock == true then 
+		keys.ability:EndCooldown()
+		caster:SetMana(caster:GetMana() + keys.ability:GetManaCost(keys.ability:GetLevel()))
+		return
+	end
+	caster.thtd_koishi_04_lock = true
+
 	local bonusPower = caster:THTD_GetPower()
-	local bonusAttack = caster:THTD_GetAttack()
+	local bonusAttack = math.floor(caster:THTD_GetAttack() / 0.7)
 
 	caster:StartGesture(ACT_DOTA_CAST_ABILITY_4)
 	caster:SetAttackCapability(DOTA_UNIT_CAP_MELEE_ATTACK)
@@ -191,6 +204,7 @@ function OnKoishi04SpellStart(keys)
 							caster:THTD_AddAttack(-bonusAttack)
 							caster:SetAttackCapability(DOTA_UNIT_CAP_RANGED_ATTACK)
 							caster:RemoveModifierByName("passive_koishi_04_attack")
+							caster.thtd_koishi_04_lock = false
 							return nil
 						end,
 					0.25)

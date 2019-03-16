@@ -6,15 +6,21 @@ function OnPatchouli01SpellStart(keys)
 	local caster = EntIndexToHScript(keys.caster_entindex)
 
 	if caster.thtd_patchouli_02_type == nil then
-		caster.thtd_patchouli_02_type = 0
+		caster.thtd_patchouli_02_type = 2
+	end
+	if caster.thtd_patchouli_02_cast_type == nil then
+		caster.thtd_patchouli_02_cast_type = 0
 	end
 
 	if caster.thtd_patchouli_02_type == PATCHOULI_01_AGNI_SHINE then
 		Patchouli01AgniShine(keys)
+		caster.thtd_patchouli_02_cast_type = PATCHOULI_01_AGNI_SHINE
 	elseif caster.thtd_patchouli_02_type == PATCHOULI_01_BURY_IN_LAKE then
 		Patchouli01BuryInLake(keys)
+		caster.thtd_patchouli_02_cast_type = PATCHOULI_01_BURY_IN_LAKE
 	elseif caster.thtd_patchouli_02_type == PATCHOULI_01_MERCURY_POISON then
 		Patchouli01MercuryPoison(keys)
+		caster.thtd_patchouli_02_cast_type = PATCHOULI_01_MERCURY_POISON
 	end
 end
 
@@ -46,50 +52,50 @@ end
 function Patchouli01BuryInLake(keys)
 	local caster = EntIndexToHScript(keys.caster_entindex)
 	local targetPoint = keys.target_points[1]
-
-	local count = 0
+	
 	local isFirst = false
+	local time = 10.0	
+	local hero = caster:GetOwner()
+	if hero.thtd_patchouli_kill_count == nil then hero.thtd_patchouli_kill_count = 0 end
 
 	caster:EmitSound("Sound_THTD.thtd_patchouli_01_02")
 	
 	caster:SetContextThink(DoUniqueString("thtd_patchouli01_buryinlake"), 
 		function()
 			if GameRules:IsGamePaused() then return 0.03 end
-			if count > 100 then return nil end
-			count = count + 1
+			if time < 0 then return nil end
+			
 			local targets = THTD_FindUnitsInRadius(caster,targetPoint,300)
 			for k,v in pairs(targets) do
 				local DamageTable = {
 		   			ability = keys.ability,
 		            victim = v, 
 		            attacker = caster, 
-		            damage = caster:THTD_GetPower() * caster:THTD_GetStar() * 0.1, 
+		            damage = caster:THTD_GetPower() * caster:THTD_GetStar() * 0.5, 
 		            damage_type = keys.ability:GetAbilityDamageType(), 
-		            damage_flags = DOTA_DAMAGE_FLAG_NONE
+					damage_flags = DOTA_DAMAGE_FLAG_NONE
 			   	}
 			   	UnitDamageTarget(DamageTable)
 
-				if v:IsAlive() and v:GetHealth() <= (v:GetMaxHealth()*0.3) and isFirst == false then
+				if v:IsAlive() and v:GetHealth() <= (v:GetMaxHealth()*0.3) and isFirst == false and v.thtd_damage_lock ~= true then
 					isFirst = true
 			   		local effectIndex = ParticleManager:CreateParticle("particles/heroes/thtd_patchouli/ability_patchouli_01_bury_in_lake_bury.vpcf", PATTACH_CUSTOMORIGIN, caster)
 					ParticleManager:SetParticleControl(effectIndex, 0, v:GetOrigin())
 					ParticleManager:DestroyParticleSystem(effectIndex,false)
 					EmitSoundOnLocationForAllies(v:GetOrigin(),"Hero_Kunkka.Tidebringer.Attack",caster)
-					v:SetHealth(1)
-					local DamageTable = {
-			   			ability = keys.ability,
-			            victim = v, 
-			            attacker = caster, 
-			            damage = caster:THTD_GetPower() * caster:THTD_GetStar(), 
-			            damage_type = keys.ability:GetAbilityDamageType(), 
-			            damage_flags = DOTA_DAMAGE_FLAG_NONE
-				   	}
-				   	UnitDamageTarget(DamageTable)
+					if SpawnSystem.CurWave > 120 and hero.thtd_patchouli_kill_count > 10 then	
+						local maxDamage = 3768000 * 0.3
+						THTD_Kill(caster, v, maxDamage)
+					else
+						hero.thtd_patchouli_kill_count = hero.thtd_patchouli_kill_count + 1
+						THTD_Kill(caster, v, nil)												
+					end
 			   	end
 			end
-			return 0.1
+			time = time - 0.5
+			return 0.5
 		end, 
-	0.1)
+	0)
 	local effectIndex = ParticleManager:CreateParticle("particles/heroes/thtd_patchouli/ability_patchouli_01_bury_in_lake.vpcf", PATTACH_CUSTOMORIGIN, caster)
 	ParticleManager:SetParticleControl(effectIndex, 0, targetPoint)
 	ParticleManager:DestroyParticleSystemTime(effectIndex,10.0)
@@ -100,25 +106,25 @@ function Patchouli01MercuryPoison(keys)
 	local caster = EntIndexToHScript(keys.caster_entindex)
 	local targetPoint = keys.target_points[1]
 	
-	local count = 0
+	local time = 10.0
 
 	EmitSoundOnLocationForAllies(targetPoint,"Sound_THTD.thtd_patchouli_01_03",caster)
 	
 	caster:SetContextThink(DoUniqueString("thtd_patchouli01_mercuryposion"), 
 		function()
 			if GameRules:IsGamePaused() then return 0.03 end
-			if count > 100 then return nil end
-			count = count + 1
+			if time < 0 then return nil end
+			
 			local targets = THTD_FindUnitsInRadius(caster,targetPoint,300)
 			for k,v in pairs(targets) do
-				if v:HasModifier("modifier_patchouli_01_mercury_poison_debuff") == false then
-					v.thtd_poison_buff = v.thtd_poison_buff + 1
+				if v:HasModifier("modifier_patchouli_01_mercury_poison_debuff") == false then					
 					keys.ability:ApplyDataDrivenModifier(caster, v, "modifier_patchouli_01_mercury_poison_debuff", nil)
 				end
 			end
-			return 0.1
+			time = time - 0.2
+			return 0.2
 		end, 
-	0.1)
+	0)
 	local effectIndex = ParticleManager:CreateParticle("particles/heroes/thtd_patchouli/ability_patchouli_01_mercury_poison.vpcf", PATTACH_CUSTOMORIGIN, caster)
 	ParticleManager:SetParticleControl(effectIndex, 0, targetPoint)
 	ParticleManager:DestroyParticleSystemTime(effectIndex,10.0)
@@ -132,9 +138,9 @@ function OnPatchouli01MercuryPoisonThink(keys)
 		ability = keys.ability,
         victim = target, 
         attacker = caster, 
-        damage = caster:THTD_GetPower() * caster:THTD_GetStar() * 0.1, 
+        damage = caster:THTD_GetPower() * caster:THTD_GetStar() * 0.5, 
         damage_type = keys.ability:GetAbilityDamageType(), 
-        damage_flags = DOTA_DAMAGE_FLAG_NONE
+		damage_flags = DOTA_DAMAGE_FLAG_NONE
    	}
    	UnitDamageTarget(DamageTable)
 end
@@ -150,20 +156,20 @@ function OnPatchouli02SpellStart(keys)
 	
 	if caster.thtd_patchouli_02_type == PATCHOULI_01_AGNI_SHINE then
 		caster.thtd_patchouli_02_type = PATCHOULI_01_BURY_IN_LAKE
-		CustomGameEventManager:Send_ServerToPlayer( caster:GetPlayerOwner() , "show_message", {msg="change_to_patchouli_bury_in_lake", duration=5, params={count=1}, color="#0ff"} )
+		CustomGameEventManager:Send_ServerToPlayer( caster:GetPlayerOwner() , "show_message", {msg="change_to_patchouli_bury_in_lake", duration=1, params={count=1}, color="#0ff"} )
 	elseif caster.thtd_patchouli_02_type == PATCHOULI_01_BURY_IN_LAKE then
 		caster.thtd_patchouli_02_type = PATCHOULI_01_MERCURY_POISON
-		CustomGameEventManager:Send_ServerToPlayer( caster:GetPlayerOwner() , "show_message", {msg="change_to_patchouli_mercury_poison", duration=5, params={count=1}, color="#0ff"} )
+		CustomGameEventManager:Send_ServerToPlayer( caster:GetPlayerOwner() , "show_message", {msg="change_to_patchouli_mercury_poison", duration=1, params={count=1}, color="#0ff"} )
 	elseif caster.thtd_patchouli_02_type == PATCHOULI_01_MERCURY_POISON then
 		caster.thtd_patchouli_02_type = PATCHOULI_01_AGNI_SHINE
-		CustomGameEventManager:Send_ServerToPlayer( caster:GetPlayerOwner() , "show_message", {msg="change_to_patchouli_agni_shine", duration=5, params={count=1}, color="#0ff"} )
+		CustomGameEventManager:Send_ServerToPlayer( caster:GetPlayerOwner() , "show_message", {msg="change_to_patchouli_agni_shine", duration=1, params={count=1}, color="#0ff"} )
 	end
 end
 
 
 function OnPatchouli04SpellStart(keys)
 	local caster = EntIndexToHScript(keys.caster_entindex)
-	local vecCaster = caster:GetOrigin()
+	local vecCaster = caster:GetOrigin()	
 
 	local count = 4
 
@@ -198,24 +204,22 @@ function OnPatchouli04SpellThink(keys)
 	caster:SetContextThink(DoUniqueString("thtd_patchouli04_spell_start"), 
 		function()
 			if GameRules:IsGamePaused() then return 0.03 end
-			if time <= 0 then 
-				return nil 
-			end
-			time = time - 0.1
+			if time < 0 then return nil end			
 			local targets = THTD_FindUnitsInRadius(caster,caster:GetOrigin(),800)
 			for k,v in pairs(targets) do
 				local DamageTable = {
 		   			ability = keys.ability,
 		            victim = v, 
 		            attacker = caster, 
-		            damage = caster:THTD_GetPower() * caster:THTD_GetStar() * 2, 
+		            damage = caster:THTD_GetPower() * caster:THTD_GetStar() * 10, 
 		            damage_type = keys.ability:GetAbilityDamageType(), 
-		            damage_flags = DOTA_DAMAGE_FLAG_NONE
+					damage_flags = DOTA_DAMAGE_FLAG_NONE
 			   	}
 			   	UnitDamageTarget(DamageTable)
-		   		UnitStunTarget(caster,v,0.2)
+		   		UnitStunTarget(caster,v,0.5)
 			end
-			return 0.1
+			time = time - 0.5
+			return 0.5
 		end,
-	0.1)
+	0)
 end

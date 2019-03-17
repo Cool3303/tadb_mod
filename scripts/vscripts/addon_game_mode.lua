@@ -374,7 +374,7 @@ function CTHTDGameMode:OnGameRulesStateChange(keys)
 			end			
 		end		
 		-- PrintTable(GameRules.players_max_wave)
-		GameRules:SendCustomMessage("<font color='yellow'>按主键盘数字键 6 至 0 发表情</font>", DOTA_TEAM_GOODGUYS, 0)	
+		GameRules:SendCustomMessage("<font color='yellow'>按主键盘数字键 6 至 0 发表情，按字母键 i 切换第一视角</font>", DOTA_TEAM_GOODGUYS, 0)	
 	end
 	  
 end

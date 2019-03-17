@@ -307,7 +307,7 @@ function OnHecatiaEarthHit(keys)
 		end		
 	else		
 		local targets = THTD_FindUnitsInRadius(caster,earthOrigin,500)
-		local damage = caster:THTD_GetPower()*caster:THTD_GetStar()*3
+		local damage = caster:THTD_GetPower()*caster:THTD_GetStar()*2
 		for k,v in pairs(targets) do
 			local targetOrigin = v:GetOrigin()
 			local effectIndex = ParticleManager:CreateParticle("particles/heroes/thtd_hecatia/ability_hecatia_earth_rain.vpcf", PATTACH_CUSTOMORIGIN, caster)
@@ -379,7 +379,7 @@ function OnHecatiaMoonHit(keys)
 			ParticleManager:DestroyParticleSystem(effectIndex,false)
 
 			local targets = THTD_FindUnitsInRadius(caster,moonOrigin,350)
-			local damage = caster:THTD_GetPower()*caster:THTD_GetStar()*3
+			local damage = caster:THTD_GetPower()*caster:THTD_GetStar()*2
 			for k,v in pairs(targets) do
 				local effectIndex = ParticleManager:CreateParticle("particles/heroes/thtd_hecatia/ability_hecatia_moon_reflex.vpcf", PATTACH_CUSTOMORIGIN, caster)
 				ParticleManager:SetParticleControl(effectIndex , 0, caster.thtd_hecatia_ball_table["moon"]["CurPoint"]+Vector(0,0,64))
@@ -516,7 +516,7 @@ function OnHecatiaProjectileHit(keys)
 		end
 	end
 	
-	local damage = caster:THTD_GetPower() * caster:THTD_GetStar() * 5
+	local damage = caster:THTD_GetPower() * caster:THTD_GetStar() * 4
 	local DamageTable = {
 			ability = keys.ability,
 	        victim = target, 

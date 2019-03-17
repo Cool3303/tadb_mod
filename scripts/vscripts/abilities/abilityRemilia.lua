@@ -29,7 +29,7 @@ function OnRemilia01AbsorbSoul(keys)
 		ParticleManager:SetParticleControlEnt(effectIndex , 7, caster, 5, "follow_origin", Vector(0,0,0), true)
 		ParticleManager:SetParticleControlEnt(effectIndex , 10, caster, 5, "follow_origin", Vector(0,0,0), true)
 
-		OnRemilia02SpellStart(caster, 1)
+		OnRemilia02SpellStart(caster)
 	end
 
 	local effectIndex = ParticleManager:CreateParticle("particles/heroes/thtd_remilia/ability_remilia_03_end.vpcf", PATTACH_CUSTOMORIGIN, caster)
@@ -42,7 +42,7 @@ function OnRemilia01AbsorbSoul(keys)
 	
 end
 
-function OnRemilia02SpellStart(caster, factor)
+function OnRemilia02SpellStart(caster)
 	local ability = caster:FindAbilityByName("thtd_remilia_02")
 	local modifier = caster:FindModifierByName("modifier_reimilia_02_buff")
 	
@@ -53,7 +53,7 @@ function OnRemilia02SpellStart(caster, factor)
 		caster.thtd_remilia_02_outgoing = 0
 	end
 
-	local count = math.min(caster.thtd_remilia_02_count * factor, 50 - caster.thtd_remilia_02_outgoing)
+	local count = math.min(caster.thtd_remilia_02_count, 50 - caster.thtd_remilia_02_outgoing)
 	if ability:GetLevel() > 0 and count > 0 then		
 		ModifyMagicalDamageOutgoingPercentage(caster,count)
 		caster.thtd_remilia_02_outgoing = caster.thtd_remilia_02_outgoing + count
@@ -162,7 +162,7 @@ function OnRemilia03SpellHit(keys)
 		    	amage_flags = keys.ability:GetAbilityTargetFlags()
 		}
 		UnitDamageTarget(damage_table)
-		OnRemilia02SpellStart(caster, 1)
+		OnRemilia02SpellStart(caster)
 	end
 
 	local effectIndex = ParticleManager:CreateParticle("particles/heroes/remilia/ability_remilia_01_explosion.vpcf", PATTACH_CUSTOMORIGIN, caster)
@@ -202,7 +202,7 @@ function OnRemilia03Destroy(keys)
 				UnitDamageTarget(damage_table)
 			end
 
-			OnRemilia02SpellStart(caster, 3)			
+			OnRemilia02SpellStart(caster)			
 
 			time = time - 0.3
 			return 0.3			

@@ -115,7 +115,7 @@ function OnStar02SpellStart(keys)
 					ParticleManager:DestroyParticleSystem(effectIndex,false)
 				end
 
-				if count % 2 == 0 then 
+				if count % 3 == 0 then 
 					local targetsTotal = {}
 					local targets = THTD_FindUnitsInRadius(caster,center,radius)
 					for _,v in pairs(targets) do
@@ -124,16 +124,13 @@ function OnStar02SpellStart(keys)
 						end
 					end
 					targets = {}
-					local targetsBonus = 1
-					if #targetsTotal > 3 then 
-						targetsBonus = 1 + math.min(2, #targetsTotal/10)
-					end
+					local damage = caster:THTD_GetStar() * caster:THTD_GetPower() * 2 * (1 + 0.1 * count)	
 					for _, v in pairs(targetsTotal) do
 						local DamageTable = {
 							ability = keys.ability,
 							victim = v, 
 							attacker = caster, 
-							damage = caster:THTD_GetStar() * caster:THTD_GetPower() * 2 * (1.05^count) * targetsBonus, 
+							damage = damage, 
 							damage_type = keys.ability:GetAbilityDamageType(), 
 							damage_flags = DOTA_DAMAGE_FLAG_NONE
 						}						

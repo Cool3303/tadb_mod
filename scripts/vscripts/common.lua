@@ -1777,7 +1777,7 @@ function http.api.getCardGroup(playerid)
                     CustomNetTables:SetTableValue("CustomGameInfo", "PlayerCardGroup"..steamid, groupData)        
                 end               					
             else
-                local groupData = {["_name"] = steamid, ["error"] = "无法连接服务器获取卡组，StatusCode: "..tostring(ret.StatusCode)}
+                local groupData = {["_name"] = steamid, ["error"] = "无法连接服务器获取卡组，请断开重连以重新获取，StatusCode: "..tostring(ret.StatusCode)}
                 GameRules.players_card_group[playerid] = groupData
                 CustomNetTables:SetTableValue("CustomGameInfo", "PlayerCardGroup"..steamid, groupData)
             end

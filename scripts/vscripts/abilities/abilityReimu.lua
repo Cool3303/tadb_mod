@@ -252,7 +252,7 @@ function OnReimu04SpellThink(keys)
 	end
 
 	-- 光球攻击行为
-	if caster.thtd_reimu_04_ball_count == 7 and caster.thtd_reimu_04_think_count%36 == 0 then -- 原始为8，卡顿改善
+	if caster.thtd_reimu_04_ball_count == 7 and caster.thtd_reimu_04_think_count%72 == 0 then -- 原始为8，卡顿改善及伤害系数平衡
 		Reimu04AttackTargetPoint(keys)
 		for i=1,7 do
 			if caster.thtd_reimu_04_ball_table[i]["effectIndex"] ~= nil then

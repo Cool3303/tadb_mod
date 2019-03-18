@@ -116,9 +116,9 @@ function SpawnSystem:PreSpawn()
 			SpawnSystem.CurTime = uiWaveInfo["RemainingTime"]
 			CustomNetTables:SetTableValue("CustomGameInfo", "attacking_process", uiWaveInfo)			
 			RefreshItemListNetTableAll()
---			if (GameRules:IsCheatMode() and IsInToolsMode() == false) or server_key == "Invalid_NotOnDedicatedServer" then
---				SpawnSystem:GameEnd()
---				return nil
+			if (GameRules:IsCheatMode() and IsInToolsMode() == false) or server_key == "Invalid_NotOnDedicatedServer" then
+				SpawnSystem:GameEnd()
+				return nil
 			end			
 
 			-- 初始化刷怪点

@@ -194,15 +194,15 @@
 		"DOTA_Tooltip_modifier_lily_outgoing_damage"		"Spring Sign「Surprise Spring」"
 		"DOTA_Tooltip_modifier_lily_outgoing_damage_Description"		"Under the power of the Spring sign this tower deals 50% more damage to enemies."
 
-
 		"nazrin"		"Nazrin 「UFO」"
 		"DOTA_Tooltip_ability_item_0002"		"【R】Nazrin 「UFO」"
 		"DOTA_Tooltip_ability_item_0002_Description"		"Has a chance to steal money from Enemies by attacking them.\n【★】Search Sign「Gold Detector」\n【★★★】Treasure 「Gold Rush」"
 		"DOTA_Tooltip_ability_item_0002_Lore"		"The Little Dowser General"
 		"DOTA_Tooltip_ability_thtd_nazrin_01"		"Search Sign「Gold Detector」"
 		"DOTA_Tooltip_ability_thtd_nazrin_01_Description"		"Has a 50% chance to steal money from Enemies on hit.\nSteal Chance：50%\nAmount of Stealing：Star Parameter+Power Points*0.02\nStar Parameter：2.4,8.8,21.6,43.2,170.4"
-		"DOTA_Tooltip_ability_thtd_nazrin_02"		"Treasure 「Gold Rush」"
-		"DOTA_Tooltip_ability_thtd_nazrin_02_Description"		"Nazrin commands her mice to consume a tower and returns potions based on the star levels of the target and herself\n【Star level correlation】Potion Level: Star Level of Target\n 【Star level correlation】Potion Amount: Target's Star level - (Difference to Nazrin+1)\n (CAN NOT RETURN MORE THAN TARGETS STAR LEVEL IN POTIONS)"
+	
+		"DOTA_Tooltip_ability_thtd_mod_nazrin_02"		"Treasure 「Gold Rush」"
+		"DOTA_Tooltip_ability_thtd_mod_nazrin_02_Description"		"Nazrin commands her mice to consume a tower and returns potions based on the star levels of the target and herself\n【Star level correlation】Potion Level: Star Level of Target\n 【Star level correlation】Potion Amount: Target's Star level - (Difference to Nazrin+1)\n (CAN NOT RETURN MORE THAN TARGETS STAR LEVEL IN POTIONS)"
 		"nazrin_no_gain"		"You won't gain any benefit from eating this tower."
 
 		"minoriko"		"Minoriko Aki"

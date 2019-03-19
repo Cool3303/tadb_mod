@@ -1,6 +1,6 @@
 "lang"
 {
-	"Language"	"english"
+	"Language"		"english"
 	"Tokens"
 	{
 		"game_mode_15"		"Touhou Dream Sign Festival"
@@ -56,7 +56,6 @@
 		"DOTA_Tooltip_ability_item_1005_Description"		"Can be consumed for exp or to replace a lvl 10 【★★★】 tower as material."
 		"DOTA_Tooltip_ability_item_1006_Description"		"Can be consumed for exp or to replace a lvl 10 【★★★★】 tower as material."
 
-		"DOTA_Tooltip_ability_ability_dummy_unit"		""
 		"DOTA_Tooltip_ability_ability_touhoutd_release_tower"		"Recycle"
 		"DOTA_Tooltip_ability_ability_touhoutd_release_tower_Description"		"Pick up a tower and turn it back into a card"
 		"DOTA_Tooltip_ability_ability_touhoutd_blink"		"Blink"
@@ -182,7 +181,6 @@
 		"DOTA_Tooltip_ability_item_2026_Description"		"【Single Item Effect】Increases power points and physical damage by 2%\n【Double Item Effect】Increases power points by 6% and physical damage by 10%\n【Quadruple Item Effect】 Damage to units with less than 30% HP increased by 50%."
 
 
-		
 		"lily"		"Lily White"
 		"DOTA_Tooltip_ability_item_0001"		"【R】Lily White"
 		"DOTA_Tooltip_ability_item_0001_Description"		"She can't attack but other towers can be leveled up by her ability. (MANUAL CAST!).\n【★】Spring Sign「Proclamation of Spring」\n【★★★★】Spring Sign「Surprise Spring」"

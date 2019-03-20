@@ -98,8 +98,7 @@ function OnRin01Death(keys)
 	ParticleManager:SetParticleControl(effectIndex, 0, target:GetOrigin())
 	ParticleManager:DestroyParticleSystem(effectIndex,false)
 
-	local damage = target:GetMaxHealth() * thtd_rin_star_bouns[caster:THTD_GetStar()]
-	local maxHealth = 3768000
+	local damage = math.min(target:GetMaxHealth() * thtd_rin_star_bouns[caster:THTD_GetStar()], caster:THTD_GetStar()*caster:THTD_GetPower()*48)	
 	local targets = THTD_FindUnitsInRadius(caster,target:GetOrigin(),300)
 	for k,v in pairs(targets) do
 		local DamageTable = {
@@ -109,16 +108,7 @@ function OnRin01Death(keys)
             damage = damage, 
             damage_type = keys.ability:GetAbilityDamageType(), 
             damage_flags = DOTA_DAMAGE_FLAG_NONE
-		}	   
-		if SpawnSystem.CurWave <= 120 then 
-			local olddamage = ReturnAfterTaxDamageAfterAbility(DamageTable)
-			if olddamage > (caster:THTD_GetStar()*caster:THTD_GetPower()*5) then
-				DamageTable.damage = caster:THTD_GetStar()*caster:THTD_GetPower()*15
-			end
-		else
-			local damageMax = maxHealth * thtd_rin_star_bouns[caster:THTD_GetStar()]
-			DamageTable.damage = math.min(damage, damageMax)
-		end
+		}
 		UnitDamageTarget(DamageTable)
 	end
 end

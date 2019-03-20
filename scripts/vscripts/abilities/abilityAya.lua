@@ -160,7 +160,7 @@ function OnAya02SpellStart(keys)
 					for _,v in pairs(targets) do
 						if v.thtd_aya_damage == nil then v.thtd_aya_damage = {} end
 						if v.thtd_aya_damage[index] == nil then v.thtd_aya_damage[index] = 0 end
-						v.thtd_aya_damage[index] = v.thtd_aya_damage[index] + math.floor(caster:THTD_GetPower() * caster:THTD_GetStar() * 2)										
+						v.thtd_aya_damage[index] = v.thtd_aya_damage[index] + math.floor(caster:THTD_GetPower() * caster:THTD_GetStar() * 1.5)										
 						if caster:FindAbilityByName("thtd_aya_03"):GetLevel()>0 then
 							OnAyaAttack(keys,v,true,1)
 						end

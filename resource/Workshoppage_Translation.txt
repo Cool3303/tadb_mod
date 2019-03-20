@@ -1,0 +1,152 @@
+--- Spielbeschreibung:
+
+This version is only for the old players of the original alpha.
+Everyone else can play the original or wait for it to update.
+
+This version of the game is completely independent and the original paid rewards are invalid.
+There is no premium version and there is no way to buy gold.
+
+The global leaderboard, permanent suspension, full lineup strategy can be found in the lower left corner of the game. More details are entered into group q 170218128.
+
+
+--------- new function
+
+1. Increase the endless mode, the difficulty is accelerated after the endless 70 waves, and the number of infinite waves.
+
+2. Increase the fast mode, the previous 50 waves reduce the waiting time, and the income remains unchanged.
+
+3. Increase the challenge mode and enter the endless skipping of the first 70 waves of direct challenges.
+
+4. Increase the entertainment mode, send money to send five stars without operation, directly face high difficulty.
+
+5. Increase the leaderboard function, the highest wave number ranking, the record includes the lineup list, each card star, equipment, energy, attack power, damage amount.
+
+6. Increase the pseudo-random mechanism of small probability events, no longer worry about the face black, and the SSR and the green material have luck protection.
+
+7. Add 20 card group save locations, and the card group custom naming function, save the lineup as you like.
+
+8. Increase the item locking function to prevent misuse and anti-stealing. After locking, it cannot be used for training, dog food, sale and picking by teammates.
+
+9. Add a new kicking function, you can play online players, interface click interaction, no need to input instructions.
+
+10. Increase the legacy function. After the teammate fails, all the items and cards can be used by the teammates who are still in the game.
+
+11. Enhance AI, increase the freedom to choose the release of certain skills, automatically release the same skills, and cast at fixed locations.
+
+12. A new opening, full card opening, opening a reward card pool, free to choose one from all ssr cards, choose Qiumei to send Qiujie.
+
+13. Code reconstruction farewell to Caton, Spiritual Dream, Hectoria, Wenwen, March Fine, etc. are no longer stuck.
+
+14. Increase the function of retaining equipment after plugging and unplugging, lock and reinsert the card and retain the equipment.
+
+15. Add new cards and add new skills to existing cards.
+
+--------- card
+
+1. Join the gods big tricks, the tiger's main skills, frog big move.
+
+2. New card Alice joined.
+
+3. New card Qinxin joined.
+
+4. The new card is transferred to join.
+
+5. Spiritual damage adjustment, now can play the leading role.
+
+6. The magic sand culture is changed to energy, and the basic blue color is raised to the original full culture, and Alice's linkage effect is added.
+
+7. Missy Guns appropriate skills to strengthen, add pseudo-random.
+
+8. Miss II skills are properly strengthened, ai strengthens.
+
+9. Demon dream skills are properly strengthened.
+
+10. Qi Luno awakened the bug fix and added two awakening abilities.
+
+11. The income of Qinglan has been strengthened, and now a green and easy 12-star.
+
+12. The tiger is now the strongest defender card, and the late gain is super mouse.
+
+13. The frog joins the big move and good luck comes.
+
+14. Lumia awakened the bug fix and the base attack speed increased from 0.9 to 0.4.
+
+15. Road slash 5 stars cd halved, damage increased to 48 times the star energy.
+
+16. Lingxian big move is no longer limited.
+
+17. The fragrance skill is revised, and the big move is raised to 10.
+
+18. Lily White's big move adds 5 star effect, cd halved range plus half.
+
+19. Paqiuli joins the automatic switching of mercury and lake burial, optional opening.
+
+20. The shrine group shares the belief and increases the value of the belief value.
+
+
+--------- Bug fix
+
+1. Fix the endless Boss blame count bug (the blame is killed but the number of blame is not reduced, has been adopted by the original).
+
+2. Fix item star rating and level display bug (such as 1 star when picking up teammate items).
+
+3. Fix the bug in the March Fairy Monster area. Now the real triangle is in effect, the visual effect is consistent with the actual, and the maximum distance will not be connected.
+
+4. Fix the 9th level bug of the big goblin card. At the same time, the god Qi brush energy simplification, increase the active skill corresponding to the three brush effect, without the need to change the stars.
+
+5. Fix the bug that AI still puts key skills when the target is invincible (such as Miss II).
+
+6. Fix the bug that Lumia kills the night and causes the invisibility of the night.
+
+7. Fix the bug that orange is equipped to be out of the unpickable position during recycling.
+
+8. Fix bugs that the population sometimes gets stuck.
+
+9. After repairing the recycling tower, part of the buff does not disappear, repairing the night technology bug.
+
+10. Fixed a bug where you could not see the energy of your teammates.
+
+11. Fix the bug that the beasts pass the endless seconds and the invisible counts are not reduced.
+
+12. Fix the 7.20 version of the ai failure, and the aura range is synchronized from 7.20 to 1200.
+
+13. Fix bugs and damages.
+
+14. Fix the bug that the village yarn nectar skill is invalid.
+
+15. Fix a bug that has no damage after pure fox plus buff, and a bug that does not damage itself.
+
+16. Fix the bug that the effect is not actually effective after being taught.
+
+17. Fix the village yarn molasses spinach bug, and the big move is less than the bug that describes the damage.
+
+18. Fix the bug of BOSS Marisa Sprint.
+
+19. Fix the bug of Miss II overflow damage calculation, the original use of simulated damage and can only overflow once, now the overflow damage is calculated by the actual damage overflow, and the overflow damage overflows again, and the first night overflow is valid.
+
+20. Fix the bug that the original version of the Eight Clouds purple ran away after the blame home was released. The update AI does not automatically release the blame when it is in the outer circle.
+
+21. Fix the bug that the original Metty Xin II skill has failed to attract the effect in the duration.
+
+22. Fix the bug that the original Heka single ball will fall into the ground and the minimum radius will be invalid, and increase the rotation phase when the ball is released.
+
+23. Fix the bug that the original quilt is not purified and the two skills do not match the description.
+
+24. Fix the original actual attack power is only 70% of the bug.
+
+25. A lot of other bug fixes.
+
+
+--------- Optimization
+
+1. Increase the skill description and icon of pure fox and Heka, and modify a lot of wrong skill descriptions (guns, moon rabbits, love, secluded sons, Mistya, etc.).
+
+2. Increase the sisters of the autumn to reach the 5 star prompt, increase the teacher's Hui sound form switching, AI switch and other tips.
+
+3. Optimize the game Caton problem.
+
+4. The Boli Amulet adds anti-misuse, don't worry about the point of the dream and the full level card.
+
+5. Remove the forced turn of the AI.
+
+6. A lot of other optimizations.

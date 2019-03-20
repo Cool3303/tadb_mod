@@ -1,8 +1,7 @@
 function OnIku01AttackLanded(keys)
 	local caster = EntIndexToHScript(keys.caster_entindex)
 	local target = keys.target
-	local targetPoint = target:GetOrigin()
-	local damage = 50 * 2^caster:THTD_GetStar()
+	local targetPoint = target:GetOrigin()	
 
 	if keys.ability:GetLevel() < 1 then return end
 
@@ -20,6 +19,7 @@ function OnIku01AttackLanded(keys)
 		caster.thtd_iku_01_attack_count = 0
 		caster:EmitSound("Sound_THTD.thtd_iku_01")
 		
+		local damage = caster:THTD_GetPower() * caster:THTD_GetStar()
 		local targets = THTD_FindUnitsInRadius(caster,targetPoint,keys.radius)
 		for k,v in pairs(targets) do
 			local DamageTable = {
@@ -30,17 +30,10 @@ function OnIku01AttackLanded(keys)
 	            damage_type = keys.ability:GetAbilityDamageType(), 
 	            damage_flags = DOTA_DAMAGE_FLAG_NONE
 		   	}
-		   	UnitDamageTarget(DamageTable)
-		   	if v.thtd_is_lock_iku_01_stun ~= true then
-				v.thtd_is_lock_iku_01_stun = true
+			UnitDamageTarget(DamageTable)
+			if v:HasModifier("modifier_iku_01_debuff_lock") == false then 		   	
 		   		keys.ability:ApplyDataDrivenModifier(caster, v, "modifier_iku_01_debuff", {Duration = caster.thtd_iku_01_stun_duration})
-	   			v:SetContextThink(DoUniqueString("ability_item_iku_01_stun"), 
-					function()
-						if GameRules:IsGamePaused() then return 0.03 end
-						v.thtd_is_lock_iku_01_stun = false
-						return nil
-					end,
-				1.5)
+	   			keys.ability:ApplyDataDrivenModifier(caster, v, "modifier_iku_01_debuff_lock", {Duration = 1.5})
 	   		end
 		end
 
@@ -54,7 +47,7 @@ function OnIku02SpellStart(keys)
 	local caster = EntIndexToHScript(keys.caster_entindex)
 	local targetPoint = keys.target_points[1]
 
-	local count = 0
+	local time = 3.0
 
 	Iku02CreateEffect(keys)
 	caster:EmitSound("Sound_THTD.thtd_iku_02")
@@ -62,22 +55,23 @@ function OnIku02SpellStart(keys)
 	caster:SetContextThink(DoUniqueString("thtd_iku02_lightning"), 
 		function()
 			if GameRules:IsGamePaused() then return 0.03 end
-			if count > 60 then return nil end
-			count = count + 1
-			local targets = THTD_FindUnitsInRadius(caster,targetPoint,keys.radius)
-			
+			if time <= 0 then return nil end
+		
+			local targets = THTD_FindUnitsInRadius(caster,targetPoint,keys.radius)		
+			local damage = caster:THTD_GetStar()*caster:THTD_GetPower()*1.2
 			for k,v in pairs(targets) do
 				local DamageTable = {
 		   			ability = keys.ability,
 		            victim = v, 
 		            attacker = caster, 
-		            damage = caster:THTD_GetStar()*caster:THTD_GetPower()*0.15, 
+		            damage = damage, 
 		            damage_type = keys.ability:GetAbilityDamageType(), 
 		            damage_flags = DOTA_DAMAGE_FLAG_NONE
 			   	}
 			   	UnitDamageTarget(DamageTable)
 			end
-			return 0.05
+			time = time - 0.3
+			return 0.3
 		end, 
 	0)
 end

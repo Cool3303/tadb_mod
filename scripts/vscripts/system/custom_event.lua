@@ -425,9 +425,9 @@ CustomEvent.on('custom_game_rank_detail', function(data)
 	local rankdata = {}
 	rankdata['index'] = data.index	
 	if tostring(PlayerResource:GetSteamID(playerid)) == tostring(GameRules.players_rank_data[data.index]._name) then 
-		rankdata['reset_show'] = 1
+		rankdata['is_local_player'] = 1
 	else
-		rankdata['reset_show'] = 0
+		rankdata['is_local_player'] = 0
 	end
 	local playerRankData
 	if data.type == 1 then

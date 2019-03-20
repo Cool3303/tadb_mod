@@ -1984,6 +1984,7 @@ function http.api.giveGamePoint(hero)
     end
    
     if hero.thtd_game_info["max_wave"] < 70 then return end
+    if GameRules:GetCustomGameDifficulty() > 7 and hero.thtd_game_info["max_wave"] < 98 then return end
     local point = 50 + (hero.thtd_game_info["max_wave"] - 70) * 2
     GameRules:SendCustomMessage("<font color='yellow'>"..PlayerResource:GetPlayerName(hero:GetPlayerID()).."本次已成功通过的有效波数："..tostring(hero.thtd_game_info["max_wave"]).."，该波伤害总量："..tostring(hero.thtd_game_info["max_wave_damage"]).." 万，奖励游戏积分："..tostring(point).."。</font>", DOTA_TEAM_GOODGUYS, 0)
     if GameRules.players_card_group[hero.thtd_player_id]["_id"] ~= nil then

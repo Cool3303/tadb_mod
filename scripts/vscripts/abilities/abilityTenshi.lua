@@ -4,30 +4,11 @@ function OnTenshi01SpellStart(keys)
 
 	if keys.ability:GetLevel() < 1 then return end
 
+	caster:EmitSound("Sound_THTD.thtd_tenshi_01")	
+
 	local crit = Tenshi02GetChance(caster)
-
-	local damage = caster:THTD_GetPower() * caster:THTD_GetStar() * crit * 1.5
-
-	if crit > 1 then
-		SendOverheadEventMessage(caster:GetPlayerOwner(), OVERHEAD_ALERT_CRITICAL, target, damage, caster:GetPlayerOwner() )
-	end
-
-	caster:EmitSound("Sound_THTD.thtd_tenshi_01")
-
-	local DamageTable = {
-			ability = keys.ability,
-	        victim = target, 
-	        attacker = caster, 
-	        damage = damage, 
-	        damage_type = keys.ability:GetAbilityDamageType(), 
-	        damage_flags = DOTA_DAMAGE_FLAG_NONE
-   	}
-   	UnitDamageTarget(DamageTable)
-
-   	local targets = THTD_FindUnitsInRadius(caster,target:GetOrigin(),400)
-
-	damage = caster:THTD_GetPower() * caster:THTD_GetStar() * crit * 0.8
-
+	local damage = caster:THTD_GetPower() * caster:THTD_GetStar() * crit * 3
+   	local targets = THTD_FindUnitsInRadius(caster,target:GetOrigin(),400)	
 	for k,v in pairs(targets) do
 		local DamageTable_aoe = {
    			ability = keys.ability,
@@ -130,7 +111,7 @@ function OnTenshiProjectileHit(keys)
 	local caster = EntIndexToHScript(keys.caster_entindex)
 	local target = keys.target
 	local crit = Tenshi02GetChance(caster)
-	local damage = caster:THTD_GetPower() * caster:THTD_GetStar() * crit * 2.5
+	local damage = caster:THTD_GetPower() * caster:THTD_GetStar() * crit * 5
 
 	if crit > 1 then
 		SendOverheadEventMessage(caster:GetPlayerOwner(), OVERHEAD_ALERT_CRITICAL, target, damage, caster:GetPlayerOwner() )

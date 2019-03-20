@@ -956,7 +956,7 @@
 		"DOTA_Tooltip_ability_thtd_sunny_01"		"Rainbow Light[Prism Flash]"
 		"DOTA_Tooltip_ability_thtd_sunny_01_Description"		"Shoots a laser at the target that bounces twice and gains 100%% more damage fo every bounce.\n\n【Star level correlation】 Damage: Power Points*Star Level*1.0\n\n[Cooperation Bonus - Star Sapphire, Luna Child]\n\nThe next attack of Units in the fairies area fires a laser too."
 		"DOTA_Tooltip_ability_thtd_sunny_02"		"Light Sign[Yellow Deflection]"
-		"DOTA_Tooltip_ability_thtd_sunny_02_Description"		"Changes the damage of units in the area to true damage and increases it.\n\n【Star level correlation】Increase: 10%/15%/25%.\n\n[Cooperation Bonus - Star Sapphire, Luna Child]\n\nUnits in he fairies area gain the same effect."
+		"DOTA_Tooltip_ability_thtd_sunny_02_Description"		"Changes the damage of units in an area to true damage and increases it.\n\n【Star level correlation】Increase: 10%/15%/25%.\n\n[Cooperation Bonus - Star Sapphire, Luna Child]\n\nUnits in the fairies area gain the same effect."
 		"DOTA_Tooltip_modifier_sunny_02_debuff"		"Light Sign[Yellow Deflection]"
 		"DOTA_Tooltip_modifier_sunny_02_debuff_Description"		"The skill damage of this unit is changed to Pure Damage."
 
@@ -1081,7 +1081,7 @@
 		"DOTA_Tooltip_ability_thtd_hina_01"   "Wound Sign 「Pain Flow」"
 		"DOTA_Tooltip_ability_thtd_hina_01_Description"    "Reduces the speed of surrounding units.\n\n 【Star level correlation】Movement speed reduction:20/30/40/50/65%"		
 		"DOTA_Tooltip_ability_thtd_hina_02"   "Bad Luck Sign 「Bad Fortune」"
-		"DOTA_Tooltip_ability_thtd_hina_02_Description"    "The 「Pain Flow」 brings missfortune, damaging enemies every 4 seconds. The target takes additional damage when hit by pure damage: If the damage is lower than POWER POINTS*Star Level*4 by 40%, 40% chance to add POWER POINTS*Star Level*4 Damage.\n【Star level correlation】Damage: POWER POINTS * Star Level *4"
+		"DOTA_Tooltip_ability_thtd_hina_02_Description"    "The 「Pain Flow」 brings missfortune, damaging enemies every 4 seconds.\n The target takes additional damage when hit by pure damage: If the damage was lower than POWER POINTS*Star Level*4 the ability damage is added. Otherwise there is a 40% chance to increase the damage by 40% .\n【Star level correlation】Damage: POWER POINTS * Star Level *4"
 		"DOTA_Tooltip_ability_thtd_hina_01_move_slow"	"Movement speed reduction:"
 		"DOTA_Tooltip_modifier_hina_01_slow_debuff"  "Wound Sign 「Pain Flow」"
 		"DOTA_Tooltip_modifier_hina_01_slow_debuff_Description"  "This unit is slowed through Hina's 「Pain Flow」."		

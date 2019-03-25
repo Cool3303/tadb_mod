@@ -59,7 +59,7 @@ function OnYuugi02KnockBack(target,forward)
 			time = time - 0.03
 			return 0.03
 		end,
-	0.03)
+	0)
 end
 
 function OnYuugi03SpellStart(keys)
@@ -99,9 +99,9 @@ function OnYuugi03SpellStart(keys)
 				if time <= 0 then
 					return nil
 				end
-				time = time - 0.03
-				return 0.03
+				time = time - 0.1
+				return 0.1
 			end,
-		0.03)
+		0)
 	end
 end

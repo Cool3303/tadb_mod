@@ -47,7 +47,7 @@ function OnSakuya01ProjectileHit(keys)
 	local caster = EntIndexToHScript(keys.caster_entindex)
 	local target = keys.target
 
-	local damage = caster:THTD_GetPower() * caster:THTD_GetStar()
+	local damage = caster:THTD_GetPower() * caster:THTD_GetStar() * 2
 
 	if target:HasModifier("modifier_sakuya_03_time_pause_debuff") then
    		damage = damage * (0.25 + caster.thtd_sakuya_01_increase)

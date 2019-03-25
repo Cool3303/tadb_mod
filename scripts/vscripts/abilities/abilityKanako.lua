@@ -268,6 +268,7 @@ function OnKanako04SpellStart(keys)
 	caster:SetContextThink(DoUniqueString("thtd_kanako_04_think"), 
 		function()
 			if GameRules:IsGamePaused() then return 0.03 end
+			if time <= 0 then return nil end
 			local targets = THTD_FindUnitsInRadius(caster,origin,680)
 
 			for k,v in pairs(targets) do
@@ -276,7 +277,7 @@ function OnKanako04SpellStart(keys)
 					local modifier = v:FindModifierByName("modifier_thdots_kanako_04_damaged_buff")
 					if modifier == nil then
 						keys.ability:ApplyDataDrivenModifier(caster, v, "modifier_thdots_kanako_04_damaged_buff", {Duration=0.2})
-						local damage = caster:THTD_GetPower() * caster:THTD_GetStar()  * 5
+						local damage = caster:THTD_GetPower() * caster:THTD_GetStar()  * 7
 						local DamageTable = {
 								ability = keys.ability,
 						        victim = v, 
@@ -290,7 +291,7 @@ function OnKanako04SpellStart(keys)
 						modifier:SetDuration(0.2,false)
 					end
 				end
-				local damage = caster:THTD_GetPower() * caster:THTD_GetStar() * 0.25
+				local damage = caster:THTD_GetPower() * caster:THTD_GetStar() * 0.7
 				local DamageTable = {
 						ability = keys.ability,
 				        victim = v, 
@@ -306,15 +307,11 @@ function OnKanako04SpellStart(keys)
 				caster:RemoveModifierByName("modifier_thdots_kanako_04_buff")
 				return nil
 			end
-
-			if time > 0 then
-				time = time - 0.1
-			else
-				return nil
-			end
-			return 0.1
+			
+			time = time - 0.2			
+			return 0.2
 		end,
-	0.1)
+	0)
 end
 
 function OnKanakoKill(keys)

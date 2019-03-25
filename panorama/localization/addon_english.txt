@@ -5,6 +5,7 @@
 	"DOTA_InventoryMenu_UnlockCombine"    "Unlock"
 	//"DOTA_InventoryMenu_LockCombine"    "Sell"
 	//"DOTA_InventoryMenu_UnlockCombine"    "Sell"
+	"DOTA_InventoryMenu_MoveToStash"    "RePlace Items"
 	"td_pawn_count"		"PAWN AMOUNT：{d:count} / {d:max_count}"
 	"td_food_count"		"{d:count} / 12"
 	"td_food_count_text"		"FOOD AMOUNT"

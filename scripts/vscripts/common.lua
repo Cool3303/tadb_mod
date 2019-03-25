@@ -139,6 +139,15 @@ function GetInnerCircleCenterAndRadius(p0,p1,p2)
     return Vector(x,y,0),radius
 end
 
+-- 获取各刷怪路线的偏移位置，x, y 为偏移量，增长方向默认为左右集中，一致向下
+function GetSpawnLineOffsetVector(lineid,vec,x,y) 
+    -- lineid从左上顺时针
+    if lineid == 2 or lineid == 3 then 
+        return vec + Vector(-x,-y,0)
+    else
+        return vec + Vector(x,-y,0)    
+    end
+end
 
 -- 判断单位是否有效，即非空、存活、激活
 function THTD_IsValid(unit)
@@ -149,6 +158,7 @@ function THTD_IsValid(unit)
     end
 end
 
+-- 获取单位所对位的玩家英雄
 function THTD_GetHero(caster)
     local hero = nil
 	if THTD_IsValid(caster) then 
@@ -166,6 +176,25 @@ function THTD_GetHero(caster)
     return hero    
 end
 
+-- 获取玩家英雄，使用实体变量方式，兼容玩家离线
+function THTD_GetHeroFromPlayerId(playerid)
+    local heroes = Entities:FindAllByClassname("npc_dota_hero_lina")
+    if heroes == nil or #heroes == 0 then return nil end
+    for _,hero in pairs(heroes) do
+        if hero.thtd_player_id == playerid then return hero end
+    end
+    return nil      
+end
+
+-- 将玩家id转换为刷怪路线id
+function THTD_GetSpawnIdFromPlayerId(playerid)
+    local heroes = Entities:FindAllByClassname("npc_dota_hero_lina")
+    if heroes == nil or #heroes == 0 then return nil end
+    for _,hero in pairs(heroes) do
+        if hero.thtd_player_id == playerid then return hero.thtd_spawn_id end
+    end
+    return nil      
+end
 
 function THTD_IsTempleOfGodTower(unit)
     local unitName = unit:GetUnitName()
@@ -1685,10 +1714,10 @@ function http.api.getGameConfig(steamid_config)
                 -- print("------body table :")
                 -- PrintTable(data)
                 if data and data.datas and data.datas[1] then
-                    local gameCode = data.datas[1].game_code or ""      
-                    if gameCode == "null" then gameCode = "" end             
-                    CustomGameEventManager:Send_ServerToAllClients("thtd_game_code", {game_code = gameCode, text = ""})
+                    local gameCode = data.datas[1].game_code or ""                          
+                    CustomGameEventManager:Send_ServerToAllClients("thtd_game_code", {game_code = gameCode, game_msg = data.datas[1].game_msg, text = ""})
                     GameRules.game_info.game_code = gameCode
+                    GameRules.game_info.game_msg = data.datas[1].game_msg
                     CustomNetTables:SetTableValue("CustomGameInfo", "game_info", GameRules.game_info)
                 else
                     CustomGameEventManager:Send_ServerToAllClients("thtd_game_code", {game_code = "null", text = "服务器游戏配置数据不正确！"})

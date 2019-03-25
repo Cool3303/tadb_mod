@@ -2,10 +2,18 @@ if SpawnSystem == nil then
 	SpawnSystem = {}
 	SpawnSystem.Spawner = {}  --刷怪基本数据
 	SpawnSystem.AttackingSpawner = {}  --每个玩家的刷怪信息
+	SpawnSystem.GameOverPlayerId = {} --失败玩家id
 	SpawnSystem.CurWave = 0
 	SpawnSystem.CurTime = 0
 	SpawnSystem.IsUnLimited = false
-	SpawnSystem.ReachToWave = nil		
+	SpawnSystem.ReachToWave = nil	
+	SpawnSystem.SpawnOrigin =  -- 玩家出生地点
+	{
+		[1] = Vector(-3424,2816,144),
+		[2] = Vector(3424,2816,144),
+		[3] = Vector(3424,-2816,144),
+		[4] = Vector(-3424,-2816,144)
+	}	
 end
 
 
@@ -31,7 +39,7 @@ function SpawnSystem:GetCount()
 	if spawner == nil or #spawner == 0 then return 0 end
 	local i = 0
 	for _, spawnerLine in pairs(spawner) do	
-		if not spawnerLine.hero:IsStunned() then
+		if spawnerLine.hero.is_game_over == false and spawnerLine.hero:IsStunned() == false then
 			i = i + 1			
 		end
 	end		
@@ -61,7 +69,7 @@ end
 function RefreshTowerPowerAttackEquip(hero)	
 	if hero == nil or hero:IsNull() or hero:IsAlive() == false then return end
     if hero:THTD_IsTower() then hero = hero:GetOwner() end
-    if hero:IsStunned() then return end
+    if hero.is_game_over or hero:IsStunned() then return end
     for index,tower in pairs(hero.thtd_hero_tower_list) do
 		if tower ~= nil and tower:IsNull() == false and tower:IsAlive() then
 			if tower:GetUnitName() ~= "minoriko" and tower:GetUnitName() ~= "sizuha" then
@@ -134,6 +142,8 @@ function SpawnSystem:PreSpawn()
 				if difficulty >= 8 then 
 					CustomGameEventManager:Send_ServerToAllClients("show_message", {msg="challenge_game_on", duration=25, params={}, color="#ff0"})
 				end	
+
+				GameRules:SendCustomMessage("<font color='yellow'>在商店附近右键背包物品点击整理地面物品，整理自己所有地面物品并跳过锁定的物品</font>", DOTA_TEAM_GOODGUYS, 0)	
 			end
 
 			-- 同步UI数据			
@@ -150,14 +160,19 @@ function SpawnSystem:SpawnLine()
 	local spawner = SpawnSystem.AttackingSpawner
 	local heroes = Entities:FindAllByClassname("npc_dota_hero_lina")
 	if heroes == nil or #heroes == 0 then return end
-	table.sort(heroes, function(a,b) return a.thtd_player_id < b.thtd_player_id end)	
+	table.sort(heroes, function(a,b) return (a.thtd_player_id < b.thtd_player_id) end)	
 	local j = 1	
 	for _,hero in pairs(heroes) do		
-    	if not hero:IsStunned() then
+    	if hero.is_game_over == false and hero:IsStunned() == false then
 			local entity = Entities:FindByName(nil, "spanwer_player"..tostring(j))
-			if entity ~= nil then
-				entity.playerId = hero.thtd_player_id
+			if entity ~= nil then				
 				entity.hero = hero
+				hero.thtd_spawn_id = j
+				hero.spawn_position = SpawnSystem.SpawnOrigin[j]				
+				if GetDistanceBetweenTwoVec2D(hero:GetAbsOrigin(), hero.spawn_position) > 1000 then 
+					hero:SetAbsOrigin(hero.spawn_position) 
+					hero.shop:SetAbsOrigin(hero.spawn_position)
+				end
 				if j == 1 then
 					entity.firstPoint = "corner_M1408_1056"
 					entity.firstForward = "left"
@@ -320,7 +335,7 @@ function SpawnSystem:StartUnlimited()
 	end	
 	local heroes = Entities:FindAllByClassname("npc_dota_hero_lina")
 	for k,v in pairs(heroes) do
-		if v~=nil and v:IsNull()==false and v:IsAlive() and v:IsStunned() == false then
+		if v~=nil and v:IsNull()==false and v:IsAlive() and v.is_game_over == false and v:IsStunned() == false then
 			v.thtd_game_info["creature_kill_count"] = 0
 		end
 	end
@@ -346,7 +361,7 @@ function SpawnSystem:CreepCheck()
 		local isEndGame = false
 		for spawnerIndex,spawnerLine in pairs(spawner) do
 			local hero = spawnerLine.hero    
-			if not hero:IsStunned() then
+			if hero.is_game_over == false and hero:IsStunned() == false then
 				hero.thtd_game_info["creep_count"] = count
 				if count > hero.thtd_game_info["creep_count_max"] and isEndGame == false then 
 					isEndGame = true
@@ -365,7 +380,7 @@ function SpawnSystem:CreepCheck()
 	-- 无尽波数	
 	for spawnerIndex,spawnerLine in pairs(spawner) do
 		local hero = spawnerLine.hero    
-		if not hero:IsStunned() then
+		if hero.is_game_over == false and hero:IsStunned() == false then
 			local count = 0
 
 			if spawnerLine.nextBossName=="kaguya" then 
@@ -420,7 +435,7 @@ end
 
 -- 指定玩家游戏结束
 function SpawnSystem:GameOver(hero)
-	if hero~=nil and hero:IsNull()==false and hero:IsAlive() and hero:IsStunned() == false then
+	if hero~=nil and hero:IsNull()==false and hero:IsAlive() and hero.is_game_over == false and hero:IsStunned() == false then
 		RefreshItemListNetTable(hero)
 		hero:THTD_DropItemAll()
 		
@@ -462,9 +477,11 @@ function SpawnSystem:GameOver(hero)
 				end
 			end
 		end	
+		hero.is_game_over = true
+		table.insert(SpawnSystem.GameOverPlayerId, hero.thtd_player_id)
 		UnitStunTarget(hero,hero,-1)
 		hero:SetAbsOrigin(Vector(0,0,0))
-		hero:AddNoDraw()	
+		hero:AddNoDraw()
 		THTD_EntitiesRectInner[hero.thtd_player_id] = {}
 		if wave > 120 then
 			CheckRank(hero)
@@ -645,14 +662,6 @@ function CheckPlayerConnect()
 	end
 end
 
-local SeigaSpawnOrigin = 
-{
-	[1] = Vector(-3424,2816,140),
-	[2] = Vector(3424,2816,140),
-	[3] = Vector(3424,-2816,140),
-	[4] = Vector(-3424,-2816,140),
-}
-
 -- 每波刷怪结束各线路数据更新
 function SpawnSystem:WaveEndForEach()
 	local spawner = SpawnSystem.AttackingSpawner	
@@ -661,7 +670,7 @@ function SpawnSystem:WaveEndForEach()
 	local difficulty = GameRules:GetCustomGameDifficulty()
 	for spawnerIndex,spawnerLine in pairs(spawner) do
 		local hero = spawnerLine.hero    
-		if not hero:IsStunned() then
+		if hero.is_game_over == false and hero:IsStunned() == false then
 			-- 伤害清零，收益卡结算，统计更新			
 			hero.thtd_rumia_kill_count = 0
 			hero.thtd_yuyuko_kill_count = 0
@@ -752,12 +761,12 @@ function SpawnSystem:WaveEndForEach()
 
 			if SpawnSystem.IsUnLimited == false and wave >= 30 and wave < 50 and GameRules:GetCustomGameDifficulty() == 10 then
 				for i=1,4 do					
-					local item = CreateItem("item_1006", nil, nil)	
-					if hero.thtd_player_id < 2 then 
-						CreateItemOnPositionSync(SeigaSpawnOrigin[hero.thtd_player_id+1] + Vector((i-1) * 100,-200,0),item)
-					else
-						CreateItemOnPositionSync(SeigaSpawnOrigin[hero.thtd_player_id+1] + Vector((i-1) * 100,200,0),item)
-					end									
+					local item = CreateItem("item_1006", nil, nil)
+					item.owner_player_id = hero.thtd_player_id
+					item:SetPurchaser(hero)
+					item:SetPurchaseTime(1.0)
+					local pos = GetSpawnLineOffsetVector(hero.thtd_spawn_id, hero.spawn_position, (i-1) * 130, 150)					
+					CreateItemOnPositionSync(pos, item)
 				end	
 			end
 		end
@@ -779,7 +788,7 @@ function SpawnSystem:PreChallenge()
 	if spawner == nil or #spawner == 0 then return end	
 	for spawnerIndex,spawnerLine in pairs(spawner) do
 		local hero = spawnerLine.hero    
-		if not hero:IsStunned() then
+		if hero.is_game_over == false and hero:IsStunned() == false then
 			hero.thtd_minoriko_02_change = 0
 			PlayerResource:ModifyGold(hero:GetPlayerOwnerID(),3500,true,DOTA_ModifyGold_CreepKill)
 			for k,v in pairs(hero.thtd_hero_tower_list) do
@@ -1021,7 +1030,7 @@ function SpawnSystem:StartSpawn()
 	
 	for spawnerIndex,spawnerLine in pairs(spawner) do
 		local hero = spawnerLine.hero    
-		if not hero:IsStunned() then 
+		if hero.is_game_over == false and hero:IsStunned() == false then 
 			local player = hero:GetPlayerOwner()
 			local playerId = hero:GetPlayerOwnerID()
 			-- 刷新BOSS信息并重置秋
@@ -1052,7 +1061,7 @@ function SpawnSystem:StartSpawn()
 					if curTimes > times  then return nil end				
 		
 					for i = 1, count do
-						if hero:IsStunned() then return nil end
+						if hero.is_game_over or hero:IsStunned() then return nil end
 		
 						local spawn_unit = waveInfo["Unit"]
 						
@@ -1190,7 +1199,7 @@ function SpawnSystem:ClearRemovedSpawner()
 	local spawner = SpawnSystem.AttackingSpawner	
 	if spawner == nil or #spawner == 0 then return end
 	for i = #spawner, 1, -1 do
-		if spawner[i].hero:IsStunned() then
+		if spawner[i].hero.is_game_over or spawner[i].hero:IsStunned() then
 			THTD_EntitiesRectInner[spawner[i].hero.thtd_player_id] = {}
 			table.remove(spawner, i)			
 		end
@@ -1251,7 +1260,9 @@ function OnShinkiGainCard(caster)
 				local item = CreateItem(drawList[1][RandomInt(1,#drawList[1])], nil, nil)
 				if item ~= nil then		
 					item.owner_player_id = hero.thtd_player_id
-					local origin = hero.spawn_position + Vector(count*100,0,0)
+					item:SetPurchaser(hero)
+					item:SetPurchaseTime(1.0)
+					local origin = GetSpawnLineOffsetVector(hero.thtd_spawn_id, hero.spawn_position, count * 130, -150)					
 					local effectIndex = ParticleManager:CreateParticle("particles/heroes/thtd_shinki/ability_shinki_01.vpcf", PATTACH_CUSTOMORIGIN, nil)
 					ParticleManager:SetParticleControl(effectIndex, 0, origin - Vector(0,0,750))
 					ParticleManager:DestroyParticleSystem(effectIndex,false)
@@ -1295,15 +1306,13 @@ function OnShinkiGainCard(caster)
 
 				if item~=nil then		
 					item.owner_player_id = hero.thtd_player_id
+					item:SetPurchaser(hero)
+					item:SetPurchaseTime(1.0)
 					local origin
 					if string.sub(item:GetAbilityName(), 1, 6) == "item_2" then
-						if hero.thtd_player_id < 2 then
-							origin = hero.spawn_position + Vector(count*100,-100,0)
-						else
-							origin = hero.spawn_position + Vector(count*100,100,0)
-						end
-					else
-						origin = hero.spawn_position + Vector(count*100,0,0)
+						origin = GetSpawnLineOffsetVector(hero.thtd_spawn_id, hero.spawn_position, count * 130, 0)	
+					else						
+						origin = GetSpawnLineOffsetVector(hero.thtd_spawn_id, hero.spawn_position, count * 130, -150)		
 					end	
 					local effectIndex = ParticleManager:CreateParticle("particles/heroes/thtd_shinki/ability_shinki_01.vpcf", PATTACH_CUSTOMORIGIN, nil)
 					ParticleManager:SetParticleControl(effectIndex, 0, origin - Vector(0,0,750))
@@ -1370,22 +1379,16 @@ function OnShinkiGainCard(caster)
 
 				if item~=nil then
 					item.owner_player_id = hero.thtd_player_id
+					item:SetPurchaser(hero)
+					item:SetPurchaseTime(1.0)
 					local origin
 					if string.sub(item:GetAbilityName(), 1, 6) == "item_2" then
-						if hero.thtd_player_id < 2 then
-							origin = hero.spawn_position + Vector(count*100,-100,0)
-						else
-							origin = hero.spawn_position + Vector(count*100,100,0)
-						end
+						origin = GetSpawnLineOffsetVector(hero.thtd_spawn_id, hero.spawn_position, count * 130, 0)
 					else
 						if item:THTD_GetCardQuality() == 4 then 
-							if hero.thtd_player_id < 2 then
-								origin = hero.spawn_position + Vector(count*100,100,0)
-							else
-								origin = hero.spawn_position + Vector(count*100,-100,0)
-							end
+							origin = GetSpawnLineOffsetVector(hero.thtd_spawn_id, hero.spawn_position, count * 130, -150*2)
 						else
-							origin = hero.spawn_position + Vector(count*100,0,0)
+							origin = GetSpawnLineOffsetVector(hero.thtd_spawn_id, hero.spawn_position, count * 130, -150)
 						end
 					end
 					local effectIndex = ParticleManager:CreateParticle("particles/heroes/thtd_shinki/ability_shinki_01.vpcf", PATTACH_CUSTOMORIGIN, nil)

@@ -217,14 +217,13 @@ local shopEntitiesForward =
 	[4] = Vector(-math.cos(math.pi/4),math.sin(math.pi/4),0),
 }
 
-local heroSpawnOrigin = 
+local itemReplaceOrigin = 
 {
-	[1] = Vector(-3424,2816,140),
-	[2] = Vector(3424,2816,140),
-	[3] = Vector(3424,-2816,140),
-	[4] = Vector(-3424,-2816,140),
+	[1] = Vector(-2100,3340,144),
+	[2] = Vector(1830,3340,144),
+	[3] = Vector(1830,-2300,144),
+	[4] = Vector(-2100,-2300,144)
 }
-
 
 function CTHTDGameMode:OnDotaItemPickedUp(keys)		
 	local item = EntIndexToHScript(keys.ItemEntityIndex)
@@ -232,7 +231,7 @@ function CTHTDGameMode:OnDotaItemPickedUp(keys)
 	if item.locked_by_player_id == nil or item.locked_by_player_id == keys.PlayerID or item.card_poor_player_id == keys.PlayerID then return end
 	local heroes = Entities:FindAllByClassname("npc_dota_hero_lina")	
 	for _,hero in pairs(heroes) do	
-		if hero.thtd_player_id == item.locked_by_player_id and hero:IsStunned() then return end
+		if hero.thtd_player_id == item.locked_by_player_id and (hero.is_game_over or hero:IsStunned()) then return end
 	end
 
 	local picker = nil
@@ -428,6 +427,7 @@ function CTHTDGameMode:OnNpcSpawned(keys)
 		hero.press_key = {}
 		hero.thtd_emoji_effect = nil
 		hero.thtd_has_skin = false
+		hero.is_game_over = false
 
 		hero.thtd_game_info = {}		
 		hero.thtd_game_info["creep_count"] = 0
@@ -442,9 +442,8 @@ function CTHTDGameMode:OnNpcSpawned(keys)
 		
 		local heroPlayerID = hero:GetPlayerOwnerID()
 		hero.thtd_player_id = heroPlayerID	
-			
-		hero:SetAbsOrigin(heroSpawnOrigin[heroPlayerID+1])		
-		hero.spawn_position = heroSpawnOrigin[heroPlayerID+1]		
+		hero.spawn_position = SpawnSystem.SpawnOrigin[heroPlayerID+1]	
+		hero:SetAbsOrigin(hero.spawn_position)	
 		hero:SetContextThink(DoUniqueString("SetSpawn") ,
 			function()
 				if GameRules:IsGamePaused() then return 0.1 end				
@@ -457,7 +456,7 @@ function CTHTDGameMode:OnNpcSpawned(keys)
 				end
 				return nil
 			end,
-		1.0)		
+		0.5)		
 
 		hero:SetModelScale(1.4)
 		UnitNoPathingfix( hero,hero,-1)
@@ -481,7 +480,8 @@ function CTHTDGameMode:OnNpcSpawned(keys)
 		)
 		shop:SetControllableByPlayer(hero:GetPlayerOwnerID(), true) 
 		shop:SetHasInventory(true)
-		shop.hero = hero			
+		shop.hero = hero
+		hero.shop = shop			
 		shop:SetContextThink(DoUniqueString("shop_think"), 
 			function()
 				if GameRules:IsGamePaused() then return 0.03 end
@@ -501,10 +501,12 @@ function CTHTDGameMode:OnNpcSpawned(keys)
 			10)
 		end
 
+		hero.thtd_ai_time = 0
 		hero:SetContextThink(DoUniqueString("thtd_ai_think"), 
 			function()
+				hero.thtd_ai_time = GameRules:GetGameTime()
 				if GameRules:IsGamePaused() then return 0.1 end
-				if hero:IsStunned() then return nil end				
+				if hero.is_game_over or hero:IsStunned() then return nil end				
 				for k,v in pairs(hero.thtd_hero_tower_list) do
 					if v~=nil and v:IsNull()==false and v:IsAlive() and v:THTD_IsHidden() == false and v.thtd_close_ai ~= true and v:HasModifier("modifier_touhoutd_building") == false then
 						local func = v["THTD_"..v:GetUnitName().."_thtd_ai"]
@@ -516,7 +518,6 @@ function CTHTDGameMode:OnNpcSpawned(keys)
 						end
 					end
 				end
-
 				return 0.3
 			end, 
 		0)
@@ -642,6 +643,8 @@ function CTHTDGameMode:OnPlayerSay(keys)
 end
 
 function CTHTDGameMode:ExecuteOrder( keys )	
+	if table.hasvalue(SpawnSystem.GameOverPlayerId, keys.issuer_player_id_const) then return false end	
+	
 	-- PrintTable(keys)
 	local order_type  = keys.order_type	
 
@@ -694,19 +697,81 @@ function CTHTDGameMode:ExecuteOrder( keys )
 	
 	if order_type == DOTA_UNIT_ORDER_MOVE_ITEM then		
 		if keys.entindex_target > 8 then
-			local ability = EntIndexToHScript(keys.entindex_ability)
 			local orderUnit = EntIndexToHScript(keys.units["0"])
-			orderUnit:SetContextThink(DoUniqueString("eject_item"),
-				function() 
-					if GameRules:IsGamePaused() then return 0.03 end
-					orderUnit:EjectItemFromStash(ability)					
-					local box = ability:GetContainer()
-					box:SetAbsOrigin(heroSpawnOrigin[keys.issuer_player_id_const+1])
-					return nil
-				end,
-			0.2)
+			if orderUnit:GetNumItemsInStash() > 0 then
+				for i=9,15 do
+					local targetItem = orderUnit:GetItemInSlot(i)
+					if targetItem ~= nil and targetItem:IsNull()==false then
+						orderUnit:EjectItemFromStash(targetItem)
+						local box = targetItem:GetContainer()
+						box:SetAbsOrigin(orderUnit.spawn_position)
+					end
+				end
+			end				
+			
+			-- local count = GameRules:NumDroppedItems()			
+			-- if count > 0 then 
+			-- 	for i=0, count-1 do
+			-- 		local item = GameRules:GetDroppedItem(i)					
+			-- 		local containedItem = item:GetContainedItem()
+			-- 		item:SetAbsOrigin(Vector(-1870,3340,144))
+			-- 		print(containedItem:GetAbilityName())
+			-- 	end
+			-- end
+			local sortedItemPos = {}
+			local iH = 0
+			local iV = 0
+			local items = Entities:FindAllByClassname("dota_item_drop")
+			table.sort(items, function(a,b) 
+				local aItem = a:GetContainedItem()
+				local bItem = b:GetContainedItem()
+				-- if aItem ~= nil and bItem == nil then return true end
+				-- if aItem == nil and bItem ~= nil then return false end
+				-- if aItem == nil and bItem == nil then return true end
+				local aData = towerNameList[aItem:GetAbilityName()]
+				local bData = towerNameList[bItem:GetAbilityName()]							
+				if aData ~= nil and bData == nil then return true end
+				if aData == nil and bData ~= nil then return false end
+				if aData == nil and bData == nil then return true end
+				if aData["cardname"] == "BonusEgg" and bData["cardname"] ~= "BonusEgg" then return true end
+				if aData["cardname"] ~= "BonusEgg" and bData["cardname"] == "BonusEgg" then return false end
+				if string.sub(aData["cardname"],1,5) == "item_" and string.sub(bData["cardname"],1,5) ~= "item_" then return true end
+				if string.sub(aData["cardname"],1,5) ~= "item_" and string.sub(bData["cardname"],1,5) == "item_" then return false end
+				return (aData["quality"] > bData["quality"])			
+			end)	
+			for _,v in pairs(items) do
+				local containedItem = v:GetContainedItem()				 			
+				if containedItem.locked_by_player_id == nil and (containedItem.owner_player_id == keys.issuer_player_id_const or (containedItem:GetPurchaser() ~= nil and containedItem:GetPurchaser():GetPlayerOwnerID() == keys.issuer_player_id_const)) then 				
+					local itemName = containedItem:GetAbilityName()
+					if sortedItemPos[itemName] == nil then 
+						local id = THTD_GetSpawnIdFromPlayerId(keys.issuer_player_id_const)					
+						sortedItemPos[itemName] = GetSpawnLineOffsetVector(id, itemReplaceOrigin[id], iH * 200, iV * 200)										
+						if iH < 9 then 							
+							iH = iH + 1
+						else							
+							iH = 0
+							iV = iV + 1
+						end						
+					end
+					v:SetAbsOrigin(sortedItemPos[itemName])
+				end				
+			end	
+			sortedItemPos = {}
+
+			return false
+
+			-- local ability = EntIndexToHScript(keys.entindex_ability)			
+			-- orderUnit:SetContextThink(DoUniqueString("eject_item"),
+			-- 	function() 
+			-- 		if GameRules:IsGamePaused() then return 0.03 end
+			-- 		orderUnit:EjectItemFromStash(ability)					
+			-- 		local box = ability:GetContainer()
+			-- 		box:SetAbsOrigin(orderUnit.spawn_position)
+			-- 		return nil
+			-- 	end,
+			-- 0.2)
 		end
-		return true
+		return true	
 	end		
 
 	if order_type == DOTA_UNIT_ORDER_SELL_ITEM then		

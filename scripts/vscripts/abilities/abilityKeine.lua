@@ -42,8 +42,8 @@ function OnKeine01SpellStart(keys)
 							ParticleManager:DestroyParticleSystem(effectIndex,true)
 							return nil 
 						end
-						time = time - 0.5
-						return 0.5
+						time = time - 0.25
+						return 0.25
 					end,
 				0)
 			end
@@ -66,7 +66,7 @@ function OnKeine01AttackLanded(keys)
 			ParticleManager:SetParticleControl(effectIndex, 1, Vector(300,300,300))
 			ParticleManager:DestroyParticleSystem(effectIndex,false)
 
-			local damage = caster:THTD_GetStar() * caster:THTD_GetPower()
+			local damage = caster:THTD_GetStar() * caster:THTD_GetPower() * 2
 			local targets = THTD_FindUnitsInRadius(caster,targetPoint,300)
 			for k,v in pairs(targets) do
 				local DamageTable = {

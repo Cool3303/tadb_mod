@@ -1908,7 +1908,7 @@ function CDOTA_BaseNPC:THTD_HeroComboRefresh()
 
 	hero:SetContextThink(DoUniqueString("thtd_combo_voice_array"), 
 		function()
-			if hero:IsStunned() then return nil end	
+			if hero.is_game_over or hero:IsStunned() then return nil end	
 			if hero.thtd_combo_voice_array == nil or #hero.thtd_combo_voice_array == 0 then
 				hero.sound_lock = nil 
 				return nil 

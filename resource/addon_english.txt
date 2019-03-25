@@ -454,7 +454,7 @@
 		"DOTA_Tooltip_modifier_sakuya_02_buff"		"Time Sign「Sakuya's Special Stopwatch」"
 		"DOTA_Tooltip_modifier_sakuya_02_buff_Description"		"THIS UNIT HAS GOT REFRESH EFFECT."
 		"DOTA_Tooltip_ability_thtd_sakuya_03"		"Time Sign「Private Square」"
-		"DOTA_Tooltip_ability_thtd_sakuya_03_Description"		"Sakuya enters her own time by opening a forbidden barrier, time is stopped for all enemies in this area, for 2 seconds.\n During this time Sakuya's Buriallusion「Phantom Killer in Night Mist」 will not expend MP but its damage is reduced by 75%.\n【Cooperation Bonus - Hong Meiling】\n Deals 50% less damage instead."
+		"DOTA_Tooltip_ability_thtd_sakuya_03_Description"		"Sakuya enters her own time by opening a forbidden barrier. Time is stopped for all enemies in this area, for 2 seconds.\n During this time Sakuya's Buriallusion「Phantom Killer in Night Mist」 will not expend MP but its damage is reduced by 75%.\n【Cooperation Bonus - Hong Meiling】\n Deals 50% less damage instead."
 		"DOTA_Tooltip_modifier_sakuya_03_time_pause_debuff"		"Time Sign「Private Square」"
 		"DOTA_Tooltip_modifier_sakuya_03_time_pause_debuff_Description"		"This unit's time is stopped by Sakuya."
 
@@ -896,7 +896,7 @@
 		"DOTA_Tooltip_ability_item_0053_Description"	"Each mask depicts an emotion, and putting on a mask will change one's emotions. Those emotions influence those around the wearer, as well."
 		"DOTA_Tooltip_ability_item_0053_Lore"	"A youkai that was created from the masks used by the father of Sarugaku performance, Hata no Kawakatsu, after a long time had passed."
 		"DOTA_Tooltip_ability_thtd_kokoro_01"   "Possession「Four Humors Possesion」"
-		"DOTA_Tooltip_ability_thtd_kokoro_01_Description"    "Kokoro manipulates the power of emotions, turning them into masks to attack enemies continuously and reducing their base armor. \n【Star level correlation】Damage: Power Points * Star Level * 5 per second \n 【Star level correlation】Armor Reduction: 10 20 30 40 60 (Does not stack with Mercury Poison)"
+		"DOTA_Tooltip_ability_thtd_kokoro_01_Description"    "Kokoro manipulates the power of emotions, turning them into masks that attack enemies continuously and reduce their base armor. \n【Star level correlation】Damage: Power Points * Star Level * 5 per second \n 【Star level correlation】Armor Reduction: 10 20 30 40 60 (Does not stack with Mercury Poison)"
 		"DOTA_Tooltip_ability_thtd_kokoro_02"   "Anger Sign「Mask of an Angry Hated Wolf」"
 		"DOTA_Tooltip_ability_thtd_kokoro_02_Description"    "Putting on the Roring Youkai Fox Max, Kokoro's aura transforms into a fox which pounces on a target causing damage and stunning the enemy for 1.5 seconds. \n【Star level correlation】Damage: Power Points * Star Level * 5"
 		"DOTA_Tooltip_ability_thtd_kokoro_03"   "Joy Sign「Enraptured Hyottoko Mask」"

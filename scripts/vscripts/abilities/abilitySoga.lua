@@ -136,7 +136,7 @@ function OnSoga02SpellStart(keys)
 			caster:SetContextThink(DoUniqueString("thtd_soga_02_spell_delay"), 
 				function()
 					if GameRules:IsGamePaused() then return 0.03 end
-					local damage = caster:THTD_GetPower() * caster:THTD_GetStar()
+					local damage = caster:THTD_GetPower() * caster:THTD_GetStar() * 3 * 0.4
 					local targets = THTD_FindUnitsInRadius(caster,point,300)
 					for k,v in pairs(targets) do
 						local DamageTable = {
@@ -176,7 +176,7 @@ function OnSoga02SpellStart(keys)
 	caster:SetContextThink(DoUniqueString("thtd_soga_02_spell_delay"), 
 		function()
 			if GameRules:IsGamePaused() then return 0.03 end
-			local damage = caster:THTD_GetPower() * caster:THTD_GetStar()
+			local damage = caster:THTD_GetPower() * caster:THTD_GetStar() * 3
 			local targets = THTD_FindUnitsInRadius(caster,targetPoint,300)
 			for k,v in pairs(targets) do
 				local DamageTable = {

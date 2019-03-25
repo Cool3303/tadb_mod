@@ -159,12 +159,12 @@ function OnSuika01AttackLanded(keys)
 
 	if RandomInt(0,100) < suika_damage_chance[caster.thtd_suika_01_scale] then
 		local targets = THTD_FindUnitsInRadius(caster,target:GetOrigin(),suika_damage_radius[caster.thtd_suika_01_scale])
-
+		local damage = caster:THTD_GetPower()*caster:THTD_GetStar()*2*suika_damage_increase[caster.thtd_suika_01_scale]
 		for k,v in pairs(targets) do
 			local damage_table = {
 				victim = v,
 				attacker = caster,
-				damage = caster:THTD_GetPower()*caster:THTD_GetStar()*suika_damage_increase[caster.thtd_suika_01_scale],
+				damage = damage,
 				ability = keys.ability,
 				damage_type = keys.ability:GetAbilityDamageType(), 
 				damage_flags = DOTA_DAMAGE_FLAG_NONE,
@@ -277,6 +277,16 @@ function OnSuika04SpellStart(keys)
 		caster.thtd_suika_01_tiny_suika_table = {}
 	end
 
+	local targets = THTD_FindUnitsInRadius(caster,caster:GetOrigin(),800)
+	if #targets>0 then
+		for index,lockTarget in pairs(targets) do
+			if lockTarget.thtd_suika_04_lock~=true then
+				lockTarget.thtd_suika_04_lock = true
+				OnSuika04LockToTarget(keys,caster,lockTarget)
+			end
+		end
+	end
+
 	for k,v in pairs(caster.thtd_suika_01_tiny_suika_table) do
 		if v~=nil and v:IsNull() == false and v:IsAlive() then
 			local targets = THTD_FindUnitsInRadius(caster,v:GetOrigin(),800)
@@ -302,23 +312,31 @@ function OnSuika04LockToTarget(keys,caster,target)
 	ParticleManager:SetParticleControlEnt(effectIndex , 3, target, 5, "attach_hitloc", Vector(0,0,0), true)
 	ParticleManager:SetParticleControl(effectIndex, 4, Vector(2400,0,0))
 	ParticleManager:SetParticleControl(effectIndex, 5, Vector(2400,0,0))
-	ParticleManager:SetParticleControl(effectIndex, 6, vecHook)
+	ParticleManager:SetParticleControl(effectIndex, 6, vecHook)	
 
 	local timecount = 3.5
+	ParticleManager:DestroyParticleSystemTime(effectIndex,timecount)
 
 	caster:SetContextThink(DoUniqueString("ability_suika_04"), 
 		function()
 			if GameRules:IsGamePaused() then return 0.03 end
-			if timecount <= 0 or target==nil or target:IsNull() or target:IsAlive()==false then
-				ParticleManager:DestroyParticleSystem(effectIndex,true)
-				target.thtd_suika_04_lock = false
-				FindClearSpaceForUnit(target, target:GetOrigin(), false)
+			if timecount <= 0 or target==nil or target:IsNull() or target:IsAlive()==false then					
+				ParticleManager:DestroyParticleSystem(effectIndex, true)					
+				if THTD_IsValid(target) then 
+					FindClearSpaceForUnit(target, target:GetOrigin(), false)
+					target.thtd_suika_04_lock = false
+				end				
 				return nil
 			end
 			if GetDistanceBetweenTwoVec2D(caster:GetOrigin(), target:GetOrigin()) > 800 then
 				local forward = (target:GetOrigin() - caster:GetAbsOrigin()):Normalized()
 				target:SetAbsOrigin(caster:GetOrigin()+forward*800)
-				local damage = originalCaster:THTD_GetPower() * originalCaster:THTD_GetStar() * suika_damage_increase[originalCaster.thtd_suika_01_scale]
+				local damage = originalCaster:THTD_GetPower() * originalCaster:THTD_GetStar() * 1.4 * suika_damage_increase[originalCaster.thtd_suika_01_scale]
+				if originalCaster == caster then 
+					if not RandomInt(1,100) <= suika_damage_chance[caster.thtd_suika_01_scale] then
+						damage = originalCaster:THTD_GetPower() * originalCaster:THTD_GetStar() * 1.4
+					end
+				end
 				local DamageTable = {
 		   			ability = keys.ability,
 		            victim = target, 
@@ -330,7 +348,12 @@ function OnSuika04LockToTarget(keys,caster,target)
 			   	UnitDamageTarget(DamageTable)
 			end
 
-			local damage = originalCaster:THTD_GetPower() * originalCaster:THTD_GetStar() * suika_damage_increase[originalCaster.thtd_suika_01_scale]
+			local damage = originalCaster:THTD_GetPower() * originalCaster:THTD_GetStar() * 1.4 * suika_damage_increase[originalCaster.thtd_suika_01_scale]
+			if originalCaster == caster then 
+				if RandomInt(1,100) > suika_damage_chance[caster.thtd_suika_01_scale] then
+					damage = originalCaster:THTD_GetPower() * originalCaster:THTD_GetStar() * 1.4
+				end
+			end
 			local DamageTable = {
 	   			ability = keys.ability,
 	            victim = target, 
@@ -341,8 +364,8 @@ function OnSuika04LockToTarget(keys,caster,target)
 		   	}
 		   	UnitDamageTarget(DamageTable)
 
-			timecount = timecount - 0.1
-			return 0.1
+			timecount = timecount - 0.2
+			return 0.2
 		end, 
 	0)
 end

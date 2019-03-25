@@ -3,9 +3,9 @@ function OnHina01Think(keys)
 	if caster:FindAbilityByName("thtd_hina_02"):GetLevel() < 1 then return end
 
 	local targets = THTD_FindUnitsInRadius(caster,caster:GetAbsOrigin(),1200)
-	local damage = caster:THTD_GetPower() * caster:THTD_GetStar() * 4
+	local damage = caster:THTD_GetPower() * caster:THTD_GetStar() * 4	
 	for k,v in pairs(targets) do		
-		if v~=nil and v:IsNull()==false and v:IsAlive() then
+		if v~=nil and v:IsNull()==false and v:IsAlive() then			
 			local DamageTable = {
 				ability = keys.ability,
 				victim = v, 
@@ -13,8 +13,8 @@ function OnHina01Think(keys)
 				damage = damage, 
 				damage_type = keys.ability:GetAbilityDamageType(), 
 				damage_flags = DOTA_DAMAGE_FLAG_NONE
-			}						
-			UnitDamageTarget(DamageTable)
+			}							
+			UnitDamageTarget(DamageTable)				
 		end
 	end
 end

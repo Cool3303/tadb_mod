@@ -1,11 +1,3 @@
-local SeigaSpawnOrigin = 
-{
-	[1] = Vector(-3424,2816,140),
-	[2] = Vector(3424,2816,140),
-	[3] = Vector(3424,-2816,140),
-	[4] = Vector(-3424,-2816,140),
-}
-
 local Seiga01ItemDrop = 
 {
 	[1] = 
@@ -90,13 +82,12 @@ function OnSeiga01Death(keys)
 				end
 				if RandomInt(1,100) <= randChance then
 					caster.thtd_chance_count[itemName] = 0
-					local item = CreateItem(itemName, nil, nil)	
+					local item = CreateItem(itemName, nil, nil)						
 					item.owner_player_id = caster:GetPlayerOwnerID()
-					if hero.thtd_player_id < 2 then 
-						CreateItemOnPositionSync(SeigaSpawnOrigin[hero.thtd_player_id+1] + Vector(count*100,-200,0),item)
-					else
-						CreateItemOnPositionSync(SeigaSpawnOrigin[hero.thtd_player_id+1] + Vector(count*100,200,0),item)
-					end
+					item:SetPurchaser(hero)
+					item:SetPurchaseTime(1.0)
+					local pos = GetSpawnLineOffsetVector(hero.thtd_spawn_id, hero.spawn_position, count * 130, 150)						
+					CreateItemOnPositionSync(pos,item)					
 				else
 					caster.thtd_chance_count[itemName] = caster.thtd_chance_count[itemName] + 1
 				end

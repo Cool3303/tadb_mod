@@ -253,6 +253,7 @@ function OnReimu04SpellThink(keys)
 
 	-- 光球攻击行为
 	if caster.thtd_reimu_04_ball_count == 7 and caster.thtd_reimu_04_think_count%72 == 0 then -- 原始为8，卡顿改善及伤害系数平衡
+		if caster.thtd_reimu_04_think_count >= 72 then caster.thtd_reimu_04_think_count = 0 end -- 修复达到72后连续触发，0余数为0造成
 		Reimu04AttackTargetPoint(keys)
 		for i=1,7 do
 			if caster.thtd_reimu_04_ball_table[i]["effectIndex"] ~= nil then
@@ -330,12 +331,12 @@ function Reimu04AttackTargetPoint(keys)
 	ShushanCreateProjectileMoveToTarget(BulletTable,caster,target,speed,iVelo,-acc,
 		function(unit,vec)
 			local targetpoint = Vector(vec.x,vec.y,caster:GetOrigin().z)
-			local targets = THTD_FindUnitsInRadius(caster,targetpoint,300)
+			local targets = THTD_FindUnitsInRadius(caster,targetpoint,400)
 			for k,v in pairs(targets) do
 				local damage_table = {
 					victim = v,
 					attacker = caster,
-					damage = caster:THTD_GetPower()*caster:THTD_GetStar() * 5 * Reimu02GetChance(caster)*caster.thtd_reimu_04_damage_increase,
+					damage = caster:THTD_GetPower()*caster:THTD_GetStar() * 10 * Reimu02GetChance(caster)*caster.thtd_reimu_04_damage_increase,
 					ability = keys.ability,
 					damage_type = keys.ability:GetAbilityDamageType(), 
 					damage_flags = DOTA_DAMAGE_FLAG_NONE

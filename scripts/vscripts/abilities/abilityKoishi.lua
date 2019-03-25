@@ -15,7 +15,7 @@ function OnKoishi01Attack(keys)
 				   			ability = keys.ability,
 				            victim = unit, 
 				            attacker = caster, 
-				            damage = caster:THTD_GetStar() * caster:THTD_GetPower(), 
+				            damage = caster:THTD_GetStar() * caster:THTD_GetPower() * 2, 
 				            damage_type = keys.ability:GetAbilityDamageType(), 
 				            damage_flags = DOTA_DAMAGE_FLAG_NONE
 				   	}

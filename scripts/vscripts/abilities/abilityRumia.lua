@@ -271,7 +271,7 @@ function OnRumiaProjectileHit(keys)
 	local damage = caster:THTD_GetPower() * caster:THTD_GetStar()
 
 	if caster:THTD_IsTowerEx() == true then
-		damage = caster:THTD_GetPower() * caster:THTD_GetStar() * 3
+		damage = caster:THTD_GetPower() * caster:THTD_GetStar() * 4
 	end
 
 	local DamageTable = {

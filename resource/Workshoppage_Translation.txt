@@ -11,45 +11,45 @@ The global leaderboard, permanent suspension, full lineup strategy can be found 
 
 --------- new function
 
-1. Increase the endless mode, the difficulty is accelerated after the endless 70 waves, and the number of infinite waves.
+1. Added an endless mode, the difficulty is accelerated after the endless 70 waves, and the number of infinite waves.
 
-2. Increase the fast mode, the previous 50 waves reduce the waiting time, and the income remains unchanged.
+2. Implemented a fast mode, which reduces the wait time on the first 50 waves, with increased income to compensate the time loss.
 
-3. Increase the challenge mode and enter the endless skipping of the first 70 waves of direct challenges.
+3. Added a challenge mode that skips the first 70 waves so you directly start in endless.
 
-4. Increase the entertainment mode, send money to send five stars without operation, directly face high difficulty.
+4. Added an entertainment mode, which allows you to directly upgrade units to five stars and try them against high difficulty enemies.
 
-5. Increase the leaderboard function, the highest wave number ranking, the record includes the lineup list, each card star, equipment, energy, attack power, damage amount.
+5. Improved the leaderboard function. It now shows the highest wave number rank, the unit lineup, the Star Level of each card, items, Power Points, attack power and amount of damage dealt.
 
 6. Increase the pseudo-random mechanism of small probability events, no longer worry about the face black, and the SSR and the green material have luck protection.
 
 7. Add 20 card group save locations, and the card group custom naming function, save the lineup as you like.
 
-8. Increase the item locking function to prevent misuse and anti-stealing. After locking, it cannot be used for training, dog food, sale and picking by teammates.
+8. Improved the item locking function to prevent missuse and theft of units. After locking a unit it cannot be used as material, placed, sold or picked up by teammates.
 
-9. Add a new kicking function, you can play online players, interface click interaction, no need to input instructions.
+9. Added a new kick function with a simple ingame interface, that allows you to start kickvotes with a few clicks.
 
-10. Increase the legacy function. After the teammate fails, all the items and cards can be used by the teammates who are still in the game.
+10. Added a legacy function. After a teammate fails, all his items and cards can be used by the teammates that are still in the game.
 
-11. Enhance AI, increase the freedom to choose the release of certain skills, automatically release the same skills, and cast at fixed locations.
+11. Improved the Tower AI to allow the player to personally take control of certain skills, automatically recast at the same location and reactivate trough the AI.
 
-12. A new opening, full card opening, opening a reward card pool, free to choose one from all ssr cards, choose Qiumei to send Qiujie.
+12. Changed the opening to allow all players to choose one SSR card at the start. (Former premium feature)
 
-13. Code reconstruction farewell to Caton, Spiritual Dream, Hectoria, Wenwen, March Fine, etc. are no longer stuck.
+13. Code Reconstruction to fix issues with the AI getting stuck.
 
-14. Increase the function of retaining equipment after plugging and unplugging, lock and reinsert the card and retain the equipment.
+14. Cards that are picked up now retain their equipment.
 
-15. Add new cards and add new skills to existing cards.
+15. Added new cards and new skills to existing cards.
 
 --------- card
 
-1. Join the gods big tricks, the tiger's main skills, frog big move.
+1. Added Shinkis new #4, Toramarus #4, Suwakos #4.
 
-2. New card Alice joined.
+2. Added Alice Margatroid as Tower.
 
-3. New card Qinxin joined.
+3. Added Hata no Kokoro as Tower.
 
-4. The new card is transferred to join.
+4. The new card is transferred to join. -Tl note: No, I don't get it either -
 
 5. Spiritual damage adjustment, now can play the leading role.
 

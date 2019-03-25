@@ -5,8 +5,9 @@
 	"DOTA_InventoryMenu_UnlockCombine"    "解锁"
 	//"DOTA_InventoryMenu_LockCombine"    "出售"
 	//"DOTA_InventoryMenu_UnlockCombine"    "出售"
+	"DOTA_InventoryMenu_MoveToStash"    "整理地面物品"
 	
-	"td_pawn_count"		"漏怪数量：{d:count} / {d:max_count}"
+	"td_pawn_count"		"怪物存活：{d:count} / {d:max_count}"
 	"td_food_count"			"{d:count} / {d:max_count}"
 	"td_food_count_text"	"人口上限"
 	"td_creature_kill_count"		"怪物击杀数：{d:count}"

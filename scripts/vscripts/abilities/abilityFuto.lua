@@ -171,15 +171,14 @@ function OnFuto03SpellStart(keys)
 	ParticleManager:SetParticleControl(effectIndex, 0, targetPoint)
 	ParticleManager:DestroyParticleSystem(effectIndex,false)
 
-	local count = 40
+	local time = 4.0
 	caster:SetContextThink(DoUniqueString("thtd_futo_03_spell_think"), 
 		function()
 			if GameRules:IsGamePaused() then return 0.03 end
-			if count <= 0 then return nil end
-			count = count - 1
+			if time <= 0 then return nil end			
 			local targets = THTD_FindUnitsInRadius(caster,targetPoint,500)
 			for k,v in pairs(targets) do
-				local damage = caster:THTD_GetPower() * caster:THTD_GetStar() * 0.25 * ( 1 + GetFuto02Buff(caster)*0.1)
+				local damage = caster:THTD_GetPower() * caster:THTD_GetStar() * 1 * ( 1 + GetFuto02Buff(caster)*0.1)
 				if caster:HasModifier("modifier_miko_02_buff") then
 					damage = damage * 1.25
 				end
@@ -193,7 +192,8 @@ function OnFuto03SpellStart(keys)
 			   	}
 			   	UnitDamageTarget(DamageTable)
 			end
-			return 0.1
+			time = time - 0.2
+			return 0.2
 		end, 
-	0.1)
+	0)
 end

@@ -62,7 +62,7 @@ function thtd_eirin_01:OnProjectileHit_ExtraData( hTarget, vLocation, data )
 	end
 
 	if source~=nil and source:THTD_IsTower() then
-		local damage = source:THTD_GetPower() * source:THTD_GetStar() * 1.5 * caster.thtd_eirin_01_damage_increase
+		local damage = source:THTD_GetPower() * source:THTD_GetStar() * 2 * caster.thtd_eirin_01_damage_increase
 
 		local DamageTable = {
 				ability = self,
@@ -74,7 +74,7 @@ function thtd_eirin_01:OnProjectileHit_ExtraData( hTarget, vLocation, data )
 	   	}
 	   	UnitDamageTarget(DamageTable)
 	else
-		local damage = caster:THTD_GetPower() * caster:THTD_GetStar() * 1.5 * caster.thtd_eirin_01_damage_increase
+		local damage = caster:THTD_GetPower() * caster:THTD_GetStar() * 2 * caster.thtd_eirin_01_damage_increase
 
 		local DamageTable = {
 				ability = self,

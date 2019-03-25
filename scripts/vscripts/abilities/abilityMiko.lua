@@ -184,7 +184,7 @@ function OnMiko04SpellThink(keys)
 					caster:SetContextThink(DoUniqueString("thtd_miko_04_star_fall"), 
 						function()
 							if GameRules:IsGamePaused() then return 0.03 end
-							local deal_damage = caster:THTD_GetPower() * caster:THTD_GetStar() * 2.5
+							local deal_damage = caster:THTD_GetPower() * caster:THTD_GetStar() * 7
 							local damage_table = {
 									ability = keys.ability,
 								    victim = v,

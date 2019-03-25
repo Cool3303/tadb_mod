@@ -161,7 +161,7 @@ CustomEvent.on('custom_game_kick_vote', function(data)
 	local player = PlayerResource:GetPlayer(data.PlayerID)	
 	if player ==nil then return end
 	local hero = player:GetAssignedHero()
-	if hero:IsStunned() then return end	
+	if hero.is_game_over or hero:IsStunned() then return end	
 	
 	if playerVote.kicked_player ~= - 1 and (math.floor(GameRules:GetGameTime()) - playerVote.vote_time) < 60 then
 		CustomGameEventManager:Send_ServerToPlayer(player, "show_message", {msg="player_in_vote", duration=10, params={count=playerVote.kicked_player+1}, color="#ff0"})
@@ -191,7 +191,7 @@ CustomEvent.on('custom_game_kick_accept', function(data)
 	local player = PlayerResource:GetPlayer(data.PlayerID)	
 	if player ==nil then return end
 	local hero = player:GetAssignedHero()
-	if hero:IsStunned() then return end
+	if hero.is_game_over or hero:IsStunned() then return end
 	if playerVote.kicked_player == -1 then return end
 	
 	if data.accept == 1 then 
@@ -213,7 +213,7 @@ end)
 function KickPlayer()
 	local heroes = Entities:FindAllByClassname("npc_dota_hero_lina")
 	for index,hero in pairs(heroes) do
-		if hero~=nil and hero:IsNull()==false and hero:IsAlive() and hero:IsStunned()==false and hero.thtd_player_id == playerVote.kicked_player then
+		if hero~=nil and hero:IsNull()==false and hero:IsAlive() and hero.is_game_over==fasle and hero:IsStunned()==false and hero.thtd_player_id == playerVote.kicked_player then
 			SpawnSystem:GameOver(hero)	
 			CustomGameEventManager:Send_ServerToAllClients("show_message", {msg="player_vote_pass", duration=10, params={count=playerVote.kicked_player+1}, color="#ff0"})
 			break			
@@ -230,7 +230,7 @@ function GetValidVotePlayerCount()
 	local count = 0
 	local heroes = Entities:FindAllByClassname("npc_dota_hero_lina")
 	for index,hero in pairs(heroes) do
-		if hero~=nil and hero:IsNull()==false and hero:IsAlive() and hero:IsStunned() == false and hero.thtd_game_info["is_player_connected"] then
+		if hero~=nil and hero:IsNull()==false and hero:IsAlive() and hero.is_game_over==false and hero:IsStunned() == false and hero.thtd_game_info["is_player_connected"] then
 			count = count + 1
 		end
 	end
@@ -361,7 +361,7 @@ CustomEvent.on('custom_game_command', function(data)
 	if data["cmd"] == "tp" then		
 		local pos = string.split(data["param"], ",")
 		if pos == nil or #pos < 2 then return end	
-		local vec = Vector(tonumber(pos[1]), tonumber(pos[2]), 0)
+		local vec = Vector(tonumber(pos[1]), tonumber(pos[2]), 144)
 		if vec ~= nil then
 			local player = PlayerResource:GetPlayer(data["PlayerID"])	
 			local hero = player:GetAssignedHero()

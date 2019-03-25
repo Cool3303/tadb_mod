@@ -96,8 +96,8 @@ function OnTouhouReleaseTowerSpellStart(keys)
 
 		if SpawnSystem.CurWave > 120 and SpawnSystem.CurTime <= 3 and caster.is_change_card ~= true then
 			caster.is_change_card = true 
-			GameRules:SendCustomMessage("<font color='red'>最后3秒内回收过塔的这一波不计入有效波数。</font>", DOTA_TEAM_GOODGUYS, 0)
-			caster:SetContextThink(DoUniqueString("change_card") ,
+			GameRules:SendCustomMessage("<font color='red'>最后3秒内回收卡阵容变更的这一波不计入有效波数。</font>", DOTA_TEAM_GOODGUYS, 0)
+			caster:SetContextThink(DoUniqueString("change_card"),
 				function()
 					if GameRules:IsGamePaused() then return 0.1 end
 					caster.is_change_card = false
@@ -105,6 +105,29 @@ function OnTouhouReleaseTowerSpellStart(keys)
 				end,
 			5)
 		end	
+
+		if GameRules:GetGameTime() - caster.thtd_ai_time > 1.2 then 
+			print("----- AI system closed, now open again.")
+			caster:SetContextThink(DoUniqueString("thtd_ai_think"), 
+				function()					
+					caster.thtd_ai_time = GameRules:GetGameTime()
+					if GameRules:IsGamePaused() then return 0.1 end
+					if caster.is_game_over or caster:IsStunned() then return nil end				
+					for k,v in pairs(caster.thtd_hero_tower_list) do
+						if v~=nil and v:IsNull()==false and v:IsAlive() and v:THTD_IsHidden() == false and v.thtd_close_ai ~= true and v:HasModifier("modifier_touhoutd_building") == false then
+							local func = v["THTD_"..v:GetUnitName().."_thtd_ai"]
+							if func then
+								func(v)
+							elseif v:IsAttacking() == false and v:THTD_IsAggressiveLock() == false then
+								v:MoveToPositionAggressive(v:GetOrigin() + v:GetForwardVector() * 100)
+								v:THTD_SetAggressiveLock()
+							end
+						end
+					end
+					return 0.3
+				end, 
+			0)
+		end
 
 	end
 end
@@ -255,7 +278,7 @@ function PutTowerToPoint(keys)
 		if THTD_IsRemainBuff(modifier:GetName()) == false and modifier:GetCaster() ~= tower and THTD_IsValid(modifier:GetCaster()) == false then 			
 			modifier:Destroy() 
 		end
-	end
+	end	
 end
 
 

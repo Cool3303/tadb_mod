@@ -50,7 +50,7 @@ function OnChen01SpellThink(keys)
 		caster.thtd_chen_01_vector = caster:GetOrigin()
 		local increase = math.min(dis/caster.thtd_chen_01_distance_increase,caster.thtd_chen_01_distance_max)
 
-		caster:EmitSoundParams("Sound_THTD.thtd_chen_01",1.0,0.2*(1+increase/8),2.0)
+		caster:EmitSoundParams("Sound_THTD.thtd_chen_01",1.0,0.2*(1+increase/8),2.0)		
 
 		local targets = THTD_FindUnitsInRadius(caster,caster:GetOrigin(),400*(1+increase/8))
 		
@@ -59,7 +59,7 @@ function OnChen01SpellThink(keys)
 	   			ability = keys.ability,
 	            victim = v, 
 	            attacker = caster, 
-	            damage = caster:THTD_GetPower() * caster:THTD_GetStar() * increase * 0.7, 
+	            damage = caster:THTD_GetPower() * caster:THTD_GetStar() * increase, 
 	            damage_type = keys.ability:GetAbilityDamageType(), 
 	            damage_flags = DOTA_DAMAGE_FLAG_NONE
 		   	}

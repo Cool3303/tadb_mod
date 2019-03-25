@@ -3,16 +3,16 @@ function OnLuna01Attack(keys)
 	local target = keys.target
 	local targetPoint = target:GetOrigin()
 
-	OnLuna01Damage(keys,target,0.8)
+	OnLuna01Damage(keys,target,1)
 	
 	local targets = THTD_FindUnitsInRadius(caster,targetPoint,1000)
 
 	if targets[1]~=nil then
-		OnLuna01Damage(keys,targets[1],1.6)
+		OnLuna01Damage(keys,targets[1],2)
 	end
 
 	if targets[2]~=nil then
-		OnLuna01Damage(keys,targets[2],1.6)
+		OnLuna01Damage(keys,targets[2],2)
 	end
 
 	local fairyArea = nil
@@ -40,7 +40,7 @@ function OnLuna01Attack(keys)
 			end
 		end
 		for k,v in pairs(targetsTotal) do
-			OnLuna01Damage(keys,v,1.6)
+			OnLuna01Damage(keys,v,2)
 		end
 	end	
 end
@@ -140,7 +140,7 @@ function OnLuna02SpellStart(keys)
 		7.0)
 	end
 
-	local damage = caster:THTD_GetPower() * caster:THTD_GetStar() * 5
+	local damage = caster:THTD_GetPower() * caster:THTD_GetStar() * 4
 
 	for k,v in pairs(targets) do
 		local DamageTable = {

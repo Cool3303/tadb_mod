@@ -14,6 +14,20 @@ if SpawnSystem == nil then
 		[3] = Vector(3424,-2816,144),
 		[4] = Vector(-3424,-2816,144)
 	}	
+	SpawnSystem.ShopEntitiesOrigin =  -- 玩家商店地点
+	{
+		[1] = Vector(-2454,2989,142),
+		[2] = Vector(2227,2922,142),
+		[3] = Vector(2259,-2806,142),
+		[4] = Vector(-2454,-2867,142)
+	}
+	SpawnSystem.ShopEntitiesForward =  -- 玩家商店朝向
+	{
+		[1] = Vector(-math.cos(math.pi/4),-math.sin(math.pi/4),0),
+		[2] = Vector(math.cos(math.pi/4),-math.sin(math.pi/4),0),
+		[3] = Vector(math.cos(math.pi/4),math.sin(math.pi/4),0),
+		[4] = Vector(-math.cos(math.pi/4),math.sin(math.pi/4),0)
+	}
 end
 
 
@@ -39,7 +53,7 @@ function SpawnSystem:GetCount()
 	if spawner == nil or #spawner == 0 then return 0 end
 	local i = 0
 	for _, spawnerLine in pairs(spawner) do	
-		if spawnerLine.hero.is_game_over == false and spawnerLine.hero:IsStunned() == false then
+		if spawnerLine.hero.is_game_over ~= true then
 			i = i + 1			
 		end
 	end		
@@ -69,7 +83,7 @@ end
 function RefreshTowerPowerAttackEquip(hero)	
 	if hero == nil or hero:IsNull() or hero:IsAlive() == false then return end
     if hero:THTD_IsTower() then hero = hero:GetOwner() end
-    if hero.is_game_over or hero:IsStunned() then return end
+    if hero.is_game_over == true then return end
     for index,tower in pairs(hero.thtd_hero_tower_list) do
 		if tower ~= nil and tower:IsNull() == false and tower:IsAlive() then
 			if tower:GetUnitName() ~= "minoriko" and tower:GetUnitName() ~= "sizuha" then
@@ -135,12 +149,11 @@ function SpawnSystem:PreSpawn()
 				SpawnSystem:RefreshCreepMaxCount()				
 
 				-- 通知提示
-				local difficulty = GameRules:GetCustomGameDifficulty()
-				if difficulty == 7 or difficulty == 9 then 
-					CustomGameEventManager:Send_ServerToAllClients("show_message", {msg="fast_game_on", duration=25, params={}, color="#ff0"})
-				end		
-				if difficulty >= 8 then 
+				local difficulty = GameRules:GetCustomGameDifficulty()					
+				if difficulty == 7 then 
 					CustomGameEventManager:Send_ServerToAllClients("show_message", {msg="challenge_game_on", duration=25, params={}, color="#ff0"})
+				elseif difficulty == 8 then 
+					CustomGameEventManager:Send_ServerToAllClients("show_message", {msg="funny_game_on", duration=25, params={}, color="#ff0"})
 				end	
 
 				GameRules:SendCustomMessage("<font color='yellow'>在商店附近右键背包物品点击整理地面物品，整理自己所有地面物品并跳过锁定的物品</font>", DOTA_TEAM_GOODGUYS, 0)	
@@ -163,32 +176,30 @@ function SpawnSystem:SpawnLine()
 	table.sort(heroes, function(a,b) return (a.thtd_player_id < b.thtd_player_id) end)	
 	local j = 1	
 	for _,hero in pairs(heroes) do		
-    	if hero.is_game_over == false and hero:IsStunned() == false then
+    	if hero.is_game_over ~= true then
 			local entity = Entities:FindByName(nil, "spanwer_player"..tostring(j))
-			if entity ~= nil then				
+			if entity ~= nil then	
+				entity.index = j			
 				entity.hero = hero
 				hero.thtd_spawn_id = j
 				hero.spawn_position = SpawnSystem.SpawnOrigin[j]				
 				if GetDistanceBetweenTwoVec2D(hero:GetAbsOrigin(), hero.spawn_position) > 1000 then 
-					hero:SetAbsOrigin(hero.spawn_position) 
-					hero.shop:SetAbsOrigin(hero.spawn_position)
+					hero:SetAbsOrigin(hero.spawn_position)
+					hero.shop:SetAbsOrigin(SpawnSystem.ShopEntitiesOrigin[j])
+					hero.shop:MoveToPosition(SpawnSystem.ShopEntitiesOrigin[j]+SpawnSystem.ShopEntitiesForward[j])
 				end
 				if j == 1 then
 					entity.firstPoint = "corner_M1408_1056"
-					entity.firstForward = "left"
-					entity.index = j
+					entity.firstForward = "left"					
 				elseif j == 2 then
 					entity.firstPoint = "corner_1408_1056"
-					entity.firstForward = "right"
-					entity.index = j
+					entity.firstForward = "right"				
 				elseif j == 3 then
 					entity.firstPoint = "corner_1408_M1056"
-					entity.firstForward = "right"
-					entity.index = j
+					entity.firstForward = "right"					
 				elseif j == 4 then
 					entity.firstPoint = "corner_M1408_M1056"
-					entity.firstForward = "left"
-					entity.index = j
+					entity.firstForward = "left"					
 				end	
 				table.insert(spawner, entity)
 				j = j + 1				
@@ -223,9 +234,9 @@ function SpawnSystem:InitSpawn()
 				if SpawnSystem.ReachToWave ~= nil then 
 					SpawnSystem.CurWave = SpawnSystem.ReachToWave + 50
 					SpawnSystem.ReachToWave = nil	
-				elseif SpawnSystem.CurWave == 50 and difficulty >= 8 then 					
+				elseif SpawnSystem.CurWave == 50 and difficulty >= 7 then 					
 					SpawnSystem.CurWave = 50 + 68					
-				elseif difficulty == 10 and SpawnSystem.CurWave < 50 then 
+				elseif difficulty == 8 and SpawnSystem.CurWave < 50 then 
 					SpawnSystem.CurWave = SpawnSystem.CurWave + 2
 				else						
 					SpawnSystem.CurWave = SpawnSystem.CurWave + 1
@@ -242,8 +253,10 @@ function SpawnSystem:InitSpawn()
 				-- 无尽前提示
 				if wave == 50 then
 					CustomGameEventManager:Send_ServerToAllClients( "show_message", {msg="spawn_unlimited", duration=193, params={count=20+10*math.min(difficulty,5)}, color="#0ff"} )
-					if difficulty >= 8 then
+					if difficulty == 7 then
 						CustomGameEventManager:Send_ServerToAllClients("show_message", {msg="challenge_game_on", duration=404, params={}, color="#ff0"})
+					elseif difficulty == 8 then 
+						CustomGameEventManager:Send_ServerToAllClients("show_message", {msg="funny_game_on", duration=25, params={}, color="#ff0"})
 					end
 				end	
 				
@@ -254,6 +267,7 @@ function SpawnSystem:InitSpawn()
 
 				-- 100波以后取消刷文文
 				if wave == 150 then
+					GameRules:SendCustomMessage("<font color='yellow'>100波以后每波刷怪数量为30个，且不再出现BOSS射命丸文</font>", DOTA_TEAM_GOODGUYS, 0)	
 					for k,v in pairs(thtd_bosses_list) do
 						if v == "aya" then
 							table.remove(thtd_bosses_list, k)
@@ -271,14 +285,8 @@ function SpawnSystem:InitSpawn()
 					max_time = math.floor(SpawnSystem.Spawner["Attacking"]["Wave51"]["BreakTime"]  +
 										  SpawnSystem.Spawner["Attacking"]["Wave51"]["Times"] 	 * 
 										  SpawnSystem.Spawner["Attacking"]["Wave51"]["Interval"]  + 0.5)						
-				end		
-				if (difficulty == 7 or difficulty == 9) and wave <= 49 then
-					max_time = max_time - 20
-				end
-				if difficulty == 10 and wave <= 49 then
-					max_time = 66
-				end
-				if difficulty >= 8 and wave == 50 then 
+				end	
+				if difficulty >= 7 and wave == 50 then 
 					max_time = max_time + 210				
 				end
 				left_time = max_time					
@@ -288,7 +296,7 @@ function SpawnSystem:InitSpawn()
 			end
 			
 			-- 挑战模式在50波给两次无尽三幻神重置机会
-			if difficulty >= 8 and wave == 50 then 
+			if difficulty >= 7 and wave == 50 then 
 				if left_time == 210 then 
 					SpawnSystem:WaveEndForEach()
 					SpawnSystem:StartUnlimited() 
@@ -335,7 +343,7 @@ function SpawnSystem:StartUnlimited()
 	end	
 	local heroes = Entities:FindAllByClassname("npc_dota_hero_lina")
 	for k,v in pairs(heroes) do
-		if v~=nil and v:IsNull()==false and v:IsAlive() and v.is_game_over == false and v:IsStunned() == false then
+		if v~=nil and v:IsNull()==false and v:IsAlive() and v.is_game_over ~= true then
 			v.thtd_game_info["creature_kill_count"] = 0
 		end
 	end
@@ -361,7 +369,7 @@ function SpawnSystem:CreepCheck()
 		local isEndGame = false
 		for spawnerIndex,spawnerLine in pairs(spawner) do
 			local hero = spawnerLine.hero    
-			if hero.is_game_over == false and hero:IsStunned() == false then
+			if hero.is_game_over ~= true then
 				hero.thtd_game_info["creep_count"] = count
 				if count > hero.thtd_game_info["creep_count_max"] and isEndGame == false then 
 					isEndGame = true
@@ -380,10 +388,10 @@ function SpawnSystem:CreepCheck()
 	-- 无尽波数	
 	for spawnerIndex,spawnerLine in pairs(spawner) do
 		local hero = spawnerLine.hero    
-		if hero.is_game_over == false and hero:IsStunned() == false then
+		if hero.is_game_over ~= true then
 			local count = 0
 
-			if spawnerLine.nextBossName=="kaguya" then 
+			-- if spawnerLine.nextBossName=="kaguya" then 
 				local entities = Entities:FindAllByClassname("npc_dota_creature")
 				for k,v in pairs(entities) do
 					local findNum =  string.find(v:GetUnitName(), 'creature_unlimited')
@@ -399,26 +407,26 @@ function SpawnSystem:CreepCheck()
 						count = count + 1
 					end
 				end
-			else 					
-				if THTD_EntitiesRectInner[hero.thtd_player_id]~= nil then 						
-					for k,v in pairs(THTD_EntitiesRectInner[hero.thtd_player_id]) do	
-						if v~=nil and v:IsNull()==false and v:IsAlive() then
-							if v:GetUnitName()=="creature_alice_ningyou" then 
-								if v.thtd_is_outer then count = count + 1 end
-							else
-								count = count + 1
-							end
-						end
-					end
-				end
-				if THTD_EntitiesRectOuter ~= nil then 
-					for k,v in pairs(THTD_EntitiesRectOuter) do					
-						if v~=nil and v:IsNull()==false and v:IsAlive() and v.thtd_player_index == hero.thtd_player_id then
-							count = count + 1
-						end					
-					end				
-				end
-			end
+			-- else 					
+			-- 	if THTD_EntitiesRectInner[hero.thtd_player_id]~= nil then 						
+			-- 		for k,v in pairs(THTD_EntitiesRectInner[hero.thtd_player_id]) do	
+			-- 			if v~=nil and v:IsNull()==false and v:IsAlive() then
+			-- 				if v:GetUnitName()=="creature_alice_ningyou" then 
+			-- 					if v.thtd_is_outer then count = count + 1 end
+			-- 				else
+			-- 					count = count + 1
+			-- 				end
+			-- 			end
+			-- 		end
+			-- 	end
+			-- 	if THTD_EntitiesRectOuter ~= nil then 
+			-- 		for k,v in pairs(THTD_EntitiesRectOuter) do					
+			-- 			if v~=nil and v:IsNull()==false and v:IsAlive() and v.thtd_player_index == hero.thtd_player_id then
+			-- 				count = count + 1
+			-- 			end					
+			-- 		end				
+			-- 	end
+			-- end
 			
 			hero.thtd_game_info["creep_count"] = count
 			if count > hero.thtd_game_info["creep_count_max"] then
@@ -435,10 +443,18 @@ end
 
 -- 指定玩家游戏结束
 function SpawnSystem:GameOver(hero)
-	if hero~=nil and hero:IsNull()==false and hero:IsAlive() and hero.is_game_over == false and hero:IsStunned() == false then
+	if hero~=nil and hero:IsNull()==false and hero:IsAlive() and hero.is_game_over ~= true then
 		RefreshItemListNetTable(hero)
+
+		hero.is_game_over = true
+		table.insert(SpawnSystem.GameOverPlayerId, hero.thtd_player_id)
+		UnitStunTarget(hero,hero,-1)
+
 		hero:THTD_DropItemAll()
-		
+		hero:SetAbsOrigin(Vector(0,0,0))
+		hero:AddNoDraw()
+		THTD_EntitiesRectInner[hero.thtd_player_id] = {}
+
 		local wave = SpawnSystem.CurWave
 		local entities = Entities:FindAllByClassname("npc_dota_creature")
 		local killed = false		
@@ -460,7 +476,7 @@ function SpawnSystem:GameOver(hero)
 				end
 			end
 
-			if killed==false and SpawnSystem:GetCount() > 1 and v~=nil and v:IsNull()==false and v:IsAlive() and v:THTD_IsTower() and v:GetOwner() == hero then
+			if killed==false and SpawnSystem:GetCount() > 0 and v~=nil and v:IsNull()==false and v:IsAlive() and v:THTD_IsTower() and v:GetOwner() == hero then
 				v:THTD_DropItemAll()							
 				v:THTD_DestroyLevelEffect()
 				v:RemoveModifierByName("modifier_touhoutd_no_health_bar")										
@@ -476,16 +492,14 @@ function SpawnSystem:GameOver(hero)
 					end
 				end
 			end
-		end	
-		hero.is_game_over = true
-		table.insert(SpawnSystem.GameOverPlayerId, hero.thtd_player_id)
-		UnitStunTarget(hero,hero,-1)
-		hero:SetAbsOrigin(Vector(0,0,0))
-		hero:AddNoDraw()
-		THTD_EntitiesRectInner[hero.thtd_player_id] = {}
+		end				
+		
 		if wave > 120 then
 			CheckRank(hero)
-			CustomGameEventManager:Send_ServerToAllClients("show_message", {msg="power_game_end_info", duration=30, params={wave=hero.thtd_game_info["max_wave"],damage=hero.thtd_game_info["max_wave_damage"],name=PlayerResource:GetPlayerName(hero:GetPlayerID())}, color="#ff0"})					
+			CustomGameEventManager:Send_ServerToAllClients("show_message", {msg="power_game_end_info", duration=60, params={wave=hero.thtd_game_info["max_wave"],damage=hero.thtd_game_info["max_wave_damage"],name=PlayerResource:GetPlayerName(hero:GetPlayerID())}, color="#ff0"})
+			ShowDetail(hero)
+		elseif wave > 50 then 
+			CustomGameEventManager:Send_ServerToAllClients("show_message", {msg="normal_game_end_info", duration=30, params={wave=wave-1,name=PlayerResource:GetPlayerName(hero:GetPlayerID())}, color="#f00"})
 		end
 		SpawnSystem:RefreshCreepMaxCount()	
 	end
@@ -504,12 +518,13 @@ function SpawnSystem:GameEnd()
 	end
 
 	if wave > 120 then
+		CustomGameEventManager:Send_ServerToAllClients("show_message", {msg="game_will_end", duration=60, params={}, color="#ff0"})
 		GameRules:GetGameModeEntity():SetContextThink(DoUniqueString("thtd_end_game"), 
 			function()
 				GameRules:SetGameWinner(DOTA_TEAM_GOODGUYS)
 				return nil
 			end,
-		30)					
+		60)					
 	else
 		Entities:FindByName(nil, "dota_goodguys_fort"):ForceKill(false)		
 	end					
@@ -550,34 +565,21 @@ function CheckRank(hero)
 	end
 	local toDelList = {}
 	local isTop = true
-	local groupMaxWave = 0
-	local SameRankDps = 6 --阵容前几相同即为同阵容
+	local groupMaxWave = 0	
 
 	if #toplist > 0 then
 		for i=1,#toplist do
 			local topdata = toplist[i]
 			if GameRules.players_max_wave[hero.thtd_player_id].id ~= topdata["_id"] then				 
-				local sameCount = 0
-				local usedIndex = ""
-				for x=1,SameRankDps do
-					for y=1,SameRankDps do
-						if string.find(usedIndex,tostring(y)) == nil and wavedata["card"..tostring(x)] ~= "" and topdata["card"..tostring(y)] ~= "" and topdata["card"..tostring(y)] ~= nil and wavedata["card"..tostring(x)]["itemname"] == topdata["card"..tostring(y)]["itemname"] then
-							sameCount = sameCount + 1
-							usedIndex = usedIndex..tostring(y)
-							break
-						end					
-					end
-				end
+				local isSameRank = false 
 
-				if sameCount ~= SameRankDps then
-					if wavedata["card1"] ~= "" and topdata["card1"] ~= "" and topdata["card1"] ~= nil and wavedata["card1"]["itemname"] == topdata["card1"]["itemname"] then
-						if wavedata["card1"]["damage"] / (10000 * wavedata["damage"]) >= 0.7 and topdata["card1"]["damage"] / (10000 * topdata["damage"]) >= 0.7 then
-							sameCount = SameRankDps
-						end						
-					end
-				end
+				if wavedata["card1"] ~= "" and topdata["card1"] ~= "" and topdata["card1"] ~= nil and wavedata["card1"]["itemname"] == topdata["card1"]["itemname"] then
+					if wavedata["card1"]["damage"] / (10000 * wavedata["damage"]) >= 0.6 and topdata["card1"]["damage"] / (10000 * topdata["damage"]) >= 0.6 then
+						isSameRank = true
+					end						
+				end				
 
-				if sameCount ~= SameRankDps then
+				if isSameRank ~= true then
 					local topDamage1 = 0
 					local topDamage2 = 0
 					local topNum = 0
@@ -588,28 +590,28 @@ function CheckRank(hero)
 						if topdata["card"..tostring(x)] ~= "" and topdata["card"..tostring(x)] ~= nil then
 							topDamage2 = topDamage2 + topdata["card"..tostring(x)]["damage"]
 						end						
-						if topDamage1 / (10000 * wavedata["damage"]) >= 0.9 and topDamage2 / (10000 * topdata["damage"]) >= 0.9 then
+						if topDamage1 / (10000 * wavedata["damage"]) >= 0.8 and topDamage2 / (10000 * topdata["damage"]) >= 0.8 then
 							topNum = x
 							break
 						end					
 					end
 					if topNum > 0 then
-						usedIndex = ""
-						sameCount = 0
+						local usedIndex = ""
+						local sameCount = 0
 						for x=1,topNum do
 							for y=1,topNum do
 								if string.find(usedIndex,tostring(y)) == nil and wavedata["card"..tostring(x)] ~= "" and topdata["card"..tostring(y)] ~= "" and topdata["card"..tostring(y)] ~= nil and wavedata["card"..tostring(x)]["itemname"] == topdata["card"..tostring(y)]["itemname"] then
 									sameCount = sameCount + 1
-									usedIndex = usedIndex..tostring(y)
+									usedIndex = usedIndex..tostring(y)..","
 									break
 								end					
 							end
 						end	
-						if sameCount == topNum then sameCount = SameRankDps end
+						if sameCount == topNum then isSameRank = true end
 					end
 				end
 
-				if sameCount == SameRankDps then
+				if isSameRank == true then
 					if wavedata["wave"] <= topdata["wave"] then
 						if isTop ~= false then isTop = false end
 						if groupMaxWave == 0 then groupMaxWave = topdata["wave"] end
@@ -623,9 +625,9 @@ function CheckRank(hero)
 	
 	for k,v in pairs(toDelList) do
 		if GameRules.is_team_mode then
-			http.api.resetTeamRank(v)
+			http.api.resetTeamRank(v, nil, 5)
 		else
-			http.api.resetRank(v)
+			http.api.resetRank(v, nil, 5)
 		end
 	end
 	print("---------- the same rank : ", json.encode(toDelList))
@@ -636,10 +638,26 @@ function CheckRank(hero)
 	end
 
 	if GameRules.players_max_wave[hero.thtd_player_id].id == "-1" then	
-		http.api.saveFirstWaveData(hero.thtd_player_id, wavedata)
+		http.api.saveFirstWaveData(hero.thtd_player_id, wavedata, 3)
 	else
-		http.api.saveWaveData(hero.thtd_player_id, wavedata)
+		http.api.saveWaveData(hero.thtd_player_id, wavedata, 3)
 	end
+end
+
+-- 检查是否能上排行榜
+function ShowDetail(hero)
+	if hero.cards == nil or #hero.cards == 0 then return end
+	
+	local wavedata = {}	
+	for i=1,12 do
+		if i <= #hero.cards then 
+			wavedata["card"..tostring(i)] = hero.cards[i]
+		else
+			wavedata["card"..tostring(i)] = ""
+		end
+	end	
+
+	CustomGameEventManager:Send_ServerToPlayer(hero:GetPlayerOwner(), "thtd_game_over_detail", wavedata)	
 end
 
 -- 检查玩家是否掉线
@@ -670,17 +688,15 @@ function SpawnSystem:WaveEndForEach()
 	local difficulty = GameRules:GetCustomGameDifficulty()
 	for spawnerIndex,spawnerLine in pairs(spawner) do
 		local hero = spawnerLine.hero    
-		if hero.is_game_over == false and hero:IsStunned() == false then
-			-- 伤害清零，收益卡结算，统计更新			
-			hero.thtd_rumia_kill_count = 0
-			hero.thtd_yuyuko_kill_count = 0
-			hero.thtd_patchouli_kill_count = 0
+		if hero.is_game_over ~= true then
+			-- 伤害清零，收益卡结算，统计更新
+						
 			local isMaxWave = false
 			local towerShinki = nil
 
-			if wave > 120 and hero.use_item2001 ~= true and hero.thtd_game_info["creep_count"] <= 20 and hero.is_change_card ~= true then 
+			if wave > 120 and hero.use_item2001 ~= true and hero.thtd_game_info["creep_count"] <= 25 and hero.is_change_card ~= true then 
 				isMaxWave = true 
-			end			
+			end
 			if isMaxWave then
 				local totalDamage = 0
 				local minDamage = 24000 + (wave - 51 - math.floor((wave - 51)/4)) * 72000				
@@ -696,8 +712,8 @@ function SpawnSystem:WaveEndForEach()
 					isMaxWave = false
 					GameRules:SendCustomMessage("<font color='red'>结束时当前阵容总伤害量低于80%总血量的这一波不计入有效波数。</font>", DOTA_TEAM_GOODGUYS, 0)		
 				end
-			elseif wave > 120 and hero.thtd_game_info["creep_count"] > 20 then 
-				GameRules:SendCustomMessage("<font color='red'>结束时漏怪数量超过20的这一波不计入有效波数。</font>", DOTA_TEAM_GOODGUYS, 0)
+			elseif wave > 120 and hero.thtd_game_info["creep_count"] > 25 then 
+				GameRules:SendCustomMessage("<font color='red'>结束时漏怪数量超过25的这一波不计入有效波数。</font>", DOTA_TEAM_GOODGUYS, 0)
 			end
 			
 			if isMaxWave then
@@ -727,7 +743,7 @@ function SpawnSystem:WaveEndForEach()
 					end					
 					if not SpawnSystem.IsUnLimited then
 						if v:GetUnitName() == "toramaru" and GameRules:GetCustomGameDifficulty() ~= 10 then							
-							PlayerResource:ModifyGold(v:GetPlayerOwnerID(),math.floor(v.thtd_tower_damage),true,DOTA_ModifyGold_CreepKill)
+							THTD_ModifyGoldEx(v:GetPlayerOwnerID(),math.floor(v.thtd_tower_damage),true,DOTA_ModifyGold_CreepKill)
 							SendOverheadEventMessage(v:GetPlayerOwner(),OVERHEAD_ALERT_GOLD,v,math.floor(v.thtd_tower_damage),v:GetPlayerOwner() )
 						elseif v:GetUnitName() == "shinki" and v.thtd_shinki_01_lock == false then
 							if towerShinki == nil or towerShinki:THTD_GetStar() < v:THTD_GetStar() then 
@@ -746,7 +762,7 @@ function SpawnSystem:WaveEndForEach()
 
 			if towerShinki ~= nil then 
 				OnShinkiGainCard(towerShinki)
-				if difficulty == 10 then OnShinkiGainCard(towerShinki) end
+				if difficulty == 8 then OnShinkiGainCard(towerShinki) end
 			end
 
 			-- 清空空值
@@ -759,7 +775,7 @@ function SpawnSystem:WaveEndForEach()
 				end
 			end
 
-			if SpawnSystem.IsUnLimited == false and wave >= 30 and wave < 50 and GameRules:GetCustomGameDifficulty() == 10 then
+			if SpawnSystem.IsUnLimited == false and wave >= 30 and wave < 50 and GameRules:GetCustomGameDifficulty() == 8 then
 				for i=1,4 do					
 					local item = CreateItem("item_1006", nil, nil)
 					item.owner_player_id = hero.thtd_player_id
@@ -788,9 +804,9 @@ function SpawnSystem:PreChallenge()
 	if spawner == nil or #spawner == 0 then return end	
 	for spawnerIndex,spawnerLine in pairs(spawner) do
 		local hero = spawnerLine.hero    
-		if hero.is_game_over == false and hero:IsStunned() == false then
+		if hero.is_game_over ~= true then
 			hero.thtd_minoriko_02_change = 0
-			PlayerResource:ModifyGold(hero:GetPlayerOwnerID(),3500,true,DOTA_ModifyGold_CreepKill)
+			THTD_ModifyGoldEx(hero:GetPlayerOwnerID(),3500,true,DOTA_ModifyGold_CreepKill)
 			for k,v in pairs(hero.thtd_hero_tower_list) do
 				if v~=nil and v:IsNull()==false and v:IsAlive() then
 					if v:THTD_IsTower() and v:THTD_GetLevel()<THTD_MAX_LEVEL then
@@ -1030,14 +1046,14 @@ function SpawnSystem:StartSpawn()
 	
 	for spawnerIndex,spawnerLine in pairs(spawner) do
 		local hero = spawnerLine.hero    
-		if hero.is_game_over == false and hero:IsStunned() == false then 
+		if hero.is_game_over ~= true then 
 			local player = hero:GetPlayerOwner()
 			local playerId = hero:GetPlayerOwnerID()
 			-- 刷新BOSS信息并重置秋
 			if difficulty >= 5 then
 				if wave > 50 and wave%4 == 3 then									
 					hero.thtd_minoriko_02_change = 0
-					PlayerResource:ModifyGold(playerId,3500,true,DOTA_ModifyGold_CreepKill)
+					THTD_ModifyGoldEx(playerId,3500,true,DOTA_ModifyGold_CreepKill)
 					for k,v in pairs(hero.thtd_hero_tower_list) do
 						if v~=nil and v:IsNull()==false and v:IsAlive() then
 							if v:THTD_IsTower() and v:THTD_GetLevel()<THTD_MAX_LEVEL then
@@ -1055,13 +1071,14 @@ function SpawnSystem:StartSpawn()
 			end
 
 			local curTimes = 0
+			if wave > 150 then curTimes = 1 end
 			spawnerLine:SetContextThink(DoUniqueString("SpawnAttackingSpawn"..tostring(spawnerIndex)), 
 				function()
 					if GameRules:IsGamePaused() then return 0.1 end
 					if curTimes > times  then return nil end				
 		
 					for i = 1, count do
-						if hero.is_game_over or hero:IsStunned() then return nil end
+						if hero.is_game_over == true then return nil end
 		
 						local spawn_unit = waveInfo["Unit"]
 						
@@ -1069,125 +1086,124 @@ function SpawnSystem:StartSpawn()
 							spawn_unit = "creature_bosses_"..spawnerLine.nextBossName
 						end
 		
-						local unit= CreateUnitByName(spawn_unit, spawnerLine:GetOrigin() + RandomVector(400), true, nil, nil, DOTA_TEAM_BADGUYS )
-		
-						unit.thtd_player_index = hero.thtd_player_id
-						unit.thtd_poison_buff = 0
-		
-						unit:AddNewModifier(unit, nil, "modifier_phased", {})
-						
-						if wave > 50 then
-							local currentWave = wave - 51
-							local health = unit:GetBaseMaxHealth()
-		
-							if difficulty == 1 then
-								health = health + (currentWave - math.floor(currentWave/4)) * 19200
-							elseif difficulty == 2 then
-								health = health + (currentWave - math.floor(currentWave/4)) * 19200
-							elseif difficulty == 3 then
-								health = health + (currentWave - math.floor(currentWave/4)) * 28800
-							elseif difficulty == 4 then
-								health = health + (currentWave - math.floor(currentWave/4)) * 38400
-							else
-								health = health + (currentWave - math.floor(currentWave/4)) * 72000						
-							end
-		
-							--真无尽模式每波额外增加 1.8%，100波 990万，150波 3300万，200波 1.08亿（等于原版2000波）					
-							if wave > 120 then health = math.floor(health*(1.018^(wave - 121))/1000) * 1000 end
-							if health > 2000000000 then health = 2000000000 end --达到数值上限
-		
-							unit:SetBaseMaxHealth(health)
-							unit:SetMaxHealth(health)
-							unit:SetHealth(unit:GetMaxHealth())
-		
-							if difficulty == 1 then
-								unit:SetPhysicalArmorBaseValue(unit:GetPhysicalArmorBaseValue()+3*math.min(50,currentWave)-10)
-								unit:SetBaseMagicalResistanceValue(unit:GetBaseMagicalResistanceValue()+3*math.min(50,currentWave)-10)
-							elseif difficulty == 2 then
-								unit:SetPhysicalArmorBaseValue(unit:GetPhysicalArmorBaseValue()+3*math.min(50,currentWave)-10)
-								unit:SetBaseMagicalResistanceValue(unit:GetBaseMagicalResistanceValue()+3*math.min(50,currentWave)-10)
-							elseif difficulty == 3 then
-								unit:SetPhysicalArmorBaseValue(unit:GetPhysicalArmorBaseValue()+6*math.min(25,currentWave)-10)
-								unit:SetBaseMagicalResistanceValue(unit:GetBaseMagicalResistanceValue()+6*math.min(25,currentWave)-10)
-							else
-								unit:SetPhysicalArmorBaseValue(unit:GetPhysicalArmorBaseValue()+6*math.min(25,currentWave)-10)
-								unit:SetBaseMagicalResistanceValue(unit:GetBaseMagicalResistanceValue()+6*math.min(25,currentWave)-10)
-							end		
+						local unit = CreateUnitByName(spawn_unit, spawnerLine:GetOrigin() + RandomVector(400), true, nil, nil, DOTA_TEAM_BADGUYS )
+						if unit ~= nil then 
+							unit.thtd_player_index = hero.thtd_player_id
+							unit.thtd_poison_buff = 0
+			
+							unit:AddNewModifier(unit, nil, "modifier_phased", {})
 							
-							local damageDecrease = math.max(-25*(1+(math.min(difficulty,4)-1)*0.5),-currentWave*4)
-							ModifyDamageIncomingPercentage(unit,damageDecrease)
-						else
-							local modifier = unit:AddNewModifier(unit, nil, "modifier_move_speed", nil)
-							modifier:SetStackCount(math.floor(wave/4)*20)
-		
-							local health = unit:GetBaseMaxHealth()*(1+(math.min(difficulty,4)-1)*0.5)
-						
-							unit:SetBaseMaxHealth(health)
-							unit:SetMaxHealth(health)
-							unit:SetHealth(unit:GetMaxHealth())
-		
-							if difficulty >= 5 then								
-								local damageDecrease = -wave
-								ModifyDamageIncomingPercentage(unit,damageDecrease)
+							if wave > 50 then
+								local currentWave = wave - 51
+								local health = unit:GetBaseMaxHealth()
+			
+								if difficulty == 1 then
+									health = health + (currentWave - math.floor(currentWave/4)) * 19200
+								elseif difficulty == 2 then
+									health = health + (currentWave - math.floor(currentWave/4)) * 19200
+								elseif difficulty == 3 then
+									health = health + (currentWave - math.floor(currentWave/4)) * 28800
+								elseif difficulty == 4 then
+									health = health + (currentWave - math.floor(currentWave/4)) * 38400
+								else
+									health = health + (currentWave - math.floor(currentWave/4)) * 72000						
+								end
+			
+								--真无尽模式每波额外增加 1.8%，100波 990万，150波 3300万，200波 1.08亿（等于原版2000波）					
+								if wave > 120 then health = math.floor(health*(1.018^(wave - 121))/1000) * 1000 end
+								if health > 2000000000 then health = 2000000000 end --达到数值上限
+			
+								unit:SetBaseMaxHealth(health)
+								unit:SetMaxHealth(health)
+								unit:SetHealth(unit:GetMaxHealth())
+			
+								if difficulty == 1 then
+									unit:SetPhysicalArmorBaseValue(unit:GetPhysicalArmorBaseValue()+3*math.min(50,currentWave)-10)
+									unit:SetBaseMagicalResistanceValue(unit:GetBaseMagicalResistanceValue()+3*math.min(50,currentWave)-10)
+								elseif difficulty == 2 then
+									unit:SetPhysicalArmorBaseValue(unit:GetPhysicalArmorBaseValue()+3*math.min(50,currentWave)-10)
+									unit:SetBaseMagicalResistanceValue(unit:GetBaseMagicalResistanceValue()+3*math.min(50,currentWave)-10)
+								elseif difficulty == 3 then
+									unit:SetPhysicalArmorBaseValue(unit:GetPhysicalArmorBaseValue()+6*math.min(25,currentWave)-10)
+									unit:SetBaseMagicalResistanceValue(unit:GetBaseMagicalResistanceValue()+6*math.min(25,currentWave)-10)
+								else
+									unit:SetPhysicalArmorBaseValue(unit:GetPhysicalArmorBaseValue()+6*math.min(25,currentWave)-10)
+									unit:SetBaseMagicalResistanceValue(unit:GetBaseMagicalResistanceValue()+6*math.min(25,currentWave)-10)
+								end		
+								
+								local damageDecrease = math.max(-25*(1+(math.min(difficulty,4)-1)*0.5),-currentWave*4)
+								ModifyDamageSpecialPercentage(unit,damageDecrease)
+							else
+								local modifier = unit:AddNewModifier(unit, nil, "modifier_move_speed", nil)
+								modifier:SetStackCount(math.floor(wave/4)*20)
+			
+								local health = unit:GetBaseMaxHealth()*(1+(math.min(difficulty,4)-1)*0.5)
+							
+								unit:SetBaseMaxHealth(health)
+								unit:SetMaxHealth(health)
+								unit:SetHealth(unit:GetMaxHealth())
+			
+								if difficulty >= 5 then								
+									local damageDecrease = -wave
+									ModifyDamageSpecialPercentage(unit,damageDecrease)
+								end
 							end
-						end
-		
-						if difficulty >= 5 and wave > 50 and wave%4 == 0 and spawnerLine.nextBossName ~= nil then
-							unit:AddNewModifier(unit, nil, "modifier_bosses_"..spawnerLine.nextBossName, nil)
-						end					
-		
-						if unit.next_move_point == nil then
+			
+							if difficulty >= 5 and wave > 50 and wave%4 == 0 and spawnerLine.nextBossName ~= nil then
+								unit:AddNewModifier(unit, nil, "modifier_bosses_"..spawnerLine.nextBossName, nil)
+							end					
+										
 							unit.next_move_point = G_path_corner[spawnerLine.firstPoint].Vector * 1.5
 							table.insert(THTD_EntitiesRectInner[hero.thtd_player_id], unit)
 							unit.first_move_point = G_path_corner[spawnerLine.firstPoint].Vector * 1.5
-						end
-		
-						if unit.next_move_forward == nil then
+
 							unit.next_move_forward = spawnerLine.firstForward 
 							unit.first_move_forward = spawnerLine.firstForward 
-						end
-		
-						unit:SetContextThink(DoUniqueString("AttackingBase"), 
-							function ()
-								if GameRules:IsGamePaused() then return 0.1 end
-								if unit == nil or unit:IsNull() or unit:IsAlive() == false then return nil end
-		
-								if unit.thtd_is_outer ~= true then
-									local origin = unit:GetOrigin()
-									if not(origin.x < 4432 and origin.x > -4432 and origin.y < 3896 and origin.y > -3896) then
-										unit.thtd_is_outer = true
-										table.insert(THTD_EntitiesRectOuter,unit)
-										for k,v in pairs(THTD_EntitiesRectInner[hero.thtd_player_id]) do
-											if v == unit then										
-												table.remove(THTD_EntitiesRectInner[hero.thtd_player_id],k)
-												break
+
+							unit.thtd_next_corner = spawnerLine.firstPoint
+							unit.thtd_first_corner = spawnerLine.firstPoint
+			
+							unit:SetContextThink(DoUniqueString("AttackingBase"), 
+								function ()
+									if GameRules:IsGamePaused() then return 0.1 end
+									if unit == nil or unit:IsNull() or unit:IsAlive() == false then return nil end
+			
+									if unit.thtd_is_outer ~= true then
+										local origin = unit:GetOrigin()
+										if not(origin.x < 4432 and origin.x > -4432 and origin.y < 3896 and origin.y > -3896) then
+											unit.thtd_is_outer = true
+											table.insert(THTD_EntitiesRectOuter,unit)
+											for k,v in pairs(THTD_EntitiesRectInner[hero.thtd_player_id]) do
+												if v == unit then										
+													table.remove(THTD_EntitiesRectInner[hero.thtd_player_id],k)
+													break
+												end
 											end
 										end
 									end
-								end
-								unit:MoveToPosition(unit.next_move_point)
+									unit:MoveToPosition(unit.next_move_point)
 
-								-- 替代触发器
-								-- for k,v in pairs(UnitMoveRect[unit.thtd_player_index]) do
-								-- 	if GetDistanceBetweenTwoVec2D(unit:GetOrigin(), Vector(v["center"][1],v["center"][2]),0) <= v["radius"] then 
-								-- 		if unit.current_rect_id ~= k then 
-								-- 			unit.current_rect_id = k
-								-- 			local tagIndex = v["tag"][RandomInt(1, #v["tag"])]
-								-- 			unit.next_move_point = Vector(UnitMoveRect[unit.thtd_player_index][tagIndex]["center"][1],UnitMoveRect[unit.thtd_player_index][tagIndex]["center"][2],0)
-								-- 			unit:MoveToPosition(unit.next_move_point)
-								-- 		end
-								-- 		break
-								-- 	end								
-								-- end
+									-- 替代触发器
+									-- for k,v in pairs(UnitMoveRect[unit.thtd_player_index]) do
+									-- 	if GetDistanceBetweenTwoVec2D(unit:GetOrigin(), Vector(v["center"][1],v["center"][2]),0) <= v["radius"] then 
+									-- 		if unit.current_rect_id ~= k then 
+									-- 			unit.current_rect_id = k
+									-- 			local tagIndex = v["tag"][RandomInt(1, #v["tag"])]
+									-- 			unit.next_move_point = Vector(UnitMoveRect[unit.thtd_player_index][tagIndex]["center"][1],UnitMoveRect[unit.thtd_player_index][tagIndex]["center"][2],0)
+									-- 			unit:MoveToPosition(unit.next_move_point)
+									-- 		end
+									-- 		break
+									-- 	end								
+									-- end
 
-								return 0.5
-							end, 
-						0) 
+									return 0.3
+								end, 
+							0) 
+						end
 					end
 		
-					curTimes = curTimes + 1
-		
-					return interval
+					curTimes = curTimes + 1		
+					return interval					
 				end, 
 			0)
 		end
@@ -1199,7 +1215,7 @@ function SpawnSystem:ClearRemovedSpawner()
 	local spawner = SpawnSystem.AttackingSpawner	
 	if spawner == nil or #spawner == 0 then return end
 	for i = #spawner, 1, -1 do
-		if spawner[i].hero.is_game_over or spawner[i].hero:IsStunned() then
+		if spawner[i].hero.is_game_over == true then
 			THTD_EntitiesRectInner[spawner[i].hero.thtd_player_id] = {}
 			table.remove(spawner, i)			
 		end
@@ -1213,7 +1229,7 @@ function SpawnSystem:RefreshCreepMaxCount()
 		if SpawnSystem.IsUnLimited then 
 			hero.thtd_game_info["creep_count_max"] = 30
 		else			
-			hero.thtd_game_info["creep_count_max"] = 40 * SpawnSystem:GetCount()
+			hero.thtd_game_info["creep_count_max"] = 30 * SpawnSystem:GetCount()
 		end
 	end
 end
@@ -1257,7 +1273,7 @@ function OnShinkiGainCard(caster)
 			end
 
 			for i=1,v do
-				local item = CreateItem(drawList[1][RandomInt(1,#drawList[1])], nil, nil)
+				local item = CreateItem(drawList[1][RandomInt(1,#drawList[1])], nil, nil)				
 				if item ~= nil then		
 					item.owner_player_id = hero.thtd_player_id
 					item:SetPurchaser(hero)
@@ -1270,6 +1286,7 @@ function OnShinkiGainCard(caster)
 						function()
 							if GameRules:IsGamePaused() then return 0.03 end
 							CreateItemOnPositionSync(origin,item)
+							THTD_ItemSetScale(item)
 							return nil
 						end,
 					3.0)
@@ -1321,6 +1338,7 @@ function OnShinkiGainCard(caster)
 						function()
 							if GameRules:IsGamePaused() then return 0.03 end
 							CreateItemOnPositionSync(origin,item)
+							THTD_ItemSetScale(item)
 							return nil
 						end,
 					3.0)
@@ -1398,6 +1416,7 @@ function OnShinkiGainCard(caster)
 						function()
 							if GameRules:IsGamePaused() then return 0.03 end
 							CreateItemOnPositionSync(origin,item)
+							THTD_ItemSetScale(item)
 							return nil
 						end,
 					3.0)

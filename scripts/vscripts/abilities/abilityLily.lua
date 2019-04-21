@@ -1,6 +1,6 @@
 function OnLily01SpellStart(keys)
 	if SpawnSystem.IsUnLimited then return end
-	if GameRules:GetCustomGameDifficulty() == 10 then return end
+	if GameRules:GetCustomGameDifficulty() == 8 then return end
 	local caster = keys.caster
 	local ability = keys.ability
 	local targetPoint = keys.target_points[1]

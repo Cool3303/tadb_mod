@@ -74,10 +74,11 @@ function OnKoishi03SpellStart(keys)
 	end
 
 	if target:THTD_IsTower() and target.thtd_koishi_03_bonus == false then
+		target.thtd_koishi_03_bonus = true
+		caster.thtd_last_cast_unit = target
 		target:THTD_AddPower(bonus)
 		target:THTD_AddAttack(bonus)
-		caster.thtd_last_cast_unit = target
-		target.thtd_koishi_03_bonus = true
+		
 		target:EmitSound("Hero_OgreMagi.Bloodlust.Target")
 
 		local count = caster.thtd_koishi_03_duration * 2

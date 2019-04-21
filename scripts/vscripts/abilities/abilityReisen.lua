@@ -7,35 +7,34 @@ end
 
 function ReisenRepelUnit(target)
 	if target.thtd_is_fearing == true then return end
-	if target.next_move_point ~= nil and target.thtd_is_feared_by_reisen_01 ~= true then
+	if target.next_move_point ~= nil and target.thtd_is_feared_by_reisen_01 ~= true then		
 		
-		local next_move_point =  target.next_move_point
 		target.thtd_is_feared_by_reisen_01 = true
 		target.thtd_is_fearing = true
+		local current_next_move_point = target.next_move_point	
 
 		target.next_move_point = target:GetOrigin() - target:GetForwardVector() * 500
 
-		local count = 0
-		local targetOrigin = target:GetOrigin()
-
 		target:EmitSound("Hero_Sniper.ProjectileImpact")
 
+		local count = 20	
 		target:SetContextThink(DoUniqueString("thtd_reisen01_move_next_point"), 
 			function()
 				if GameRules:IsGamePaused() then return 0.03 end
-				if count > 20 then 
-					if GetDistanceBetweenTwoVec2D(next_move_point,targetOrigin) > 50 and GetDistanceBetweenTwoVec2D(target.next_move_point,next_move_point) > 50 then
-						target.next_move_point = targetOrigin
-						if GetDistanceBetweenTwoVec2D(target:GetOrigin(),targetOrigin) < 50 then
-							target.next_move_point = next_move_point
-						end
-					elseif GetDistanceBetweenTwoVec2D(target:GetOrigin(),next_move_point) < 300 then
+				count = count - 1
+				if count < 0 or THTD_IsValid(target) == false then
+					if target ~= nil and target:IsNull() == false then 
+						if GetDistanceBetweenTwoVec2D(target:GetAbsOrigin(), current_next_move_point) < 100 then 
+							target.next_move_point = THTD_GetNextPathForUnit(target,target.thtd_next_corner)
+						else
+							target.next_move_point = current_next_move_point										
+						end																	
 						target.thtd_is_fearing = false
-						return nil
 					end
-				end
-				count = count + 1
-				return 0.1
+					return nil
+				else
+					return 0.1
+				end				
 			end, 
 		0)
 	end
@@ -121,34 +120,33 @@ end
 
 function Reisen03RepelUnit(target)
 	if target.thtd_is_fearing == true then return end
-	if target.next_move_point ~= nil then		
-		local next_move_point =  target.next_move_point
+	if target.next_move_point ~= nil then	
 		target.thtd_is_feared_by_reisen_01 = true
 		target.thtd_is_fearing = true
+		local current_next_move_point = target.next_move_point	
 
-		target.next_move_point = target:GetOrigin() - target:GetForwardVector() * 500
-
-		local count = 0
-		local targetOrigin = target:GetOrigin()
+		target.next_move_point = target:GetOrigin() - target:GetForwardVector() * 500		
 
 		target:EmitSound("Hero_Sniper.ProjectileImpact")
 
+		local count = 20	
 		target:SetContextThink(DoUniqueString("thtd_reisen01_move_next_point"), 
 			function()
 				if GameRules:IsGamePaused() then return 0.03 end
-				if count > 20 then 
-					if GetDistanceBetweenTwoVec2D(next_move_point,targetOrigin) > 50 and GetDistanceBetweenTwoVec2D(target.next_move_point,next_move_point) > 50 then
-						target.next_move_point = targetOrigin
-						if GetDistanceBetweenTwoVec2D(target:GetOrigin(),targetOrigin) < 50 then
-							target.next_move_point = next_move_point
-						end
-					elseif GetDistanceBetweenTwoVec2D(target:GetOrigin(),next_move_point) < 300 then
+				count = count - 1
+				if count < 0 or THTD_IsValid(target) == false then
+					if target ~= nil and target:IsNull() == false then 
+						if GetDistanceBetweenTwoVec2D(target:GetAbsOrigin(), current_next_move_point) < 100 then 
+							target.next_move_point = THTD_GetNextPathForUnit(target,target.thtd_next_corner)
+						else
+							target.next_move_point = current_next_move_point										
+						end																	
 						target.thtd_is_fearing = false
-						return nil
 					end
+					return nil
+				else
+					return 0.1
 				end
-				count = count + 1
-				return 0.1
 			end, 
 		0)		
 	end

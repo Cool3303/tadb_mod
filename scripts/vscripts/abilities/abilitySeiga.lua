@@ -45,7 +45,7 @@ function OnSeiga01Death(keys)
 	local caster = keys.caster
 	local target = keys.unit
 
-	if SpawnSystem.IsUnLimited or GameRules:GetCustomGameDifficulty() == 10 then 
+	if SpawnSystem.IsUnLimited or GameRules:GetCustomGameDifficulty() == 8 then 
 		if caster:HasModifier("modifier_miko_02_buff") then
 			local targets = THTD_FindUnitsInRadius(caster,target:GetOrigin(),300)
 
@@ -53,12 +53,13 @@ function OnSeiga01Death(keys)
 			ParticleManager:SetParticleControl(effectIndex, 0, target:GetOrigin())
 			ParticleManager:DestroyParticleSystem(effectIndex,false)
 
+			local damage = THTD_GetTempleOfGodBuffedTowerStarCount(caster)*caster:THTD_GetPower()*caster:THTD_GetStar()*0.1
 			for k,v in pairs(targets) do
 				local DamageTable = {
 					ability = keys.ability,
 			        victim = v, 
 			        attacker = caster, 
-			        damage = THTD_GetTempleOfGodBuffedTowerStarCount(caster)*caster:THTD_GetPower()*0.1, 
+			        damage = damage, 
 			        damage_type = DAMAGE_TYPE_MAGICAL, 
 			        damage_flags = DOTA_DAMAGE_FLAG_NONE
 			   	}
@@ -122,10 +123,8 @@ function OnSeiga03Death(keys)
 		ParticleManager:DestroyParticleSystem(effectIndex,false)
 
 		local targets = THTD_FindUnitsInRadius(caster,target:GetOrigin(),300)
-	
+		local damage = caster:THTD_GetStar() * caster:THTD_GetPower() * target.thtd_poison_buff * 0.5
 		for k,v in pairs(targets) do
-			local damage = caster:THTD_GetStar() * caster:THTD_GetPower() * target.thtd_poison_buff * 0.5
-
 			local DamageTable = {
 					ability = keys.ability,
 			        victim = v, 

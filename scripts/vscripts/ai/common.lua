@@ -552,17 +552,17 @@ function CDOTA_BaseNPC:THTD_flandre_thtd_ai()
 	if self:IsReadyToCastAbility(ability4) then
 		range = ability4:GetCastRange()
 		local unit = THTDSystem:FindRadiusWeakOneUnit(self, range)
-		if unit~=nil and unit:IsNull()==false then	
+		if unit~=nil and unit:IsNull()==false then				
 			if self.thtd_flandre_04_cast_time ~= nil and GameRules:GetGameTime() - self.thtd_flandre_04_cast_time > 20 and SpawnSystem.CurTime > 25 then
 				self:THTD_SetAggressiveLock()
 				self:CastAbilityOnTarget(unit, ability4, self:GetPlayerOwnerID())
 				return
 			end			
 			-- 溢出伤害占比
-			local factor = 0.7 - SpawnSystem.CurTime * 0.02 
-			local damage = self:THTD_GetStar() * self:THTD_GetPower() * 5 * 4
+			local factor = 0.3 + math.max(SpawnSystem.CurTime, 5) * 0.02
+			local damage = self:THTD_GetStar() * self:THTD_GetPower() * 7 * 4
 			if self:FindAbilityByName("thtd_flandre_03"):GetLevel()>0 then
-				damage = damage * (2 - unit:GetHealth()/unit:GetMaxHealth())
+				damage = damage * (2 - unit:GetHealthPercent()/100)
 			end
 			local DamageTable = {
 		        victim = unit, 
@@ -571,9 +571,12 @@ function CDOTA_BaseNPC:THTD_flandre_thtd_ai()
 		        damage_type = DAMAGE_TYPE_PHYSICAL, 
 		        damage_flags = DOTA_DAMAGE_FLAG_NONE
 		   	}
-			if unit:GetHealth() < ReturnAfterTaxDamageAfterAbility(DamageTable) * (1 - factor) then
+			if unit:GetHealth() < ReturnAfterTaxDamageAfterAbility(DamageTable) * factor then
 				self:THTD_SetAggressiveLock()
 				self:CastAbilityOnTarget(unit, ability4, self:GetPlayerOwnerID())
+				return
+			else  
+				THTDSystem:ChangeAttackTarget(self,unit)
 				return
 			end
 		end
@@ -1584,9 +1587,8 @@ function CDOTA_BaseNPC:THTD_junko_thtd_ai()
 
 	if self:IsReadyToCastAbility(ability4) then
 		local point,count = THTDSystem:FindRadiusOnePointPerfectAOE(self, ability4:GetCastRange(), 500)
-		if point~=nil and count>=3 then
-			if self.thtd_junko_04_duration == nil then self.thtd_junko_04_duration = 1 end	
-			THTD_SetSpellLock(self, ability4:GetAbilityName(), self.thtd_junko_04_duration)
+		if point~=nil and count>=3 then			
+			THTD_SetSpellLock(self, ability4:GetAbilityName(), 1.5)
 			self:THTD_SetAggressiveLock()
 			self:CastAbilityOnPosition(point, ability4, self:GetPlayerOwnerID())
 			return
@@ -1835,6 +1837,33 @@ function THTDSystem:FindRadiusWeakOneUnit( entity, range)
 	end
 end
 
+function THTDSystem:FindRadiusMagicWeakOneUnit( entity, range)
+	local enemies = THTD_FindUnitsInRadius(entity, entity:GetOrigin(), range)
+	if #enemies > 0 then
+		local weakUnit = nil
+		for k,v in pairs(enemies) do		
+			if v.thtd_damage_lock ~= true then
+				if v~=nil and v:IsNull()==false and v:IsAlive() then
+					if weakUnit == nil or weakUnit:IsNull() or weakUnit:IsAlive()==false then
+						weakUnit = v
+					else						
+						if v:GetBaseMagicalResistanceValue() < weakUnit:GetBaseMagicalResistanceValue() then
+							weakUnit = v
+						end
+					end									
+				end
+			end
+		end
+		if entity.thtd_attatck_target ~= nil and weakUnit ~= nil and weakUnit:GetBaseMagicalResistanceValue() < entity.thtd_attatck_target:GetBaseMagicalResistanceValue() then
+			return weakUnit
+		else
+			return nil 
+		end
+	else
+		return nil
+	end
+end
+
 function THTDSystem:FindRadiusLonelyOneUnit( entity, range , lonelyCount)
 	local enemies = THTD_FindUnitsInRadius(entity, entity:GetOrigin(), range)
 	if #enemies > 0 then
@@ -2064,7 +2093,8 @@ end
 
 function CDOTA_BaseNPC:THTD_alice_thtd_ai()
 	local ability1 = self:FindAbilityByName("thtd_alice_01")
-	local ability4 = self:FindAbilityByName("thtd_alice_04")		
+	local ability2 = self:FindAbilityByName("thtd_alice_02")
+	local ability4 = self:FindAbilityByName("thtd_alice_03")		
 
 	local enemies = THTD_FindUnitsInRadius(self, self:GetAbsOrigin(), ability4:GetCastRange())
 	if self:IsReadyToCastAbility(ability4) and ability4:IsInAbilityPhase() == false and #enemies >= 5 then		
@@ -2092,6 +2122,12 @@ function CDOTA_BaseNPC:THTD_alice_thtd_ai()
 		return
 	end
 
+	if self:IsReadyToCastAbility(ability2) and self.alice_spawn_unit == nil then
+		self:THTD_SetAggressiveLock()
+		self:CastAbilityNoTarget(ability2, self:GetPlayerOwnerID())
+		return
+	end
+
 	if self:IsAttacking() == false and self:THTD_IsAggressiveLock() == false and ability1:IsInAbilityPhase() == false and ability4:IsInAbilityPhase() == false then
 		self:MoveToPositionAggressive(self:GetOrigin() + self:GetForwardVector() * 100)
 		self:THTD_SetAggressiveLock()
@@ -2109,6 +2145,77 @@ function CDOTA_BaseNPC:THTD_kokoro_thtd_ai()
 	end
 
 	if self:IsAttacking() == false and self:THTD_IsAggressiveLock() == false and ability2:IsInAbilityPhase() == false then
+		self:MoveToPositionAggressive(self:GetOrigin() + self:GetForwardVector() * 100)
+		self:THTD_SetAggressiveLock()
+	end
+end
+
+function CDOTA_BaseNPC:THTD_kagerou_thtd_ai()
+	local ability3 = self:FindAbilityByName("lycan_howl")	
+	local ability4 = self:FindAbilityByName("lycan_shapeshift")
+
+	local range = self:Script_GetAttackRange()
+	if range == nil then range = self:GetBaseAttackRange() end
+	if range == nil then range = 800 end
+
+	if self:IsReadyToCastAbility(ability3) and THTD_HasUnitsInRadius(self, self:GetAbsOrigin(),range) then		
+		self:THTD_SetAggressiveLock()
+		self:CastAbilityNoTarget(ability3, self:GetPlayerOwnerID()) 
+		return
+	end
+		
+	if self:IsReadyToCastAbility(ability4) and THTDSystem:FindRadiusUnitCount(self,range) >= 3 then 
+		self:THTD_SetAggressiveLock()
+		self:CastAbilityNoTarget(ability4, self:GetPlayerOwnerID()) 
+		return
+	end	
+
+	if self:IsAttacking() == false and self:THTD_IsAggressiveLock() == false then
+		self:MoveToPositionAggressive(self:GetOrigin() + self:GetForwardVector() * 100)
+		self:THTD_SetAggressiveLock()
+	end
+end
+
+function CDOTA_BaseNPC:THTD_wriggle_thtd_ai()
+	local ability1 = self:FindAbilityByName("death_prophet_exorcism")	
+	local ability2 = self:FindAbilityByName("keeper_of_the_light_will_o_wisp")
+
+	local range = 900
+
+	if self:IsReadyToCastAbility(ability1) and THTD_HasUnitsInRadius(self, self:GetAbsOrigin(), range) then			
+		self:THTD_SetAggressiveLock()
+		self:CastAbilityNoTarget(ability1, self:GetPlayerOwnerID())
+		return		
+	end
+		
+	if self:IsReadyToCastAbility(ability2) then 
+		local point,count = THTDSystem:FindRadiusOnePointPerfectAOE(self, range, 500)
+		if point~=nil and count>=3 then
+			self:THTD_SetAggressiveLock()
+			self:CastAbilityOnPosition(point, ability2, self:GetPlayerOwnerID())
+			return
+		end	
+	end	
+
+	if self:IsAttacking() == false and self:THTD_IsAggressiveLock() == false then
+		self:MoveToPositionAggressive(self:GetOrigin() + self:GetForwardVector() * 100)
+		self:THTD_SetAggressiveLock()
+	end
+end
+
+function CDOTA_BaseNPC:THTD_inaba_thtd_ai()	
+	local ability2 = self:FindAbilityByName("ogre_magi_bloodlust")
+	
+	if self:IsReadyToCastAbility(ability2) and THTD_HasUnitsInRadius(self, self:GetAbsOrigin(),1000) then		
+		local target = THTDSystem:FindFriendlyRadiusOneUnitLast(self,ability2:GetCastRange())		
+		if target~=nil and target:IsNull()==false and target:THTD_IsTower() then
+			self:THTD_SetAggressiveLock()
+			self:CastAbilityOnTarget(target,ability2,self:GetPlayerOwnerID())
+			return
+		end
+	end		
+	
+	if self:IsAttacking() == false and self:THTD_IsAggressiveLock() == false then
 		self:MoveToPositionAggressive(self:GetOrigin() + self:GetForwardVector() * 100)
 		self:THTD_SetAggressiveLock()
 	end

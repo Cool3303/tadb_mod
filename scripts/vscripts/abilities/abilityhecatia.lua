@@ -278,15 +278,8 @@ function OnHecatiaEarthHit(keys)
 		local targets = THTD_FindUnitsInRadius(caster,earthOrigin,350)
 		local damage = caster:THTD_GetPower()*caster:THTD_GetStar()
 		for k,v in pairs(targets) do
-			if v.thtd_hecatia_earth_hit_lock ~= true then
-				v.thtd_hecatia_earth_hit_lock = true
-				v:SetContextThink(DoUniqueString("ability_hecatia_hit_delay"), 
-					function()
-						if GameRules:IsGamePaused() then return 0.03 end
-						v.thtd_hecatia_earth_hit_lock = false
-						return nil
-					end,
-				2.0)
+			if not v:HasModifier("modifier_hecatia_01_earth_lock") then 
+				keys.ability:ApplyDataDrivenModifier(caster, v, "modifier_hecatia_01_earth_lock", {Duration = 2.0})			
 				keys.ability:ApplyDataDrivenModifier(caster, v, "modifier_thtd_hecatia_01_debuff", {Duration = 1.0})				
 				local DamageTable = {
 					ability = keys.ability,
@@ -334,15 +327,8 @@ function OnHecatiaMoonHit(keys)
 		local targets = THTD_FindUnitsInRadius(caster,moonOrigin,250)
 		local damage = caster:THTD_GetPower()*caster:THTD_GetStar()
 		for k,v in pairs(targets) do
-			if v.thtd_hecatia_moon_hit_lock ~= true then
-				v.thtd_hecatia_moon_hit_lock = true
-				v:SetContextThink(DoUniqueString("ability_hecatia_hit_delay"), 
-					function()
-						if GameRules:IsGamePaused() then return 0.03 end
-						v.thtd_hecatia_moon_hit_lock = false
-						return nil
-					end,
-				2.0)
+			if not v:HasModifier("modifier_hecatia_01_moon_lock") then 
+				keys.ability:ApplyDataDrivenModifier(caster, v, "modifier_hecatia_01_moon_lock", {Duration = 2.0})	
 
 				local forward = (v:GetAbsOrigin()-Vector(moonOrigin.x,moonOrigin.y,0)):Normalized()
 				v:SetAbsOrigin(v:GetOrigin()+forward*100)
@@ -516,7 +502,7 @@ function OnHecatiaProjectileHit(keys)
 		end
 	end
 	
-	local damage = caster:THTD_GetPower() * caster:THTD_GetStar() * 4
+	local damage = caster:THTD_GetPower() * caster:THTD_GetStar() * 3
 	local DamageTable = {
 			ability = keys.ability,
 	        victim = target, 

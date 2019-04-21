@@ -14,17 +14,10 @@ function OnHourainingyou01AttackLanded(keys)
 	            damage_flags = DOTA_DAMAGE_FLAG_NONE
 	   	}
 	   	UnitDamageTarget(DamageTable)
-
-		if target.thtd_is_lock_hourainingyou_01_stun ~= true then
-			target.thtd_is_lock_hourainingyou_01_stun = true
-		   	UnitStunTarget(caster,target,0.5)
-		   	target:SetContextThink(DoUniqueString("ability_hourainingyou_01"), 
-				function()
-					if GameRules:IsGamePaused() then return 0.03 end
-					target.thtd_is_lock_hourainingyou_01_stun = false
-					return nil
-				end,
-			2.0)
+		   
+		if not target:HasModifier("thtd_hourainingyou_01_lock") then 
+			keys.ability:ApplyDataDrivenModifier(caster, target, "thtd_hourainingyou_01_lock", {Duration = 2.0})	
+		   	UnitStunTarget(caster,target,0.5)		   
 		end
 	end
 end

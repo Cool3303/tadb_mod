@@ -173,7 +173,7 @@ function OnSuika01AttackLanded(keys)
 
 			local suikaAbility01 = caster:FindAbilityByName("thtd_suika_01")
 			if suikaAbility01~=nil then
-				suikaAbility01:ApplyDataDrivenModifier(caster, v, "modifier_suika_01_slow_debuff", nil)
+				suikaAbility01:ApplyDataDrivenModifier(caster, v, "modifier_suika_01_slow_debuff", {Duration = 5.0})
 			end
 		end
 
@@ -324,7 +324,7 @@ function OnSuika04LockToTarget(keys,caster,target)
 				ParticleManager:DestroyParticleSystem(effectIndex, true)					
 				if THTD_IsValid(target) then 
 					FindClearSpaceForUnit(target, target:GetOrigin(), false)
-					target.thtd_suika_04_lock = false
+					target.thtd_suika_04_lock = false					
 				end				
 				return nil
 			end
@@ -333,7 +333,7 @@ function OnSuika04LockToTarget(keys,caster,target)
 				target:SetAbsOrigin(caster:GetOrigin()+forward*800)
 				local damage = originalCaster:THTD_GetPower() * originalCaster:THTD_GetStar() * 1.4 * suika_damage_increase[originalCaster.thtd_suika_01_scale]
 				if originalCaster == caster then 
-					if not RandomInt(1,100) <= suika_damage_chance[caster.thtd_suika_01_scale] then
+					if not (RandomInt(1,100) <= suika_damage_chance[caster.thtd_suika_01_scale]) then
 						damage = originalCaster:THTD_GetPower() * originalCaster:THTD_GetStar() * 1.4
 					end
 				end

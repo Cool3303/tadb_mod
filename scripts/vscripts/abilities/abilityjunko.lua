@@ -138,8 +138,6 @@ function OnJunko04SpellStart(keys)
 	local caster = EntIndexToHScript(keys.caster_entindex)
 	local targetPoint = keys.target_points[1]
 
-	if caster.thtd_junko_04_duration == nil then caster.thtd_junko_04_duration = 1 end
-
 	local targets = THTD_FindUnitsInRadius(caster,targetPoint,500)
 	for k,v in pairs(targets) do
 		local damage = caster:THTD_GetPower()*caster:THTD_GetStar()*20
@@ -152,8 +150,10 @@ function OnJunko04SpellStart(keys)
 	        damage_type = keys.ability:GetAbilityDamageType(), 
 	        damage_flags = DOTA_DAMAGE_FLAG_NONE
 	   	}
-		UnitDamageTarget(DamageTable)		
-		keys.ability:ApplyDataDrivenModifier(caster, v, "modifier_junko_04_debuff", {Duration = caster.thtd_junko_04_duration})
+		UnitDamageTarget(DamageTable)
+		if not v:HasModifier("modifier_junko_04_debuff") then 
+			keys.ability:ApplyDataDrivenModifier(caster, v, "modifier_junko_04_debuff", {Duration = 1.5})		
+		end	
 	end
 
 	local effectIndex = ParticleManager:CreateParticle("particles/heroes/thtd_junko/ability_junko_04.vpcf", PATTACH_CUSTOMORIGIN, nil)
@@ -162,4 +162,20 @@ function OnJunko04SpellStart(keys)
 	ParticleManager:SetParticleControl(effectIndex, 2, Vector(255,255,255))				
 	ParticleManager:SetParticleControl(effectIndex, 3, targetPoint)	
 	ParticleManager:DestroyParticleSystem(effectIndex,false)
+end
+
+function OnJunko04BuffDestroy(keys)
+	local caster = EntIndexToHScript(keys.caster_entindex)
+	local target = keys.target
+	if THTD_IsValid(caster) and THTD_IsValid(target) then
+		local DamageTable = {
+			ability = keys.ability,
+	        victim = target, 
+	        attacker = caster, 
+	        damage = caster:THTD_GetPower()*caster:THTD_GetStar()*20*2, 
+	        damage_type = keys.ability:GetAbilityDamageType(), 
+	        damage_flags = DOTA_DAMAGE_FLAG_NONE
+		}
+		UnitDamageTarget(DamageTable)
+	end
 end

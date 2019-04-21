@@ -1,28 +1,3 @@
-local thtd_boss_health_factor = 
-{
-	["creature_bosses_aya"] = 1.2,
-	["creature_bosses_hina"] = 1.5,
-	["creature_bosses_keine"] = 1.5,
-	["creature_bosses_mokou"] = 1.5,
-	["creature_bosses_yuugi"] = 2.0,
-}
-
-function IsRumiaUnlimited(caster,target)	
-	local hero = caster:GetOwner()
-	local count = 31
-	if SpawnSystem.CurWave%4 == 0 then 
-		if target:GetUnitName() == "creature_bosses_kaguya" then count = 62 end
-		if target:GetUnitName() == "creature_bosses_alice" or target:GetUnitName() == "creature_alice_ningyou" then count = 124 end
-	end
-	if hero.thtd_rumia_kill_count == nil then hero.thtd_rumia_kill_count = 0 end
-	local maxCount = math.floor(count * 0.1 + 0.5)
-	if hero.thtd_rumia_kill_count < maxCount then 
-		return true
-	else
-		return false
-	end	
-end
-
 function OnRumia01AttackLanded(keys)
 	local caster = EntIndexToHScript(keys.caster_entindex)
 	local target = keys.target
@@ -77,16 +52,7 @@ function OnRumia03AttackLanded(keys)
 	local chance = RandomInt(0,100)
 	if target.thtd_damage_lock == true then return end
 	
-	if target:GetHealth() > target:GetMaxHealth()*0.7 and chance <= 10 then	
-		if IsRumiaUnlimited(caster,target) == false and SpawnSystem.CurWave > 120 then 
-			local maxDamage = 3768000
-			THTD_Kill(caster, target, maxDamage)
-			return 
-		end
-
-		local hero = caster:GetOwner()
-		hero.thtd_rumia_kill_count = hero.thtd_rumia_kill_count + 1		
-
+	if target:GetHealthPercent() > 70 and chance <= 10 then	
 		local targetPoint = target:GetOrigin()
 		keys.ability:ApplyDataDrivenModifier(caster,target,"modifier_rumia_03_pause",{})
 		local pointRad = GetRadBetweenTwoVec2D(caster:GetOrigin(),targetPoint)
@@ -217,8 +183,8 @@ function OnRumia03AbilityEnd(caster,target,ability,effectIndex,time)
 					end				
 					return nil
 				end, 
-			0.2)
-			THTD_Kill(caster, target, nil)
+			0.2)			
+			THTD_Ability_Kill(caster, target)		
             return nil
         end, 
    	1.5 - time)

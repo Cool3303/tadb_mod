@@ -97,10 +97,6 @@ function OnYuyuko04SpellThink(keys)
 
 	if GameRules:IsGamePaused() then return end	
 
-	local hero = caster:GetOwner()
-	if hero.thtd_yuyuko_kill_count == nil then hero.thtd_yuyuko_kill_count = 0 end
-	local maxDamage = 3768000 * 0.3
-
 	local targets = THTD_FindUnitsInRadius(caster,targetPoint,keys.damage_radius) 
 	for _,v in pairs(targets) do  
 
@@ -120,7 +116,7 @@ function OnYuyuko04SpellThink(keys)
 	   		1.0)
 	   	end
 
-		if v:IsAlive() and v:GetHealth() <= (v:GetMaxHealth()*0.3) and v.thtd_damage_lock ~= true then
+		if THTD_IsValid(v) and v.thtd_damage_lock ~= true and v:GetHealthPercent() < 30 and v:HasModifier("modifier_yuyuko04_killed") == false then
 			effectIndex = ParticleManager:CreateParticle("particles/thd2/heroes/yuyuko/ability_yuyuko_04_effect_a.vpcf", PATTACH_CUSTOMORIGIN, caster)
 			ParticleManager:SetParticleControl(effectIndex, 0, v:GetOrigin())
 			ParticleManager:SetParticleControl(effectIndex, 5, v:GetOrigin())
@@ -130,12 +126,7 @@ function OnYuyuko04SpellThink(keys)
 			ParticleManager:SetParticleControl(effectIndex2, 0, v:GetOrigin())
 			ParticleManager:DestroyParticleSystemTime(effectIndex2,2.0)
 
-			if SpawnSystem.CurWave > 120 and hero.thtd_yuyuko_kill_count > 3 and v:GetHealth() > maxDamage then					
-				THTD_Kill(caster, v, maxDamage/2)
-			else
-				hero.thtd_yuyuko_kill_count = hero.thtd_yuyuko_kill_count + 1
-				THTD_Kill(caster, v, nil)												
-			end
+			THTD_Ability_Kill(caster, v)			
 	   	end
 	end
 end

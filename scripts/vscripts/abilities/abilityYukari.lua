@@ -244,16 +244,17 @@ function OnYukari02SpellDropUnit(keys,unit)
 	local g = -5
 	local high = 500
 	local v = 0
-	local damage = caster:THTD_GetPower() * caster:THTD_GetStar()
+	local damage = caster:THTD_GetPower() * caster:THTD_GetStar() * 2
 	local currentOrigin = targetPoint + Vector(0,0,high)
 	local minHigh = caster:GetOrigin().z
 	local isRemove = false
 
 	unit:SetAbsOrigin(currentOrigin)
 	unit.thtd_is_yukari_01_hidden = false
-	if GetDistanceBetweenTwoVec2D(unit.first_move_point, targetPoint) < 2000 then 
+	if GetDistanceBetweenTwoVec2D(unit.next_move_point, targetPoint) > 2500 then 
 		unit.next_move_point = unit.first_move_point
 		unit.next_move_forward = unit.first_move_forward
+		unit.thtd_next_corner = unit.thtd_first_corner
 	end
 
 	local effectIndex = ParticleManager:CreateParticle("particles/heroes/yukari/ability_yukari_02_body.vpcf", PATTACH_CUSTOMORIGIN, caster)
@@ -550,7 +551,7 @@ function OnYukari04SpellStart(keys)
 		function ()
 			if GameRules:IsGamePaused() then return 0.03 end
 			if timecount > 0 then
-				local damage = caster:THTD_GetPower() * caster:THTD_GetStar() * 3.3
+				local damage = caster:THTD_GetPower() * caster:THTD_GetStar() * 6
 				local targets = THTD_FindUnitsInRadius(caster,train:GetOrigin(),200)
 
 				for k,v in pairs(targets) do
@@ -628,7 +629,7 @@ function OnYukari04SpellStart(keys)
 				function ()
 					if GameRules:IsGamePaused() then return 0.03 end
 					if nexttimecount > 0 and nexttrain~=nil and nexttrain:IsNull()==false and nexttrain:IsAlive() then
-						local damage = caster:THTD_GetPower() * caster:THTD_GetStar() * 3.3
+						local damage = caster:THTD_GetPower() * caster:THTD_GetStar() * 6
 						local targets = THTD_FindUnitsInRadius(caster,nexttrain:GetOrigin(),200)
 						
 						for k,v in pairs(targets) do

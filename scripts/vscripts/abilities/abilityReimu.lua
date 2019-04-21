@@ -336,7 +336,7 @@ function Reimu04AttackTargetPoint(keys)
 				local damage_table = {
 					victim = v,
 					attacker = caster,
-					damage = caster:THTD_GetPower()*caster:THTD_GetStar() * 10 * Reimu02GetChance(caster)*caster.thtd_reimu_04_damage_increase,
+					damage = caster:THTD_GetPower()*caster:THTD_GetStar() * 7 * Reimu02GetChance(caster)*caster.thtd_reimu_04_damage_increase,
 					ability = keys.ability,
 					damage_type = keys.ability:GetAbilityDamageType(), 
 					damage_flags = DOTA_DAMAGE_FLAG_NONE

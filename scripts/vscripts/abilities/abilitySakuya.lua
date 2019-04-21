@@ -92,7 +92,9 @@ local sakuya_02_black_list =
 	"thtd_keine_03",
 	"thtd_suika_04",
 	"thtd_yuugi_03",
-	"thtd_alice_04",
+	"thtd_alice_03",
+	"shinki_dragon_01",	
+	"lycan_shapeshift",
 }
 
 function IsInSakuya02BlackList(ability)

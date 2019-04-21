@@ -77,17 +77,11 @@ function OnKeine01AttackLanded(keys)
 		            damage_type = keys.ability:GetAbilityDamageType(), 
 		            damage_flags = DOTA_DAMAGE_FLAG_NONE
 			   	}
-			   	UnitDamageTarget(DamageTable)
-			   	if v.thtd_is_lock_keine_01_stun ~= true then
-					v.thtd_is_lock_keine_01_stun = true
-					UnitStunTarget(caster,v,1.0)
-		   			v:SetContextThink(DoUniqueString("ability_item_keine_01_stun"), 
-						function()
-							if GameRules:IsGamePaused() then return 0.03 end
-							v.thtd_is_lock_keine_01_stun = false
-							return nil
-						end,
-					1.5)
+				UnitDamageTarget(DamageTable)
+				   
+				if not v:HasModifier("modifier_keine_01_lock") then 
+					keys.ability:ApplyDataDrivenModifier(caster, v, "modifier_keine_01_lock", {Duration = 1.5})	
+					UnitStunTarget(caster,v,1.0)		   			
 		   		end
 			end
 		end

@@ -42,6 +42,7 @@ function OnAlice01SpellStart(keys)
 			if #enemies > 0 then
 				enemies = THTD_FindUnitsInRadius(caster, targetPoint, 300)
 				if ability then
+					local damage = caster:THTD_GetPower()*caster:THTD_GetStar()
 					for k,v in pairs(enemies) do
 						if v~=nil and v:IsNull()==false and v:IsAlive() then
 							UnitStunTarget(caster,v,0.8)
@@ -49,7 +50,7 @@ function OnAlice01SpellStart(keys)
 								ability = keys.ability,
 								victim = v, 
 								attacker = caster, 
-								damage = caster:THTD_GetPower()*caster:THTD_GetStar()*5, 
+								damage = damage,
 								damage_type = keys.ability:GetAbilityDamageType(),  
 								damage_flags = DOTA_DAMAGE_FLAG_NONE
 							}
@@ -82,156 +83,98 @@ end
 
 function OnAlice02SpellStart(keys)
 	local caster = EntIndexToHScript(keys.caster_entindex)
-	local targetPoint = keys.target_points[1]
-
-	-- Initialize the count and table
-	caster.ningyou_count = caster.ningyou_count or 0
-	caster.ningyou_table = caster.ningyou_table or {}
-	if #caster.ningyou_table > 0 then 
-		for i = #caster.ningyou_table, 1, -1 do
-			local unit = caster.ningyou_table[i]
-			if unit==nil or unit:IsNull() or unit:IsAlive()==false then			
-				table.remove(caster.ningyou_table, i)			
-			end
-		end	
-	end
-	caster.ningyou_count = #caster.ningyou_table
-
+	
 	local unit = CreateUnitByName(
-		"alice_shanghainingyou", 
-		targetPoint, 
-		false, 
-		caster:GetOwner(), 
-		caster:GetOwner(), 
-		caster:GetTeam() 
-	)
-	if (unit == nil) then return end
-
-	unit.thtd_spawn_unit_owner = caster
-	unit:SetControllableByPlayer(caster:GetPlayerOwnerID(), true) 
-	FindClearSpaceForUnit(unit, targetPoint, false)
-	keys.ability:ApplyDataDrivenModifier(caster, unit, "modifier_alice_02_rooted", {})	
-
-	-- Update the count and table
-	caster.ningyou_count = caster.ningyou_count + 1
-	table.insert(caster.ningyou_table, unit)
-
-	-- If we exceeded the maximum number of mines then kill the oldest one
-	if caster.ningyou_count > keys.MaxCount then
-		local firstNingyou = caster.ningyou_table[1]
-		table.remove(caster.ningyou_table, 1)
-		firstNingyou:AddNoDraw()
-		firstNingyou:ForceKill(false)
+		"alice_falanxi_ningyou"
+		,caster:GetOrigin() + caster:GetForwardVector() * 500
+		,false
+		,caster:GetOwner()
+		,caster:GetOwner()
+		,caster:GetTeam()
+	)	
+	if unit == nil then 
+		keys.ability:EndCooldown()
+		return 
 	end
-end
+	Margatroid_CreateLine(caster, unit)
+	FindClearSpaceForUnit(unit, unit:GetOrigin(), false)	
+	unit:SetControllableByPlayer(caster:GetPlayerOwnerID(), false) 	
+	unit:SetHasInventory(false)
+	unit.thtd_spawn_unit_owner = caster	
 
-function OnAlice03SpellStart(keys)
-	local caster = EntIndexToHScript(keys.caster_entindex)
-	local targetPoint = keys.target_points[1]
+	local oldSwpanUnit = caster.alice_spawn_unit
+	if oldSwpanUnit ~=nil and oldSwpanUnit:IsNull() == false then 
+		oldSwpanUnit:AddNoDraw()
+		oldSwpanUnit:ForceKill(false)
+	end	
+	caster.alice_spawn_unit = unit
 
-	-- Initialize the count and table
-	caster.ningyou_count = caster.ningyou_count or 0
-	caster.ningyou_table = caster.ningyou_table or {}
-	if #caster.ningyou_table > 0 then 
-		for i = #caster.ningyou_table, 1, -1 do
-			local unit = caster.ningyou_table[i]
-			if unit==nil or unit:IsNull() or unit:IsAlive()==false then			
-				table.remove(caster.ningyou_table, i)			
+	keys.ability:ApplyDataDrivenModifier(caster, unit, "modifier_alice_02", nil)
+
+	local ability = unit:FindAbilityByName("doom_bringer_infernal_blade")
+	ability:ToggleAutoCast()
+	unit:SetContextThink(DoUniqueString("modifier_alice_02"), 
+		function()
+			if GameRules:IsGamePaused() then return 0.03 end
+			if caster==nil or caster:IsNull() or caster:IsAlive()==false or caster:THTD_IsHidden() then
+				ParticleManager:DestroyParticleSystem(unit.effect_line, true)				
+				unit:AddNoDraw()
+				unit:ForceKill(false)
+				caster.alice_spawn_unit = nil
+				return nil
 			end
-		end			
-	end
-	caster.ningyou_count = #caster.ningyou_table
+			
+			-- attackValue = caster:GetAverageTrueAttackDamage(caster)
+			unit:SetBaseDamageMax(caster:GetBaseDamageMax())
+			unit:SetBaseDamageMin(caster:GetBaseDamageMin())
 
+			if ability:GetLevel() ~= math.min(caster:THTD_GetStar(), 4) then 
+				ability:SetLevel(math.min(caster:THTD_GetStar(), 4))
+			end
 
-	local unit = CreateUnitByName(
-		"alice_hourainingyou", 
-		targetPoint, 
-		false, 
-		caster:GetOwner(), 
-		caster:GetOwner(), 
-		caster:GetTeam() 
-	)
-	if (unit == nil) then return end
+			if GetDistanceBetweenTwoVec2D(caster:GetOrigin(), unit:GetOrigin()) > 1000 then
+				local forward = (unit:GetAbsOrigin() - caster:GetAbsOrigin()):Normalized() 
+				unit:MoveToPosition(caster:GetOrigin() + forward*1000)
+			end
+			
+			local target = THTDSystem:FindRadiusMagicWeakOneUnit(unit, 600)
+			if target~=nil and target:IsNull()==false and target:IsAlive() then	
+				unit.thtd_attatck_target = target			
+				THTDSystem:ChangeAttackTarget(unit, target)
+			end
 
-	unit.thtd_spawn_unit_owner = caster
-	unit:SetControllableByPlayer(caster:GetPlayerOwnerID(), true) 
-	FindClearSpaceForUnit(unit, targetPoint, false)
-	keys.ability:ApplyDataDrivenModifier(caster, unit, "modifier_alice_03_rooted", {})	
-
-	-- Update the count and table
-	caster.ningyou_count = caster.ningyou_count + 1
-	table.insert(caster.ningyou_table, unit)
-
-	-- If we exceeded the maximum number of mines then kill the oldest one
-	if caster.ningyou_count > keys.MaxCount then
-		local firstNingyou = caster.ningyou_table[1]
-		table.remove(caster.ningyou_table, 1)
-		firstNingyou:AddNoDraw()
-		firstNingyou:ForceKill(false)
-	end
+			return 0.3
+		end,
+	0)	
 end
 
-function OnAliceHouraiNingyouAttackLanded(keys)
-	local caster = EntIndexToHScript(keys.caster_entindex)  --buff提供者
-	local target = keys.target  -- 被攻击目标	
-	local attacker = keys.attacker --攻击者
-
-	local seed = RandomInt(1,100)
-	if seed <= 60 then
-		local sourceAttacker = attacker
-		if attacker.thtd_spawn_unit_owner ~= nil then sourceAttacker = attacker.thtd_spawn_unit_owner end
-		if sourceAttacker:THTD_IsTower() then 
-			local damage = sourceAttacker:THTD_GetStar() * sourceAttacker:THTD_GetPower()
-			local DamageTable = {
-					ability = keys.ability,
-					victim = target, 
-					attacker = sourceAttacker, 
-					damage = damage, 
-					damage_type = keys.ability:GetAbilityDamageType(), 
-					damage_flags = DOTA_DAMAGE_FLAG_NONE
-			}
-			UnitDamageTarget(DamageTable)
-		end
-
-		if target.thtd_is_lock_hourainingyou_01_stun ~= true then
-			target.thtd_is_lock_hourainingyou_01_stun = true
-		   	UnitStunTarget(caster,target,0.5)
-		   	target:SetContextThink(DoUniqueString("ability_alice_hourainingyou"), 
-				function()
-					if GameRules:IsGamePaused() then return 0.03 end
-					target.thtd_is_lock_hourainingyou_01_stun = false
-					return nil
-				end,
-			2.0)
-		end
-	end
-
-end
-
-function OnCreatedAliceShanghaiNingyouCritChance(keys)	
+function OnCreatedAliceNingyouCritChance(keys)	
 	local caster = EntIndexToHScript(keys.caster_entindex) -- buff提供者
 	local target = keys.target -- buff接受者
 	if target==nil then return end
 	target:THTD_AddCritChance(keys.CritChance)	
 end
 
-function OnDestroyAliceShanghaiNingyouCritChance(keys)	
+function OnDestroyAliceNingyouCritChance(keys)	
 	local target = keys.target
 	if target==nil then return end
 	target:THTD_AddCritChance(-keys.CritChance)		
 end
 
-function OnAliceShanghaiNingyouAttackLanded(keys)
-	local caster = EntIndexToHScript(keys.caster_entindex) --buff提供者
-	local target = keys.target --被攻击目标	
-	local attacker = keys.attacker --攻击者
+function OnAlice02Ningyou01AttackLanded(keys)
+	local caster = EntIndexToHScript(keys.caster_entindex) 
+	local target = keys.target
 
 	local seed = RandomInt(1,100)
 	if seed <= keys.CritChance then
+		local particle = ParticleManager:CreateParticle("particles/units/heroes/hero_techies/techies_land_mine_explode.vpcf",PATTACH_CUSTOMORIGIN,caster)
+		ParticleManager:SetParticleControl(particle,0,target:GetOrigin()+Vector(0,0,64))
+		ParticleManager:DestroyParticleSystem(particle,false)
+
 		local sourceAttacker = caster.thtd_spawn_unit_owner			
-		if sourceAttacker ~= nil and sourceAttacker:THTD_IsTower() then 
-			local damage = sourceAttacker:THTD_GetStar() * sourceAttacker:THTD_GetPower()
-			damage = damage * 2				
+		if sourceAttacker ~= nil and sourceAttacker:THTD_IsTower() then
+			local targets = THTD_FindUnitsInRadius(sourceAttacker, target:GetOrigin(), 300)
+			local damage = sourceAttacker:THTD_GetStar() * sourceAttacker:THTD_GetPower() * 3			
 			local DamageTable = {
 					ability = keys.ability,
 					victim = target, 
@@ -244,6 +187,27 @@ function OnAliceShanghaiNingyouAttackLanded(keys)
 		end
 	end
 
+end
+
+function OnAlice02Ningyou02AttackLanded(keys)
+	local caster = EntIndexToHScript(keys.caster_entindex)  --buff提供者
+	local target = keys.target  -- 被攻击目标	
+	local sourceAttacker = caster.thtd_spawn_unit_owner			
+	if sourceAttacker == nil or sourceAttacker:THTD_IsTower() == false then return end
+
+	local seed = RandomInt(1,100)
+	if seed <= keys.CritChance then
+		UnitStunTarget(caster, target, keys.StunTime)
+		local DamageTable = {
+			ability = keys.ability,
+			victim = target, 
+			attacker = sourceAttacker, 
+			damage = sourceAttacker:THTD_GetStar() * sourceAttacker:THTD_GetPower() * 5, 
+			damage_type = keys.ability:GetAbilityDamageType(), 
+			damage_flags = DOTA_DAMAGE_FLAG_NONE,					
+		}
+		UnitDamageTarget(DamageTable)	
+	end
 end
 
 function OnAlice04SpellStart(keys)

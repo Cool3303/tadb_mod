@@ -62,7 +62,7 @@ end
 
 function OnMerlinLunasaLyrica(keys,caster,target)
 	local targets = THTD_FindUnitsInRadius(caster,target:GetOrigin(),400)
-	local damage = caster:THTD_GetStar() * caster:THTD_GetPower() * caster.thtd_lyrica_increase_damage
+	local damage = caster:THTD_GetStar() * caster:THTD_GetPower() * 2 * caster.thtd_lyrica_increase_damage
 	for k,v in pairs(targets) do		
 		local DamageTable = {
 				ability = keys.ability,

@@ -134,7 +134,7 @@ function OnUtsuho04SpellRemove(keys)
 				ability = keys.ability,
 			    victim = v,
 			    attacker = caster,
-			    damage = caster:THTD_GetPower() * caster:THTD_GetStar() * 48, --大小姐上限设定值
+			    damage = caster:THTD_GetPower() * caster:THTD_GetStar() * 20,
 			    damage_type = keys.ability:GetAbilityDamageType(), 
 	    	    damage_flags = DOTA_DAMAGE_FLAG_NONE
 		}

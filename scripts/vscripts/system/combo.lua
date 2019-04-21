@@ -433,7 +433,7 @@ end
 function CDOTA_BaseNPC:THTD_alice_thtd_combo(combo)
 	local comboVoiceTable = {}	
 
-	local ability = self:FindAbilityByName("thtd_alice_04")
+	local ability = self:FindAbilityByName("thtd_alice_03")
 	if ability:GetLevel() > 0 then
 		if HasCombo(combo,"marisa_alice") then
 			if ability:GetLevel()~=2 then
@@ -863,11 +863,11 @@ function CDOTA_BaseNPC:THTD_sunny_thtd_combo(combo)
 		local lunaList = {}
 		local starList = {}		
 		for k,v in pairs(hero.thtd_hero_tower_list) do
-			if v:GetUnitName() == "sunny" and v.thtd_fairy_combo_effectIndex~=true then
+			if v:GetUnitName() == "sunny" and v.thtd_is_in_fairy_combo~=true then
 				table.insert(sunnyList,v)
-			elseif v:GetUnitName() == "luna" and v.thtd_fairy_combo_effectIndex~=true then
+			elseif v:GetUnitName() == "luna" and v.thtd_is_in_fairy_combo~=true then
 				table.insert(lunaList,v)
-			elseif v:GetUnitName() == "star" and v.thtd_fairy_combo_effectIndex~=true then
+			elseif v:GetUnitName() == "star" and v.thtd_is_in_fairy_combo~=true then
 				table.insert(starList,v)
 			end
 		end		
@@ -907,12 +907,9 @@ function CDOTA_BaseNPC:THTD_sunny_thtd_combo(combo)
 			ParticleManager:SetParticleControlEnt(star_effectIndex , 0, star, 5, "attach_hitloc", Vector(0,0,0), true)
 			ParticleManager:SetParticleControlEnt(star_effectIndex , 1, sunny, 5, "attach_hitloc", Vector(0,0,0), true)
 
-			sunny.thtd_fairy_combo_effectIndex = sunny_effectIndex
-			star.thtd_fairy_combo_effectIndex = luna_effectIndex
-			luna.thtd_fairy_combo_effectIndex = star_effectIndex
-
-			star.thtd_fairy_combo_sunny = sunny
-			luna.thtd_fairy_combo_sunny = sunny
+			sunny.thtd_is_in_fairy_combo = true
+			star.thtd_is_in_fairy_combo = true
+			luna.thtd_is_in_fairy_combo = true	
 
 			self.thtd_combo_fairyList = 
 			{				
@@ -920,72 +917,33 @@ function CDOTA_BaseNPC:THTD_sunny_thtd_combo(combo)
 				star = star,
 				luna = luna,				
 			}
-		end
-	elseif self.thtd_combo_fairyList ~= nil and (THTD_IsValid(self.thtd_combo_fairyList.star) == false or THTD_IsValid(self.thtd_combo_fairyList.luna) == false) then
-		local v = self.thtd_combo_fairyList			
-		if v.sunny~=nil and v.sunny:IsNull()==false and v.sunny.thtd_fairy_combo_effectIndex~=nil then
-			ParticleManager:DestroyParticleSystem(v.sunny.thtd_fairy_combo_effectIndex,true)
-			v.sunny.thtd_fairy_combo_effectIndex = nil	
-			v.sunny.thtd_combo_fairyList = nil
-		end
-		if v.luna~=nil and v.luna:IsNull()==false and v.luna.thtd_fairy_combo_effectIndex~=nil then
-			ParticleManager:DestroyParticleSystem(v.luna.thtd_fairy_combo_effectIndex,true)
-			v.luna.thtd_fairy_combo_effectIndex = nil
-			v.luna.thtd_fairy_combo_sunny = nil
-		end
-		if v.star~=nil and v.star:IsNull()==false and v.star.thtd_fairy_combo_effectIndex~=nil then
-			ParticleManager:DestroyParticleSystem(v.star.thtd_fairy_combo_effectIndex,true)
-			v.star.thtd_fairy_combo_effectIndex = nil
-			v.star.thtd_fairy_combo_sunny = nil
-		end		
+			self:SetContextThink(DoUniqueString("thtd_fairy_combo"), 
+				function()
+					if GameRules:IsGamePaused() then return 0.03 end
+					if THTD_IsValid(self) == false or THTD_IsValid(star) == false or THTD_IsValid(luna) == false then 					
+						ParticleManager:DestroyParticleSystem(luna_effectIndex,true)
+						luna.thtd_is_in_fairy_combo = nil					
+						
+						ParticleManager:DestroyParticleSystem(star_effectIndex,true)
+						star.thtd_is_in_fairy_combo = nil					
+						
+						ParticleManager:DestroyParticleSystem(sunny_effectIndex,true)
+						sunny.thtd_is_in_fairy_combo = nil	
+						
+						sunny.thtd_combo_fairyList = nil
+					
+						self:GetOwner():THTD_HeroComboRefresh()
+						return nil 
+					end						
+					return 0.03
+				end, 
+			0)
+		end	
 	end
 	combo = {}
 	return comboVoiceTable
 end
 
-function CDOTA_BaseNPC:THTD_star_thtd_combo(combo)
-	local comboVoiceTable = {}
-
-	local sunny = self.thtd_fairy_combo_sunny
-	local effectIndex = self.thtd_fairy_combo_effectIndex
-
-	if effectIndex ~= nil then
-		if THTD_IsValid(sunny) == false then 
-			ParticleManager:DestroyParticleSystem(effectIndex,true)
-			self.thtd_fairy_combo_effectIndex = nil 
-			self.thtd_fairy_combo_sunny = nil 
-			if sunny~=nil and sunny:IsNull()==false and sunny.thtd_fairy_combo_effectIndex~=nil then 
-				ParticleManager:DestroyParticleSystem(sunny.thtd_fairy_combo_effectIndex,true)
-				sunny.thtd_fairy_combo_effectIndex = nil	
-				sunny.thtd_combo_fairyList = nil
-			end
-		end
-	end
-	
-	combo = {}
-	return comboVoiceTable
-end
-
-function CDOTA_BaseNPC:THTD_luna_thtd_combo(combo)
-	return self:THTD_star_thtd_combo(combo)
-end
-
-
-function CDOTA_BaseNPC:THTD_junko_thtd_combo(combo)
-	local comboVoiceTable = {}
-
-	if HasCombo(combo,"junko_hecatia") then
-		if self.thtd_junko_04_duration ~= 2 then
-			self.thtd_junko_04_duration = 2
-		end
-	else
-		if self.thtd_junko_04_duration ~= 1 then
-			self.thtd_junko_04_duration = 1
-		end
-	end
-	combo = {}
-	return comboVoiceTable
-end
 
 function HasCombo(combo,name)
 	for k,v in pairs(combo) do

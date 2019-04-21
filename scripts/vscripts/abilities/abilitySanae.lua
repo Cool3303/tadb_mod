@@ -57,7 +57,7 @@ function thtd_sanae_01:OnProjectileHit_ExtraData( hTarget, vLocation, data )
 	local target = hTarget
 
 	if target:THTD_IsTower() and target.thtd_sanae_01_bonus ~= true then
-		local bonus = math.floor(thtd_sanae_star_bonus[caster:THTD_GetStar()] / (data.count+1))
+		local bonus = math.floor(thtd_sanae_star_bonus[caster:THTD_GetStar()] / math.max(data.count,1))
 		target:THTD_AddPower(bonus)
 		-- AI需要改动的地方
 		-- caster.thtd_last_cast_unit = target

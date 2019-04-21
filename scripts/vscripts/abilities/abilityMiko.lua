@@ -25,12 +25,13 @@ function OnMiko01SpellStart(keys)
 				keys.ability:GetAbilityTargetType(), 
 				keys.ability:GetAbilityTargetFlags()
 			)
+		local damage = caster:THTD_GetStar() * caster:THTD_GetPower() * 4
 		for k,v in pairs(targets) do
 			local DamageTable = {
 	   			ability = keys.ability,
 	            victim = v, 
 	            attacker = caster, 
-	            damage = caster:THTD_GetStar() * caster:THTD_GetPower() * 4, 
+	            damage = damage, 
 	            damage_type = keys.ability:GetAbilityDamageType(), 
 	            damage_flags = DOTA_DAMAGE_FLAG_NONE
 		   	}
@@ -45,13 +46,13 @@ function OnMiko02SpellStart(keys)
 	local caster = EntIndexToHScript(keys.caster_entindex)
 	local target = keys.target
 
-	if target:THTD_IsTower() and THTD_IsTempleOfGodTower(target) then
+	if THTD_IsTempleOfGodCanBuffedTower(target) then
 		if caster.thtd_miko_02_religious_count == nil then
 			caster.thtd_miko_02_religious_count = 0
 		end
 
 		if caster.thtd_miko_02_religious_count >= 6000 then
-			caster:RemoveModifierByName("modifier_miko_02_buff")
+			caster:RemoveModifierByName("modifier_miko_02_ready")
 			keys.ability:ApplyDataDrivenModifier(caster, target, "modifier_miko_02_buff", {})
 			caster.thtd_miko_02_religious_count = 0
 		end
@@ -64,7 +65,7 @@ function OnMiko02SpellThink(keys)
 	local targets = THTD_FindFriendlyUnitsInRadius(caster,caster:GetOrigin(),1500)
 
 	for k,v in pairs(targets) do
-		if THTD_IsTempleOfGodTower(v) then
+		if THTD_IsTempleOfGodCanBuffedTower(v) then
 			if caster.thtd_miko_02_religious_count == nil then
 				caster.thtd_miko_02_religious_count = 0
 			end
@@ -72,7 +73,7 @@ function OnMiko02SpellThink(keys)
 				caster.thtd_miko_02_religious_count = caster.thtd_miko_02_religious_count + 1
 				SendOverheadEventMessage(caster:GetPlayerOwner(), OVERHEAD_ALERT_BONUS_POISON_DAMAGE, caster, caster.thtd_miko_02_religious_count, caster:GetPlayerOwner() )
 			else
-				keys.ability:ApplyDataDrivenModifier(caster, caster, "modifier_miko_02_buff", {})
+				keys.ability:ApplyDataDrivenModifier(caster, caster, "modifier_miko_02_ready", {})
 			end
 		end
 	end
@@ -169,10 +170,8 @@ function OnMiko04SpellThink(keys)
 	local friends = THTD_FindFriendlyUnitsAll(caster)
 
 	for index,believer in pairs(friends) do
-		if believer:HasModifier("modifier_miko_02_buff") then
-			if believer:HasModifier("modifier_miko_04_pose") == false then
-				keys.ability:ApplyDataDrivenModifier(believer, believer, "modifier_miko_04_pose", {Duration=8.0})
-			end
+		if believer == caster or (believer:HasModifier("modifier_miko_02_buff") and believer:HasModifier("modifier_miko_04_pose") == false) then			
+			keys.ability:ApplyDataDrivenModifier(believer, believer, "modifier_miko_04_pose", {Duration=8.0})			
 			for k,v in pairs(inners) do
 				if RandomInt(1,3) == 1 then
 			   		local effectIndex = ParticleManager:CreateParticle("particles/heroes/thtd_miko/ability_thtd_miko_04_starfall.vpcf",PATTACH_CUSTOMORIGIN,caster)

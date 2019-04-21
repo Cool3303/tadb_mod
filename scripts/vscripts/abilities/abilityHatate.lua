@@ -113,17 +113,10 @@ function OnHatateAttack(keys,target)
 	UnitDamageTarget(damage_table)
 
 	if caster:HasModifier("modifier_item_2011_attack_stun") then
-		if RandomInt(0,100) < 10 then
-			if target.thtd_is_lock_item_2011_stun ~= true then
-				target.thtd_is_lock_item_2011_stun = true
-	   			UnitStunTarget(caster,target,1.0)
-	   			target:SetContextThink(DoUniqueString("ability_item_2011_stun"), 
-					function()
-						if GameRules:IsGamePaused() then return 0.03 end
-						target.thtd_is_lock_item_2011_stun = false
-						return nil
-					end,
-				2.0)
+		if RandomInt(1,100) <= 10 then
+			if not target:HasModifier("modifier_item_2011_stun_lock") then
+				target:AddNewModifier(target, nil, "modifier_item_2011_stun_lock", {Duration=2.0})
+			   UnitStunTarget(caster,target,1.0)			
 	   		end
 		end
 	end

@@ -24,5 +24,5 @@ function OnMugiyousei01AttackLanded(keys)
 		   	UnitDamageTarget(DamageTable)
 			return 1.0
 		end, 
-	1.0)
+	0)
 end

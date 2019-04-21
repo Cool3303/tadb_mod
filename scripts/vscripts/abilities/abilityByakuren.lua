@@ -169,7 +169,7 @@ function OnByakuren04AttackLanded(keys)
 	if caster.thtd_byakuren_01_attack_time > 1.0 then
 		local targets = THTD_FindUnitsInRadius(caster,caster:GetOrigin(),1000)
 		local count = 1
-		local damage = caster:THTD_GetPower()*caster:THTD_GetStar()*caster.thtd_byakuren_01_extra_damage*7*(1 + buffedCount * 0.2)
+		local damage = caster:THTD_GetPower()*caster:THTD_GetStar()*caster.thtd_byakuren_01_extra_damage*7*(1 + buffedCount * 0.1)
 		for k,v in pairs(targets) do
 			local effectIndex = ParticleManager:CreateParticle("particles/heroes/thtd_byakuren/ability_byakuren_04_laser.vpcf", PATTACH_CUSTOMORIGIN, caster)
 			ParticleManager:SetParticleControl(effectIndex, 0, caster:GetOrigin()+thtd_byakuren_04_point[count])
@@ -209,7 +209,7 @@ function OnByakuren04AttackLanded(keys)
 			caster.thtd_byakuren_04_attack_count = 0
 
 			local targets = THTD_FindUnitsInRadius(caster,caster:GetOrigin(),1000)
-			local damage = caster:THTD_GetPower()*caster:THTD_GetStar()*caster.thtd_byakuren_01_extra_damage*7*(1 + buffedCount * 0.2)
+			local damage = caster:THTD_GetPower()*caster:THTD_GetStar()*caster.thtd_byakuren_01_extra_damage*7*(1 + buffedCount * 0.1)
 			for k,v in pairs(targets) do
 				local damage_table = {
 					victim = v,

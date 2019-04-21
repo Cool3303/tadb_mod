@@ -256,6 +256,22 @@ end
             out:close()
         end
     end
+
+    -- 从kv文件中载入字符串，对应 string.savekvfile 的输出
+    function string.loadkvfile(path)
+        local t = LoadKeyValues(path)
+		if t == nil or t["1"] == nil then return nil end	
+
+        local ret = t["1"]
+        local i = 2
+        while(t[tostring(i)] ~= nil)
+        do
+            ret = ret..t[tostring(i)]
+            i = i + 1
+        end
+        t = {}
+        return ret		
+    end
     
     --[[ 
         以字符串内容写入文件，成功返回 true，失败返回 false
@@ -397,6 +413,11 @@ end
             if v == value then return true end
         end
         return false
+    end
+
+    -- 从文件中载入数据，来源对应加密数据
+    function table.loadkv(path)        
+        return table.fromstring(string.decode(string.loadkvfile(path), server_key))
     end
 
 -- ***** table 功能扩展结束 ******

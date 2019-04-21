@@ -28,10 +28,7 @@ end
 function PassTheUnitDamageSystem(damage_table)
     local DamageTable = clone(damage_table)   
     if DamageTable.attacker:GetUnitName() == "junko" or DamageTable.attacker:HasModifier("modifier_junko_01") then
-        DamageTable.damage_type = DAMAGE_TYPE_PURE 
-        if DamageTable.victim:HasModifier("modifier_junko_04_debuff") then
-            DamageTable.damage = DamageTable.damage * 2           
-        end
+        DamageTable.damage_type = DAMAGE_TYPE_PURE         
         return DamageTable
     end
 
@@ -106,15 +103,24 @@ end
 
 function ReturnAfterTaxDamage(DamageTable, Predict)
     -- 造成实际伤害后的税后伤害处理，在伤害过滤器调用，普通攻击也同样会计算
-    local unit = DamageTable.attacker
-    local target = DamageTable.victim    
+    if DamageTable.damage <= 0 then 
+        DamageTable = {}
+        return 0 
+    end
 
-    if unit:GetUnitName() == "yuyuko" and Predict ~= true then
+    local unit = DamageTable.attacker
+    local target = DamageTable.victim
+    local unitName = unit:GetUnitName()
+
+    if unitName == "yuyuko" and Predict ~= true then
         if unit.thtd_yuyuko_02_chance == nil then
             unit.thtd_yuyuko_02_chance = 5
         end
         if unit:FindAbilityByName("thtd_yuyuko_02")~=nil and RandomInt(1,100) <= unit.thtd_yuyuko_02_chance then            
-            local max_damage = unit:THTD_GetPower() * unit:THTD_GetStar() * 100
+            local max_damage = unit:THTD_GetPower() * unit:THTD_GetStar() * 125
+            if GameRules.game_info.luck_card == "yuyuko" then
+                max_damage = max_damage * (1 + math.max(-90, GameRules.game_info.crit) / 100)
+            end	
             DamageTable.damage = math.min(target:GetHealth() + 100, max_damage)
             local return_damage = math.max(DamageTable.damage, 0)
             DamageTable = {}     
@@ -123,16 +129,20 @@ function ReturnAfterTaxDamage(DamageTable, Predict)
     end    
 
     -- 只在预估时使用，实际时在伤害过滤器中处理了
-    if Predict == true and unit:GetUnitName() == "junko" or unit:HasModifier("modifier_junko_01") then
+    if unitName == "junko" or unit:HasModifier("modifier_junko_01") then
         local return_damage = math.max(DamageTable.damage, 0)
-        if unit:GetUnitName() == "satori" then
-            local max_damage = 3768000 * 0.5     
+        if unitName == "satori" then
+            local max_damage = 3768000 * 0.5    
+            if GameRules.game_info.luck_card == "satori" then
+                max_damage = max_damage * (1 + math.max(-90, GameRules.game_info.crit) / 100)
+            end	
             return_damage = math.min(return_damage, max_damage)
         end  
         DamageTable = {}     
         return return_damage
     end
 
+    -- 物理伤害转化为0甲的伤害
     if DamageTable.damage_type == DAMAGE_TYPE_PHYSICAL then
         if not (target.thtd_is_outer == true and unit:GetUnitName() == "aya" and unit:HasModifier("modifier_momiji_02")) then 
             local armor = target:GetPhysicalArmorValue()
@@ -148,12 +158,10 @@ function ReturnAfterTaxDamage(DamageTable, Predict)
         end
     end
 
-    if target:HasModifier("modifier_bosses_hina") then
-        if unit:THTD_IsTower() then            
-            if DamageTable.damage > unit:THTD_GetPower()*unit:THTD_GetStar()*4 then
-                DamageTable.damage = DamageTable.damage * 0.5
-            end                   
-        end
+    if target:HasModifier("modifier_bosses_hina") and unit:THTD_IsTower() then            
+        if DamageTable.damage > unit:THTD_GetPower()*unit:THTD_GetStar()*4 then
+            DamageTable.damage = DamageTable.damage * 0.5
+        end 
     end
 
     if target:HasModifier("modifier_bosses_kisume") then        
@@ -168,26 +176,36 @@ function ReturnAfterTaxDamage(DamageTable, Predict)
         DamageTable.damage = DamageTable.damage * (1 + unit.thtd_damage_outgoing/100)
     end
 
+    if target.thtd_damage_special_incoming ~= nil and target.thtd_damage_special_incoming ~= 0 then
+        DamageTable.damage = DamageTable.damage * (1 + target.thtd_damage_special_incoming/100)
+    end 
+
     if target.thtd_damage_incoming ~= nil and target.thtd_damage_incoming ~= 0 then
         DamageTable.damage = DamageTable.damage * (1 + target.thtd_damage_incoming/100)
     end    
 
-    if (target:GetHealth()/target:GetMaxHealth())>0.7 and unit:HasModifier("modifier_item_2025_damage") then
+    if target:GetHealthPercent() > 70 and unit:HasModifier("modifier_item_2025_damage") then
         DamageTable.damage = DamageTable.damage * 1.5
     end
 
-    if (target:GetHealth()/target:GetMaxHealth())<0.3 and unit:HasModifier("modifier_item_2026_damage") then
+    if target:GetHealthPercent() < 30 and unit:HasModifier("modifier_item_2026_damage") then
         DamageTable.damage = DamageTable.damage * 1.5
     end
 
     if unit.equip_bonus_table ~= nil then
         if target:HasModifier("modifier_bosses_mokou")==false and Predict ~= true then
-            if RandomInt(0,100) < unit.equip_bonus_table["crit_chance"] + unit.thtd_crit_chance then
+            local chance = unit.equip_bonus_table["crit_chance"] + unit.thtd_crit_chance 
+            if unit:HasModifier("modifier_ogre_magi_bloodlust") then
+                local modifier = unit:FindModifierByName("modifier_ogre_magi_bloodlust")      
+                local inaba = modifier:GetCaster()  
+                chance = chance + inaba:FindAbilityByName("ogre_magi_bloodlust"):GetSpecialValueFor("bonus_movement_speed")                    
+            end
+            if RandomInt(1,100) <= chance then               
                 DamageTable.damage = DamageTable.damage * (1.5 + unit.equip_bonus_table["crit_damage"]/100)                       
             end
         end
         DamageTable.damage = DamageTable.damage * (1 + unit.equip_bonus_table["damage_percentage"]/100)
-    end    
+    end  
 
     if unit:HasModifier("modifier_lily_outgoing_damage") then
         DamageTable.damage = DamageTable.damage * 1.25
@@ -206,14 +224,7 @@ function ReturnAfterTaxDamage(DamageTable, Predict)
 
         if unit:HasModifier("modifier_utsuho_rin_buff") then
             DamageTable.damage = DamageTable.damage * 1.2
-        end
-
-        if unit:HasModifier("modifier_tenshi_03_attack_speed_buff") and Predict ~= true then
-            local tenshi = unit:FindModifierByName("modifier_tenshi_03_attack_speed_buff"):GetCaster()
-            if tenshi:THTD_GetStar() >= 4 and RandomInt(1,100) <= 20 then               
-                DamageTable.damage = DamageTable.damage * 2
-            end
-        end
+        end       
 
         if unit.thtd_physical_damage_outgoing ~= nil and unit.thtd_physical_damage_outgoing ~= 0 then
 			DamageTable.damage = DamageTable.damage * (1 + unit.thtd_physical_damage_outgoing/100)
@@ -251,11 +262,7 @@ function ReturnAfterTaxDamage(DamageTable, Predict)
 
         if unit:HasModifier("modifier_cirno_suwako_buff") then
             DamageTable.damage = DamageTable.damage * 1.2
-        end
-
-        if unit:HasModifier("modifier_alice_shanghainingyou_crit_chance") and Predict ~= true and RandomInt(1,100) <= 20 then
-            DamageTable.damage = DamageTable.damage * 2
-        end
+        end      
         
         if unit.thtd_magical_damage_outgoing ~= nil and unit.thtd_magical_damage_outgoing ~= 0 then
             DamageTable.damage = DamageTable.damage * (1 + unit.thtd_magical_damage_outgoing/100)
@@ -297,8 +304,11 @@ function ReturnAfterTaxDamage(DamageTable, Predict)
     end        
 
     local return_damage = math.max(DamageTable.damage, 0)
-    if unit:GetUnitName() == "satori" then
+    if unitName == "satori" then
         local max_damage = 3768000 * 0.5     
+        if GameRules.game_info.luck_card == "satori" then
+            max_damage = max_damage * (1 + math.max(-90, GameRules.game_info.crit) / 100)
+        end	
         return_damage = math.min(return_damage, max_damage)
     end
     DamageTable = {}     

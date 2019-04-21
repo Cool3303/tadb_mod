@@ -1,6 +1,6 @@
 function OnDaiyousei01SpellStart(keys)
 	if SpawnSystem.IsUnLimited then return end
-	if GameRules:GetCustomGameDifficulty() == 10 then return end
+	if GameRules:GetCustomGameDifficulty() == 8 then return end
 	local caster = EntIndexToHScript(keys.caster_entindex)
 	local target = keys.target
 	caster:EmitSound("Hero_Enchantress.EnchantCreep")
@@ -10,7 +10,7 @@ function OnDaiyousei01SpellStart(keys)
 		target.thtd_exp = thtd_exp_table[target:THTD_GetLevel()-1]
 	end
 	
-	local count = caster:THTD_GetStar()
+	local count = caster:THTD_GetStar() - 1
 	local targets = THTD_FindFriendlyUnitsInRadius(caster,target:GetOrigin(),1000)
 
 	for k,v in pairs(targets) do

@@ -56,7 +56,6 @@ function Patchouli01BuryInLake(keys)
 	local isFirst = false
 	local time = 10.0	
 	local hero = caster:GetOwner()
-	if hero.thtd_patchouli_kill_count == nil then hero.thtd_patchouli_kill_count = 0 end
 
 	caster:EmitSound("Sound_THTD.thtd_patchouli_01_02")
 	
@@ -77,19 +76,13 @@ function Patchouli01BuryInLake(keys)
 			   	}
 			   	UnitDamageTarget(DamageTable)
 
-				if v:IsAlive() and v:GetHealth() <= (v:GetMaxHealth()*0.3) and isFirst == false and v.thtd_damage_lock ~= true then
+				if v:IsAlive() and v:GetHealthPercent() < 30 and isFirst == false and v.thtd_damage_lock ~= true then
 					isFirst = true
 			   		local effectIndex = ParticleManager:CreateParticle("particles/heroes/thtd_patchouli/ability_patchouli_01_bury_in_lake_bury.vpcf", PATTACH_CUSTOMORIGIN, caster)
 					ParticleManager:SetParticleControl(effectIndex, 0, v:GetOrigin())
 					ParticleManager:DestroyParticleSystem(effectIndex,false)
 					EmitSoundOnLocationForAllies(v:GetOrigin(),"Hero_Kunkka.Tidebringer.Attack",caster)
-					if SpawnSystem.CurWave > 120 and hero.thtd_patchouli_kill_count > 10 then	
-						local maxDamage = 3768000 * 0.3
-						THTD_Kill(caster, v, maxDamage)
-					else
-						hero.thtd_patchouli_kill_count = hero.thtd_patchouli_kill_count + 1
-						THTD_Kill(caster, v, nil)												
-					end
+					THTD_Ability_Kill(caster, v)
 			   	end
 			end
 			time = time - 0.5

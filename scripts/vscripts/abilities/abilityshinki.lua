@@ -56,14 +56,19 @@ function OnShinki04Spawn(keys)
 		,caster:GetOwner()
 		,caster:GetTeam()
 	)	
-	if unit == nil then return end
+	if unit == nil then 
+		keys.ability:EndCooldown()
+		return 
+	end
+	FindClearSpaceForUnit(unit, unit:GetOrigin(), false)
 
-	local attackValue = math.floor(caster:THTD_GetPower() * caster:THTD_GetStar() * (1 + caster.ability_shinki04_devour_count * 0.05))	
+	local attackValue = math.floor(caster:THTD_GetPower() * caster:THTD_GetStar() * (1 + caster.ability_shinki04_devour_count * 0.02))	
 	unit:SetControllableByPlayer(caster:GetPlayerOwnerID(), false) 
 	unit:SetBaseDamageMax(attackValue)
 	unit:SetBaseDamageMin(attackValue)
 	unit:SetModelScale(baseModel * (1 + caster.ability_shinki04_devour_count * 0.02))	
-	unit.thtd_spawn_unit_owner = caster
+	unit:SetHasInventory(false)
+	unit.thtd_spawn_unit_owner = caster	
 
 	local ability = unit:GetAbilityByIndex(0)
 	if ability ~= nil then 
@@ -90,7 +95,12 @@ function OnShinki04Spawn(keys)
 		ability:SetActivated(true)
 		ability:SetLevel(1)
 	end
-	ability = nil
+
+	ability = unit:FindAbilityByName("shinki_dragon_01")
+	if ability ~= nil and caster.ability_shinki04_devour_count > 0 then	
+		ability:ApplyDataDrivenModifier(unit, unit, "modifier_shinki_dragon_01_buff", nil)
+		unit:SetModifierStackCount("modifier_shinki_dragon_01_buff", unit, caster.ability_shinki04_devour_count)
+	end		
 
 	keys.ability:ApplyDataDrivenModifier(caster, unit, "modifier_shinki_04_buff", nil)
 
@@ -111,7 +121,7 @@ function OnShinki04Spawn(keys)
 				return nil
 			end
 			
-			attackValue = math.floor(caster:THTD_GetPower() * caster:THTD_GetStar() * (1 + caster.ability_shinki04_devour_count * 0.05))
+			attackValue = math.floor(caster:THTD_GetPower() * caster:THTD_GetStar() * (1 + caster.ability_shinki04_devour_count * 0.02))
 			unit:SetBaseDamageMax(attackValue)
 			unit:SetBaseDamageMin(attackValue)
 
@@ -120,17 +130,17 @@ function OnShinki04Spawn(keys)
 				unit:MoveToPosition(caster:GetOrigin() + forward*1000)
 			end
 
+			enemy = unit:GetAttackTarget()	
+
 			ability = unit:FindAbilityByName("shinki_dragon_01")			
-			if unit:IsReadyToCastAbility(ability) and caster.shinki_dragon_01_lock ~= true then				
-				enemy = unit:GetAttackTarget()				
+			if unit:IsReadyToCastAbility(ability) and enemy ~= nil and enemy.thtd_damage_lock ~= true then	
 				if enemy~=nil and enemy:IsNull()==false and enemy:IsAlive() then 									
 					unit:CastAbilityOnTarget(enemy, ability, caster:GetPlayerOwnerID())					
 				end
-			end		
+			end	
 			
 			ability = unit:FindAbilityByName("shinki_dragon_03")			
-			if unit:IsReadyToCastAbility(ability) then				
-				enemy = unit:GetAttackTarget()				
+			if unit:IsReadyToCastAbility(ability) then
 				if enemy~=nil and enemy:IsNull()==false and enemy:IsAlive() then 									
 					unit:CastAbilityNoTarget(ability, caster:GetPlayerOwnerID())
 				end
@@ -147,33 +157,19 @@ function OnShinkiDragon01SpellStart(keys)
 	local target = keys.target
 	local owner = caster.thtd_spawn_unit_owner
 	if owner==nil or owner:IsNull() or owner:IsAlive()==false or owner:THTD_IsHidden() then return end
-	if target.thtd_damage_lock == true or owner.shinki_dragon_01_lock == true then
-		keys.ability:EndCooldown()
-		return 
-	end	
-	local count = math.min(math.floor(target:GetHealth() / caster:GetBaseDamageMax()), 90)
-	if count > 30 then 
-		owner.shinki_dragon_01_lock = true
-		owner:SetContextThink(DoUniqueString("shinki_dragon_01_lock"), 
-			function()
-				if GameRules:IsGamePaused() then return 0.03 end
-				if owner==nil or owner:IsNull() or owner:IsAlive()==false then					
-					return nil
-				end
-				if count <= 0 then
-					owner.shinki_dragon_01_lock = false
-					return nil 
-				end
-				count = count - 1
-				return 1
-			end,
-		0)
-	end
+	if target.thtd_damage_lock == true then return end	
+
+	keys.ability:StartCooldown(math.max(math.floor(target:GetHealth() / caster:GetAverageTrueAttackDamage(caster)), 30))
 	
 	THTD_Kill(caster, target, nil)	
+
 	if owner.ability_shinki04_devour_count < 100 then 
 		owner.ability_shinki04_devour_count = owner.ability_shinki04_devour_count + 1	
-		caster:SetModelScale(baseModel * (1 + owner.ability_shinki04_devour_count * 0.02))	
+		caster:SetModelScale(baseModel * (1 + owner.ability_shinki04_devour_count * 0.02))
+		if not caster:HasModifier("modifier_shinki_dragon_01_buff") then 
+			keys.ability:ApplyDataDrivenModifier(caster, caster, "modifier_shinki_dragon_01_buff", nil)
+		end	
+		caster:SetModifierStackCount("modifier_shinki_dragon_01_buff", caster, owner.ability_shinki04_devour_count)	
 	end	
 end
 
@@ -187,6 +183,7 @@ function OnShinki02AttackLanded(keys)
 	if chance > keys.Chance then return end
 
 	local enemies = THTD_FindUnitsInRadius(owner, target:GetOrigin(), keys.StunRange)
+	local damage = caster:GetAverageTrueAttackDamage(caster)
 	if #enemies > 0 then
 		for k,v in pairs(enemies) do
 			keys.ability:ApplyDataDrivenModifier(caster, v, "modifier_bash_stun_datadriven", {Duration = keys.Duration})
@@ -194,10 +191,11 @@ function OnShinki02AttackLanded(keys)
 				ability = keys.ability,
 				victim = v, 
 				attacker = caster, 
-				damage = caster:GetBaseDamageMax() * keys.DamageTimes, 
+				damage = damage, 
 				damage_type = keys.ability:GetAbilityDamageType(),  
 				damage_flags = DOTA_DAMAGE_FLAG_NONE
 			}
+			if v == target then DamageTable.damage = damage * keys.DamageTimes end
 			UnitDamageTarget(DamageTable)
 		end			
 	end	
@@ -211,6 +209,7 @@ function OnShinkiDragon03SpellStart(keys)
 	if owner==nil or owner:IsNull() or owner:IsAlive()==false or owner:THTD_IsHidden() then return end
 
 	local enemies = THTD_FindUnitsInRadius(owner, caster:GetOrigin(), keys.RangeRadius)
+	local damage = caster:GetAverageTrueAttackDamage(caster) * keys.DamageTimes
 	local debuff = "modifier_earthshock_debuff_datadriven"
 	if #enemies > 0 then
 		for k,v in pairs(enemies) do
@@ -219,7 +218,7 @@ function OnShinkiDragon03SpellStart(keys)
 				ability = keys.ability,
 				victim = v, 
 				attacker = caster, 
-				damage = caster:GetBaseDamageMax() * keys.DamageTimes, 
+				damage = damage, 
 				damage_type = keys.ability:GetAbilityDamageType(),  
 				damage_flags = DOTA_DAMAGE_FLAG_NONE
 			}

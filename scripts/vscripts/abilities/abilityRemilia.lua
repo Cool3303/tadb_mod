@@ -140,7 +140,7 @@ function OnRemilia03SpellHit(keys)
 		}
 		local olddamage = ReturnAfterTaxDamageAfterAbility(damage_table)
 		if olddamage > (target:GetHealth()*0.95) then
-			if target:GetHealth() > target:GetMaxHealth()*0.05 then 
+			if target:GetHealthPercent() > 5 then 
 				caster.thtd_tower_damage = caster.thtd_tower_damage + (target:GetHealth() - target:GetMaxHealth()*0.05) / 100
 				target:SetHealth(target:GetMaxHealth()*0.05)				
 			end
@@ -149,7 +149,8 @@ function OnRemilia03SpellHit(keys)
 		end		
 		
 		if not target:HasModifier("modifier_remilia_03_debuff") then
-			keys.ability:ApplyDataDrivenModifier(caster, target, "modifier_remilia_03_debuff",nil)			
+			keys.ability:ApplyDataDrivenModifier(caster, target, "modifier_remilia_03_debuff",nil)		
+			target:SetBaseMagicalResistanceValue(target:GetBaseMagicalResistanceValue()-1000)	
 		end
 	else
 		local dealdamage = caster:THTD_GetPower() * caster:THTD_GetStar() * 5
@@ -178,7 +179,7 @@ function OnRemilia03Destroy(keys)
 	local caster = EntIndexToHScript(keys.caster_entindex)
 	local target = keys.unit
 
-	local dealdamage = caster:THTD_GetPower() * caster:THTD_GetStar() * 3
+	local dealdamage = caster:THTD_GetPower() * caster:THTD_GetStar() * 2.2
 
 	local time = 3.0
 

@@ -186,6 +186,8 @@ local UnitMoveRect = {
 function public:OnDestroy(kv)
 	if IsServer() then
 		local caster = self:GetParent()
+		if table.hasvalue(SpawnSystem.GameOverPlayerId, caster.thtd_player_index) then return end
+
 		local count = 0
 		local pos = caster:GetOrigin()
 		local team = caster:GetTeam()
@@ -197,6 +199,8 @@ function public:OnDestroy(kv)
 		local firstmove = caster.first_move_point
 		local moveforward = caster.next_move_forward 
 		local firstforward = caster.first_move_forward
+		local nextcorner = caster.thtd_next_corner
+		local firstcorner = caster.thtd_first_corner
 		local currentWave = SpawnSystem.CurWave - 50	
 		local damageDecrease = math.max(-25*(1+(math.min(GameRules:GetCustomGameDifficulty(),4)-1)*0.5),-currentWave*4)
 
@@ -235,8 +239,10 @@ function public:OnDestroy(kv)
 				unit.first_move_point = firstmove
 				unit.next_move_forward = moveforward
 				unit.first_move_forward = firstforward
+				unit.thtd_next_corner = nextcorner
+				unit.thtd_first_corner = firstcorner
 				
-				ModifyDamageIncomingPercentage(unit,damageDecrease)
+				ModifyDamageSpecialPercentage(unit,damageDecrease)
 	
 				unit:SetContextThink(DoUniqueString("AttackingBase"), 
 					function ()
@@ -268,11 +274,11 @@ function public:OnDestroy(kv)
 							end								
 						end
 
-						return 0.5
+						return 0.3
 					end, 
 				0) 
 
-				return 0.2
+				return 0.15
 			end, 
 		0) 			
 	end

@@ -109,7 +109,7 @@ function OnItem2021_SpellStart(keys)
 		        damage_flags = DOTA_DAMAGE_FLAG_NONE
 	   	}
 	   	ApplyDamage(DamageTable)
-		PlayerResource:ModifyGold(caster:GetPlayerOwnerID(), 500 , true, DOTA_ModifyGold_CreepKill)
+		THTD_ModifyGoldEx(caster:GetPlayerOwnerID(), 500 , true, DOTA_ModifyGold_CreepKill)
 		SendOverheadEventMessage(caster:GetPlayerOwner(), OVERHEAD_ALERT_GOLD, target, 500, caster:GetPlayerOwner() )
 		
 		local effectIndex = ParticleManager:CreateParticle("particles/thd2/items/item_donation_box.vpcf", PATTACH_CUSTOMORIGIN, caster)
@@ -123,11 +123,7 @@ function OnItem2022_SpellStart(keys)
 	if SpawnSystem.IsUnLimited then return end
 	local caster = keys.caster
 	local ability = keys.ability
-	local targetPoint = keys.target_points[1]
-
-	if keys.ability:GetLevel() < 2 and (GameRules:GetCustomGameDifficulty() == 7 or GameRules:GetCustomGameDifficulty() >= 9) then 
-		keys.ability:SetLevel(2) 
-	end
+	local targetPoint = keys.target_points[1]	
 
 	if caster:GetUnitName() == "npc_dota_hero_lina" then
 		local targets = 
@@ -161,10 +157,6 @@ function OnItem2023_SpellStart(keys)
 	if SpawnSystem.IsUnLimited then return end
 	local caster = EntIndexToHScript(keys.caster_entindex)
 	local target = keys.target
-
-	if keys.ability:GetLevel() < 2 and (GameRules:GetCustomGameDifficulty() == 7 or GameRules:GetCustomGameDifficulty() == 9) then 
-		keys.ability:SetLevel(2) 
-	end
 
 	if caster:GetUnitName() == "npc_dota_hero_lina" then
 		if target:THTD_IsTower() and target:THTD_GetLevel()<THTD_MAX_LEVEL then

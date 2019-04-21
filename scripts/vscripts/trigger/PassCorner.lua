@@ -20,7 +20,7 @@ function OnPassTheCorner(data)
 			end, 
 		0.5) 
 	else
-		target.next_move_point = THTD_GetNextPathForUnit(target,thisEntity:GetName())		
+		target.next_move_point = THTD_GetNextPathForUnit(target,thisEntity:GetName())				
 	end
 end
 
@@ -82,10 +82,9 @@ function THTD_GetNextPathForUnit(target,corner)
 		target.next_move_forward = nextForward
 		
 		if vecRun~=nil then
-			--target.thtd_next_corner = vecRun
+			target.thtd_next_corner = vecRun
 			return G_path_corner[vecRun].Vector * 1.5
-		else
-			--target.thtd_next_corner = nil
+		else			
 			return target.next_move_point
 		end
 	else

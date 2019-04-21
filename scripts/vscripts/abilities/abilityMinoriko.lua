@@ -12,7 +12,7 @@ function OnMinoriko02StarChange(keys)
 			hero.thtd_minoriko_02_change = 0
 		end	
 
-		if GameRules:GetCustomGameDifficulty() == 10 then
+		if GameRules:GetCustomGameDifficulty() == 8 then
 			if SpawnSystem.CurWave < 11 then 
 				GameRules:SendCustomMessage("<font color='red'>娱乐模式下，秋穣子在前10波不能使用交换技能。</font>", DOTA_TEAM_GOODGUYS, 0)
 				return

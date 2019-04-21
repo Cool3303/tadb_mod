@@ -84,29 +84,19 @@ function OnAya01AttackLanded(keys)
 	local entities = THTD_FindUnitsAll(caster)
 	for k,v in pairs(entities) do
 		if v:HasModifier("modifier_hatate01_news_buff") or v:HasModifier("modifier_aya01_news_buff") then
-			OnAyaAttack(keys,v,false,1)
+			OnAyaAttack(keys,v,false)
 		end
 	end	
 end
 
-function OnAyaAttack(keys,target,isFirst,factor)
+function OnAyaAttack(keys,target,isFirst)
 	local caster = EntIndexToHScript(keys.caster_entindex)
 	local index = caster:GetEntityIndex()
 	if target.thtd_aya_damage == nil then target.thtd_aya_damage = {} end
 	if target.thtd_aya_damage[index] == nil then target.thtd_aya_damage[index] = 0 end
-	target.thtd_aya_damage[index] = target.thtd_aya_damage[index] + math.floor(caster:GetAverageTrueAttackDamage(caster)) * factor	
-	if not caster:HasModifier("modifier_junko_01") then 
-		if caster:FindModifierByName("modifier_item_2020_damage") ~= nil then       
-			target.thtd_aya_damage[index] = target.thtd_aya_damage[index] + caster:THTD_GetPower() * factor
-		end
-		if target:HasModifier("modifier_miko_01_debuff") then
-			local modifier = target:FindModifierByName("modifier_miko_01_debuff")
-			local miko = modifier:GetCaster()			
-			target.thtd_aya_damage[index] = target.thtd_aya_damage[index] + miko:THTD_GetPower() * factor
-		end
-	end
+	target.thtd_aya_damage[index] = target.thtd_aya_damage[index] + math.floor(caster:GetAverageTrueAttackDamage(caster))
 	
-	if isFirst and RandomInt(0,100) < 12 then
+	if isFirst and RandomInt(1,100) <= 15 then
 		OnAya01Attack(keys,caster,target)
 	end
 
@@ -122,17 +112,10 @@ function OnAyaAttack(keys,target,isFirst,factor)
 
 	if caster:HasModifier("modifier_item_2011_attack_stun") then
 		if RandomInt(0,100) < 10 then
-			if target.thtd_is_lock_item_2011_stun ~= true then
-				target.thtd_is_lock_item_2011_stun = true
-	   			UnitStunTarget(caster,target,1.0)
-	   			target:SetContextThink(DoUniqueString("ability_item_2011_stun"), 
-					function()
-						if GameRules:IsGamePaused() then return 0.03 end
-						target.thtd_is_lock_item_2011_stun = false
-						return nil
-					end,
-				2.0)
-	   		end
+			if not target:HasModifier("modifier_item_2011_stun_lock") then
+					target:AddNewModifier(target, nil, "modifier_item_2011_stun_lock", {Duration=2.0})
+	   			UnitStunTarget(caster,target,1.0)			
+	   	end
 		end
 	end
 end
@@ -154,26 +137,35 @@ function OnAya02SpellStart(keys)
 			if GameRules:IsGamePaused() then return 0.03 end
 			if GetDistanceBetweenTwoVec2D(caster:GetOrigin(), targetPoint)>=90 and GetDistanceBetweenTwoVec2D(caster:GetOrigin(), targetPoint)<keys.ability:GetCastRange() 
 			and caster:HasModifier("modifier_touhoutd_release_hidden") == false then
-				caster:SetAbsOrigin(caster:GetOrigin() + Vector(math.cos(rad),math.sin(rad),0)*90)
-				if count%5 == 0 then
-					local targets = THTD_FindUnitsInRadius(caster,caster:GetOrigin(),300)
-					for _,v in pairs(targets) do
+				local vOrgin = caster:GetOrigin()
+				local vCurrent = vOrgin + Vector(math.cos(rad),math.sin(rad),0)*90
+				caster:SetAbsOrigin(vCurrent)				
+				if count%5 == 0 then				
+					local targets = 
+						FindUnitsInLine(
+							caster:GetTeamNumber(), 
+							vCurrent, 
+							vCurrent + (vCurrent - vOrgin):Normalized() * 450, -- 5次移动距离
+							nil, 
+							200,
+							keys.ability:GetAbilityTargetTeam(), 
+							keys.ability:GetAbilityTargetType(), 
+							keys.ability:GetAbilityTargetFlags()
+						)					
+					for _,v in pairs(targets) do					
 						if v.thtd_aya_damage == nil then v.thtd_aya_damage = {} end
 						if v.thtd_aya_damage[index] == nil then v.thtd_aya_damage[index] = 0 end
-						v.thtd_aya_damage[index] = v.thtd_aya_damage[index] + math.floor(caster:THTD_GetPower() * caster:THTD_GetStar() * 1.5)										
+						v.thtd_aya_damage[index] = v.thtd_aya_damage[index] + math.floor(caster:THTD_GetPower() * caster:THTD_GetStar())						
 						if caster:FindAbilityByName("thtd_aya_03"):GetLevel()>0 then
-							OnAyaAttack(keys,v,true,1)
+							OnAyaAttack(keys,v,true)
 						end
 					end
 					local entities = THTD_FindUnitsAll(caster)
-					local factor = #targets
-					if factor > 0 then
-						for k,v in pairs(entities) do
-							if v:HasModifier("modifier_hatate01_news_buff") or v:HasModifier("modifier_aya01_news_buff") then
-								OnAyaAttack(keys,v,false,factor)
-							end
-						end	
-					end
+					for k,v in pairs(entities) do
+						if v:HasModifier("modifier_hatate01_news_buff") or v:HasModifier("modifier_aya01_news_buff") then
+							OnAyaAttack(keys,v,false)
+						end
+					end	
 				end
 				count = count + 1
 			else

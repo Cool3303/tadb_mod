@@ -641,7 +641,7 @@
 		"AbilityBehavior" 					"DOTA_ABILITY_BEHAVIOR_UNIT_TARGET"
 		"AbilityUnitTargetType"				"DOTA_UNIT_TARGET_HERO | DOTA_UNIT_TARGET_BASIC"
 		"AbilityUnitTargetTeam"				"DOTA_UNIT_TARGET_TEAM_ENEMY"
-		"AbilityCooldown"					"80"
+		"AbilityCooldown"					"60"
 		"ItemCost"							"2000"
 		"ItemSellable"						"0"
 
@@ -671,10 +671,10 @@
 		"AbilityBehavior"					"DOTA_ABILITY_BEHAVIOR_IMMEDIATE | DOTA_ABILITY_BEHAVIOR_AOE | DOTA_ABILITY_BEHAVIOR_POINT"
 		"AbilityUnitTargetType"				"DOTA_UNIT_TARGET_HERO | DOTA_UNIT_TARGET_BASIC"
 		"AbilityUnitTargetTeam"				"DOTA_UNIT_TARGET_TEAM_FRIENDLY"
-		"AbilityCooldown"					"80 56"
+		"AbilityCooldown"					"60"
 		"ItemCost"							"2000"
 		"ItemSellable"						"0"
-		"MaxLevel"							"2"
+		"MaxLevel"							"1"
 
 		"OnSpellStart"
 		{
@@ -702,10 +702,10 @@
 		"AbilityBehavior" 					"DOTA_ABILITY_BEHAVIOR_UNIT_TARGET"
 		"AbilityUnitTargetType"				"DOTA_UNIT_TARGET_HERO | DOTA_UNIT_TARGET_BASIC"
 		"AbilityUnitTargetTeam"				"DOTA_UNIT_TARGET_TEAM_FRIENDLY"
-		"AbilityCooldown"					"40 28"
+		"AbilityCooldown"					"30"
 		"ItemCost"							"5000"
 		"ItemSellable"						"0"
-		"MaxLevel"							"2"
+		"MaxLevel"							"1"
 
 		"OnSpellStart"
 		{
@@ -1069,7 +1069,7 @@
 		"AbilityBehavior" 					"DOTA_ABILITY_BEHAVIOR_POINT"
 		"AbilityCastRange"					"100"
 		"ItemCost"							"2000"
-		"Model"								"models/thd_hero/cirno/item/item_cirno.vmdl"
+		"Model"								"models/new_touhou_model/cirno/cirno.vmdl"
 		 
 		
 		"ItemShareability"					"ITEM_PARTIALLY_SHAREABLE"
@@ -1315,7 +1315,7 @@
 		"AbilityBehavior" 					"DOTA_ABILITY_BEHAVIOR_POINT"
 		"AbilityCastRange"					"100"
 		"ItemCost"							"2000"
-		"Model"								"models/thd_hero/satori/item/item_satori.vmdl"
+		"Model"								"models/new_touhou_model/satori/satori.vmdl"
 		 
 		
 		"ItemShareability"					"ITEM_PARTIALLY_SHAREABLE"
@@ -1420,7 +1420,7 @@
 		"AbilityBehavior" 					"DOTA_ABILITY_BEHAVIOR_POINT"
 		"AbilityCastRange"					"100"
 		"ItemCost"							"5000"
-		"Model"								"models/thd_hero/marisa/item/item_marisa.vmdl"
+		"Model"								"models/new_touhou_model/marisa/marisa.vmdl"
 		 
 		
 		"ItemShareability"					"ITEM_PARTIALLY_SHAREABLE"
@@ -1455,7 +1455,7 @@
 		"AbilityBehavior" 					"DOTA_ABILITY_BEHAVIOR_POINT"
 		"AbilityCastRange"					"100"
 		"ItemCost"							"5000"
-		"Model"								"models/thd_hero/tenshi/item/item_tenshi.vmdl"
+		"Model"								"models/new_touhou_model/tenshi/tenshi.vmdl"
 		 
 		
 		"ItemShareability"					"ITEM_PARTIALLY_SHAREABLE"
@@ -1490,7 +1490,7 @@
 		"AbilityBehavior" 					"DOTA_ABILITY_BEHAVIOR_POINT"
 		"AbilityCastRange"					"100"
 		"ItemCost"							"5000"
-		"Model"								"models/thd_hero/patchouli/item/item_patchouli.vmdl"
+		"Model"								"models/new_touhou_model/patchouli/patchouli.vmdl"
 		 
 		
 		"ItemShareability"					"ITEM_PARTIALLY_SHAREABLE"
@@ -1525,7 +1525,7 @@
 		"AbilityBehavior" 					"DOTA_ABILITY_BEHAVIOR_POINT"
 		"AbilityCastRange"					"100"
 		"ItemCost"							"5000"
-		"Model"								"models/thd_hero/sakuya/item/item_sakuya.vmdl"
+		"Model"								"models/new_touhou_model/sakuya/sakuya.vmdl"
 		 
 		
 		"ItemShareability"					"ITEM_PARTIALLY_SHAREABLE"
@@ -1630,7 +1630,7 @@
 		"AbilityBehavior" 					"DOTA_ABILITY_BEHAVIOR_POINT"
 		"AbilityCastRange"					"100"
 		"ItemCost"							"5000"
-		"Model"								"models/thd_hero/youmu/item/item_youmu.vmdl"
+		"Model"								"models/new_touhou_model/youmu/youmu.vmdl"
 		 
 		
 		"ItemShareability"					"ITEM_PARTIALLY_SHAREABLE"
@@ -1735,7 +1735,7 @@
 		"AbilityBehavior" 					"DOTA_ABILITY_BEHAVIOR_POINT"
 		"AbilityCastRange"					"100"
 		"ItemCost"							"10000"
-		"Model"								"models/thd_hero/reimu/item/item_reimu.vmdl"
+		"Model"								"models/new_touhou_model/reimu/reimu.vmdl"
 		 
 		
 		"ItemShareability"					"ITEM_PARTIALLY_SHAREABLE"
@@ -1805,7 +1805,7 @@
 		"AbilityBehavior" 					"DOTA_ABILITY_BEHAVIOR_POINT"
 		"AbilityCastRange"					"100"
 		"ItemCost"							"10000"
-		"Model"								"models/thd_hero/remilia/item/item_remilia.vmdl"
+		"Model"								"models/new_touhou_model/remilia/remilia.vmdl"
 		 
 		
 		"ItemShareability"					"ITEM_PARTIALLY_SHAREABLE"
@@ -1874,7 +1874,7 @@
 		"AbilityBehavior" 					"DOTA_ABILITY_BEHAVIOR_POINT"
 		"AbilityCastRange"					"100"
 		"ItemCost"							"10000"
-		"Model"								"models/thd_hero/flandre/item/item_flandre.vmdl"
+		"Model"								"models/new_touhou_model/flandre/flandre.vmdl"
 		 
 		
 		"ItemShareability"					"ITEM_PARTIALLY_SHAREABLE"
@@ -1976,7 +1976,7 @@
 		"AbilityBehavior" 					"DOTA_ABILITY_BEHAVIOR_POINT"
 		"AbilityCastRange"					"100"
 		"ItemCost"							"10000"
-		"Model"								"models/thd_hero/yuuka/item/item_yuuka.vmdl"
+		"Model"								"models/new_touhou_model/yuuka/yuuka.vmdl"
 		 
 		
 		"ItemShareability"					"ITEM_PARTIALLY_SHAREABLE"
@@ -2010,7 +2010,7 @@
 		"AbilityBehavior" 					"DOTA_ABILITY_BEHAVIOR_POINT"
 		"AbilityCastRange"					"100"
 		"ItemCost"							"10000"
-		"Model"								"models/thd_hero/yukari/item/item_yukari.vmdl"
+		"Model"								"models/new_touhou_model/yukari/yukari.vmdl"
 		 
 		
 		"ItemShareability"					"ITEM_PARTIALLY_SHAREABLE"
@@ -2209,7 +2209,7 @@
 		"AbilityBehavior" 					"DOTA_ABILITY_BEHAVIOR_POINT"
 		"AbilityCastRange"					"100"
 		"ItemCost"							"5000"
-		"Model"								"models/thd_hero/aya/item/item_aya.vmdl"
+		"Model"								"models/new_touhou_model/aya/aya.vmdl"
 		 
 		
 		"ItemShareability"					"ITEM_PARTIALLY_SHAREABLE"
@@ -2293,6 +2293,41 @@
 			}
 		}
 	}
+	
+	//-------------------------------------------------------------------------------------------------------------
+	// 今泉影狼
+	"item_0045"
+	{
+		//-------------------------------------------------------------------------------------------------------------
+		// General
+		"ID" 								"8045"
+		"BaseClass" 						"item_datadriven"
+		"ItemKillable" 						"0"
+		"ItemPurchasable"				    "0"
+		"ItemDisassembleRule"				"DOTA_ITEM_DISASSEMBLE_ALWAYS"
+		"AbilityTextureName" 				"item_0045"
+		"AbilityBehavior" 					"DOTA_ABILITY_BEHAVIOR_POINT"
+		"AbilityCastRange"					"100"
+		"ItemCost"							"2000"
+		"Model"								"models/thd_hero/kagerou/item/item_kagerou.vmdl"
+		 
+		
+		"ItemShareability"					"ITEM_PARTIALLY_SHAREABLE"
+		
+		//-------------------------------------------------------------------------------------------------------------
+		// Item Info
+		
+		"OnSpellStart"
+		{
+			"RunScript"
+			{
+				"ScriptFile"	"scripts/vscripts/abilities/abilityCommon.lua"
+				"Function"		"PutTowerToPoint"
+				"Target"		"POINT"
+			}
+		}
+	}
+	
 	//-------------------------------------------------------------------------------------------------------------
 	// 东风谷早苗
 	"item_0046"
@@ -2769,6 +2804,40 @@
 	}
 
 	//-------------------------------------------------------------------------------------------------------------
+	// 莉格露·奈特巴格
+	"item_0060"
+	{
+		//-------------------------------------------------------------------------------------------------------------
+		// General
+		"ID" 								"8060"
+		"BaseClass" 						"item_datadriven"
+		"ItemKillable" 						"0"
+		"ItemPurchasable"				    "0"
+		"ItemDisassembleRule"				"DOTA_ITEM_DISASSEMBLE_ALWAYS"
+		"AbilityTextureName" 				"item_0060"
+		"AbilityBehavior" 					"DOTA_ABILITY_BEHAVIOR_POINT"
+		"AbilityCastRange"					"100"
+		"ItemCost"							"2000"
+		"Model"								"models/thd_hero/wiggle/item/item_wiggle.vmdl"
+		 
+		
+		"ItemShareability"					"ITEM_PARTIALLY_SHAREABLE"
+		
+		//-------------------------------------------------------------------------------------------------------------
+		// Item Info
+		
+		"OnSpellStart"
+		{
+			"RunScript"
+			{
+				"ScriptFile"	"scripts/vscripts/abilities/abilityCommon.lua"
+				"Function"		"PutTowerToPoint"
+				"Target"		"POINT"
+			}
+		}
+	}
+
+	//-------------------------------------------------------------------------------------------------------------
 	// 上白泽慧音
 	"item_0061"
 	{
@@ -2784,6 +2853,40 @@
 		"AbilityCastRange"					"100"
 		"ItemCost"							"5000"
 		"Model"								"models/thd_hero/keine/item/item_keine.vmdl"
+		 
+		
+		"ItemShareability"					"ITEM_PARTIALLY_SHAREABLE"
+		
+		//-------------------------------------------------------------------------------------------------------------
+		// Item Info
+		
+		"OnSpellStart"
+		{
+			"RunScript"
+			{
+				"ScriptFile"	"scripts/vscripts/abilities/abilityCommon.lua"
+				"Function"		"PutTowerToPoint"
+				"Target"		"POINT"
+			}
+		}
+	}
+
+	//-------------------------------------------------------------------------------------------------------------
+	// 莉格露·奈特巴格
+	"item_0062"
+	{
+		//-------------------------------------------------------------------------------------------------------------
+		// General
+		"ID" 								"8062"
+		"BaseClass" 						"item_datadriven"
+		"ItemKillable" 						"0"
+		"ItemPurchasable"				    "0"
+		"ItemDisassembleRule"				"DOTA_ITEM_DISASSEMBLE_ALWAYS"
+		"AbilityTextureName" 				"item_0062"
+		"AbilityBehavior" 					"DOTA_ABILITY_BEHAVIOR_POINT"
+		"AbilityCastRange"					"100"
+		"ItemCost"							"2000"
+		"Model"								"models/thd_hero/tewi/item/item_tewi.vmdl"
 		 
 		
 		"ItemShareability"					"ITEM_PARTIALLY_SHAREABLE"

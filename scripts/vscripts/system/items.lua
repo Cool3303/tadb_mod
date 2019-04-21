@@ -118,3 +118,52 @@ function THTD_GetItemCountByName(playerid,itemName)
 	end
 	return 0
 end
+
+function ItemSetScale(item, scale)
+	if item == nil then return end
+	local box = item:GetContainer()
+	if box == nil then return end
+	box:SetModelScale(scale)
+end
+
+local thtd_item_scale = 
+{
+	["kokoro"] = 0.55,
+	["yoshika"] = 0.55,	
+	["aya"] = 0.55,	
+	["cirno"] = 0.55,	
+	["marisa"] = 0.55,	
+	["reimu"] = 0.55,	
+	["remilia"] = 0.65,
+	["flandre"] = 0.65,	
+	["yukari"] = 0.45,	
+	["satori"] = 0.55,	
+	["patchouli"] = 0.55,	
+	["sakuya"] = 0.55,	
+	["youmu"] = 0.55,	
+	["tenshi"] = 0.55,	
+	["yuuka"] = 0.55,	
+	["wriggle"] = 1.3,	
+	
+}
+
+function THTD_ItemSetScale(item)
+	if item == nil then return end
+	local cardName = item:THTD_GetCardName()	
+	if cardName ~= nil then
+		if thtd_item_scale[cardName] == nil then
+			-- ItemSetScale(item, 1.0)
+		else		
+			ItemSetScale(item, thtd_item_scale[cardName])
+		end
+	end	
+end
+
+function THTD_HasItemScale(item)
+	if item == nil then return false end
+	local cardName = item:THTD_GetCardName()	
+	if cardName ~= nil and thtd_item_scale[cardName] ~= nil then
+		return true
+	end
+	return false
+end

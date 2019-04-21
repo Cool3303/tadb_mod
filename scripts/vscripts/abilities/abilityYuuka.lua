@@ -411,7 +411,7 @@ function OnYuuka04SpellThink(keys)
 		if caster.thtd_yuuka_03_owner~=nil then
 			attacker = caster.thtd_yuuka_03_owner
 		end
-		local deal_damage = attacker:THTD_GetStar() * attacker:THTD_GetPower() * 2 * GetYuuka03Increase(attacker)		
+		local deal_damage = attacker:THTD_GetStar() * attacker:THTD_GetPower() * 1.4 * GetYuuka03Increase(attacker)		
 
 		local DamageTargets = 
 			FindUnitsInLine(

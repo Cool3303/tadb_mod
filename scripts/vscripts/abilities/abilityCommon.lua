@@ -92,6 +92,20 @@ function OnTouhouReleaseTowerSpellStart(keys)
 			end
 		end
 
+		-- 回收二技能光球
+		if target:GetUnitName() == "wriggle" then
+			local entities = Entities:FindAllByClassname("npc_dota_ignis_fatuus")						
+			for k,v in pairs(entities) do
+				if v~=nil and v:IsNull()==false and v:IsAlive() and v:GetOwner() == target then 
+					v:AddNoDraw()
+					v:ForceKill(false)
+				end
+			end
+			if target:HasModifier("modifier_death_prophet_exorcism") then
+				target:RemoveModifierByName("modifier_death_prophet_exorcism")
+			end			
+		end
+
 		caster:THTD_HeroComboRefresh()
 
 		if SpawnSystem.CurWave > 120 and SpawnSystem.CurTime <= 3 and caster.is_change_card ~= true then
@@ -112,7 +126,7 @@ function OnTouhouReleaseTowerSpellStart(keys)
 				function()					
 					caster.thtd_ai_time = GameRules:GetGameTime()
 					if GameRules:IsGamePaused() then return 0.1 end
-					if caster.is_game_over or caster:IsStunned() then return nil end				
+					if caster.is_game_over == true then return nil end				
 					for k,v in pairs(caster.thtd_hero_tower_list) do
 						if v~=nil and v:IsNull()==false and v:IsAlive() and v:THTD_IsHidden() == false and v.thtd_close_ai ~= true and v:HasModifier("modifier_touhoutd_building") == false then
 							local func = v["THTD_"..v:GetUnitName().."_thtd_ai"]
@@ -153,17 +167,17 @@ function PutTowerToPoint(keys)
 		return 
 	end
 
-	if GameRules:GetCustomGameDifficulty() == 10 and SpawnSystem.IsUnLimited == false and IsBonusTower(itemName) and towerNameList[itemName]["cardname"] ~= "shinki" then 
-		GameRules:SendCustomMessage("<font color='yellow'>娱乐模式下，神绮之外的收益卡收益无效。</font>", DOTA_TEAM_GOODGUYS, 0)		
-	end
-
-	if itemName == "item_0050" and GameRules:GetCustomGameDifficulty() > 5 then 
-		GameRules:SendCustomMessage("<font color='red'>封兽鵺只能在难度6以下使用。</font>", DOTA_TEAM_GOODGUYS, 0)
+	if GameRules.game_info.new_card_limit == 1 and THTD_IsLockedCard(itemName) and GameRules.players_status[caster:GetPlayerOwnerID()].vip == 0 then 
+		GameRules:SendCustomMessage("<font color='yellow'>新卡当前仅限贡献者使用，详情进群了解。</font>", DOTA_TEAM_GOODGUYS, 0)
 		return 
 	end
 
-	if itemName == "item_0069" and SpawnSystem.CurWave > 120 then 
-		GameRules:SendCustomMessage("<font color='red'>寅丸星只能在无尽70波以前使用。</font>", DOTA_TEAM_GOODGUYS, 0)
+	if GameRules:GetCustomGameDifficulty() == 8 and SpawnSystem.IsUnLimited == false and IsBonusTower(itemName) and towerNameList[itemName]["cardname"] ~= "shinki" then 
+		GameRules:SendCustomMessage("<font color='yellow'>娱乐模式下，神绮之外的收益卡收益无效。</font>", DOTA_TEAM_GOODGUYS, 0)		
+	end	
+
+	if itemName == "item_0069" and SpawnSystem.CurWave > 150 then 
+		GameRules:SendCustomMessage("<font color='red'>寅丸星只能在无尽100波以前使用。</font>", DOTA_TEAM_GOODGUYS, 0)
 		return 
 	end
 
@@ -256,7 +270,18 @@ function PutTowerToPoint(keys)
 					noHealthBar:ApplyDataDrivenModifier(tower, tower, "modifier_touhoutd_no_health_bar", nil)
 				end
 				tower:RemoveModifierByName("modifier_touhoutd_building")				
-				caster:THTD_HeroComboRefresh()				
+				caster:THTD_HeroComboRefresh()					
+				if tower:GetUnitName() == GameRules.game_info.luck_card then 
+					if GameRules.game_info.crit > 0 and tower:HasModifier("modifier_touhoutd_luck") == false then					
+						modifier = tower:AddNewModifier(tower, nil, "modifier_touhoutd_luck", {})
+						modifier:SetStackCount(GameRules.game_info.crit)
+						tower:SetModelScale(1.5)	
+					elseif GameRules.game_info.crit < 0 and tower:HasModifier("modifier_touhoutd_unluck") == false then		
+						modifier = tower:AddNewModifier(tower, nil, "modifier_touhoutd_unluck", {})
+						modifier:SetStackCount(-GameRules.game_info.crit)
+						tower:SetModelScale(0.9)
+					end				
+				end
 				return nil 
 			end
 			tower:SetHealth(tower:GetHealth()+4)
@@ -304,6 +329,47 @@ function StarUp(keys)
 	local hero = player:GetAssignedHero()
 	local star = caster:THTD_GetStar()
 
+	-- print("-----------this tower buffs:")
+	-- local modifiers = caster:FindAllModifiers()
+	-- for _, modifier in pairs(modifiers) do
+	-- 	print(modifier:GetName())
+	-- end
+	-- print("-----------enemy buffs:")
+	-- local buffs = {}
+	-- local targets = THTD_FindUnitsAll(caster)
+	-- for k, v in pairs(targets) do
+	-- 	local modifiers = v:FindAllModifiers()
+	-- 	for _, modifier in pairs(modifiers) do
+	-- 		local name = modifier:GetName()
+	-- 		local isExist = false
+	-- 		for _, b in pairs(buffs) do
+	-- 			if b == name then 
+	-- 				isExist = true 
+	-- 				break
+	-- 			end
+	-- 		end
+	-- 		if not isExist then 
+	-- 			table.insert(buffs, name) 
+	-- 			print(name)
+	-- 		end
+	-- 	end
+	-- end
+
+	-- local ens = Entities:FindAllInSphere(caster:GetAbsOrigin(), 3000)
+	-- for k,v in pairs(ens) do
+	-- 	print("---------------")
+	-- 	print(v:GetClassname())		
+	-- 	if v:GetClassname() == "dota_death_prophet_exorcism_spirit" then 
+	-- 		-- print(v:GetUnitName())	
+	-- 		local f = v:GetOwner()
+	-- 		if f ~= nil then print(f:GetUnitName()) end
+	-- 		-- v:Kill()
+	-- 		-- UTIL_Remove(v)
+	-- 	end
+	-- end
+
+
+
 	if caster:THTD_GetLevel() < THTD_MAX_LEVEL or star >= 5 then 
 		if player then
 			EmitSoundOnClient("Sound_THTD.thtd_star_up_fail",player)
@@ -318,7 +384,7 @@ function StarUp(keys)
 		if item ~= nil and item.locked_by_player_id == nil then
 			local tower = item:THTD_GetTower()
 			if tower ~= nil and tower:THTD_GetStar() == star and tower:THTD_GetLevel() == THTD_MAX_LEVEL then	
-				if GameRules:GetCustomGameDifficulty() == 10 and tower:GetUnitName() == "minoriko" then 
+				if GameRules:GetCustomGameDifficulty() == 8 and tower:GetUnitName() == "minoriko" then 
 					GameRules:SendCustomMessage("<font color='yellow'>娱乐模式下秋穣子不能当作素材。</font>", DOTA_TEAM_GOODGUYS, 0)				
 				else
 					table.insert(composeItem,item)
@@ -335,7 +401,7 @@ function StarUp(keys)
 		if item ~= nil and item.locked_by_player_id == nil then
 			local tower = item:THTD_GetTower()
 			if tower ~= nil and tower:THTD_GetStar() == star and tower:THTD_GetLevel() == THTD_MAX_LEVEL then					
-				if GameRules:GetCustomGameDifficulty() == 10 and tower:GetUnitName() == "minoriko" then 
+				if GameRules:GetCustomGameDifficulty() == 8 and tower:GetUnitName() == "minoriko" then 
 					GameRules:SendCustomMessage("<font color='yellow'>娱乐模式下秋穣子不能当作素材。</font>", DOTA_TEAM_GOODGUYS, 0)				
 				else
 					table.insert(composeItem,item)
@@ -387,7 +453,7 @@ function ExpUp(keys)
 		local tower = item:THTD_GetTower()
 		local exp = 3000
 		if tower ~= nil then
-			if tower:GetUnitName() == "minoriko" and GameRules:GetCustomGameDifficulty() == 10 then 
+			if tower:GetUnitName() == "minoriko" and GameRules:GetCustomGameDifficulty() == 8 then 
 				GameRules:SendCustomMessage("<font color='yellow'>娱乐模式下秋穣子不能当作素材。</font>", DOTA_TEAM_GOODGUYS, 0)	
 				if player then
 					EmitSoundOnClient("Sound_THTD.thtd_star_up_fail",player)
@@ -529,13 +595,13 @@ function DrawNormalCard(keys)
 		if #drawList[2] > 0 then
 			itemName = drawList[2][RandomInt(1,#drawList[2])]
 		else
-			PlayerResource:ModifyGold(caster:GetPlayerOwnerID(), 1000 , true, DOTA_ModifyGold_SellItem) 
+			THTD_ModifyGoldEx(caster:GetPlayerOwnerID(), 1000 , true, DOTA_ModifyGold_SellItem) 
 		end
 	elseif chance > 20 then
 		if #drawList[1] > 0 then
 			itemName = drawList[1][RandomInt(1,#drawList[1])]
 		else
-			PlayerResource:ModifyGold(caster:GetPlayerOwnerID(), 250 , true, DOTA_ModifyGold_SellItem) 
+			THTD_ModifyGoldEx(caster:GetPlayerOwnerID(), 250 , true, DOTA_ModifyGold_SellItem) 
 		end
 	end
 	caster:THTD_AddCardPoolItem(itemName)	
@@ -605,19 +671,19 @@ function DrawSeniorCard(keys)
 		if #drawList[4] > 0 then
 			itemName = drawList[4][RandomInt(1,#drawList[4])]
 		else
-			PlayerResource:ModifyGold(caster:GetPlayerOwnerID(), 5000 , true, DOTA_ModifyGold_SellItem) 
+			THTD_ModifyGoldEx(caster:GetPlayerOwnerID(), 5000 , true, DOTA_ModifyGold_SellItem) 
 		end
 	elseif chance <= 25 then
 		if #drawList[3] > 0 then
 			itemName = drawList[3][RandomInt(1,#drawList[3])]
 		else
-			PlayerResource:ModifyGold(caster:GetPlayerOwnerID(), 2500 , true, DOTA_ModifyGold_SellItem) 
+			THTD_ModifyGoldEx(caster:GetPlayerOwnerID(), 2500 , true, DOTA_ModifyGold_SellItem) 
 		end
 	elseif chance > 25 then
 		if #drawList[2] > 0 then
 			itemName = drawList[2][RandomInt(1,#drawList[2])]
 		else
-			PlayerResource:ModifyGold(caster:GetPlayerOwnerID(), 1000 , true, DOTA_ModifyGold_SellItem) 
+			THTD_ModifyGoldEx(caster:GetPlayerOwnerID(), 1000 , true, DOTA_ModifyGold_SellItem) 
 		end
 	end
 	caster:THTD_AddCardPoolItem(itemName)		
@@ -702,7 +768,7 @@ end
 
 function BuyEggLevel4(keys)
 	local caster = keys.caster
-	if caster.hero:GetNumItemsInInventory()>=9 then 
+	if caster.hero:GetNumItemsInInventory()>=9 then 	
 		PlayerResource:ModifyGold(caster.hero:GetPlayerOwnerID(), keys.ability:GetGoldCost(keys.ability:GetLevel()) , true, DOTA_ModifyGold_SellItem) 
 		CustomGameEventManager:Send_ServerToPlayer(caster.hero:GetPlayerOwner(), "show_message", {msg="not_enough_item_slot", duration=10, params={}, color="#ff0"})
 		return

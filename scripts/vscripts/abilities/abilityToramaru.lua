@@ -1,16 +1,15 @@
 local thtd_toramaru_star_bouns_constant =
 {
-	[1] = 12,
-	[2] = 44,
-	[3] = 108,
-	[4] = 216,
-	[5] = 852,
+	[1] = 15,
+	[2] = 55,
+	[3] = 135,
+	[4] = 270,
+	[5] = 1065,
 }
-
 
 function OnToramaru01SpellStart(keys)
 	if SpawnSystem.IsUnLimited then return end
-	if GameRules:GetCustomGameDifficulty() == 10 then return end
+	if GameRules:GetCustomGameDifficulty() == 8 then return end
 	local caster = EntIndexToHScript(keys.caster_entindex)
 	local target = keys.target
 
@@ -24,9 +23,8 @@ function OnToramaru01SpellStart(keys)
 	}
 	UnitDamageTarget(damage_table)
 
-	local gold = thtd_toramaru_star_bouns_constant[caster:THTD_GetStar()]
-	if GameRules:GetCustomGameDifficulty() == 7 or GameRules:GetCustomGameDifficulty() == 9 then gold = math.floor(gold*1.3) end
-	PlayerResource:ModifyGold(caster:GetPlayerOwnerID(), gold , true, DOTA_ModifyGold_CreepKill)
+	local gold = thtd_toramaru_star_bouns_constant[caster:THTD_GetStar()]	
+	THTD_ModifyGoldEx(caster:GetPlayerOwnerID(), gold , true, DOTA_ModifyGold_CreepKill)
 	SendOverheadEventMessage(caster:GetPlayerOwner(), OVERHEAD_ALERT_GOLD, target, gold, caster:GetPlayerOwner() )
 	caster:EmitSound("Sound_THTD.thtd_nazrin_01")
 
@@ -44,7 +42,7 @@ function OnToramaru02SpellStart(keys)
 	end
 
 	if caster:HasModifier("modifier_byakuren_03_buff") then
-		PlayerResource:ModifyGold(caster:GetPlayerOwnerID(), 250 , true, DOTA_ModifyGold_CreepKill)
+		THTD_ModifyGoldEx(caster:GetPlayerOwnerID(), 250 , true, DOTA_ModifyGold_CreepKill)
 	end
 
 	local target = keys.target
@@ -74,7 +72,7 @@ function OnToramaru03SpellStart(keys)
 	end
 
 	if caster:HasModifier("modifier_byakuren_03_buff") then
-		PlayerResource:ModifyGold(caster:GetPlayerOwnerID(), 2500, true, DOTA_ModifyGold_CreepKill)
+		THTD_ModifyGoldEx(caster:GetPlayerOwnerID(), 2500, true, DOTA_ModifyGold_CreepKill)
 	end
 	
 	local inners = THTD_FindUnitsInner(caster)
@@ -102,7 +100,7 @@ end
 function OnSpellStartToramaru04(keys)
 	local caster = EntIndexToHScript(keys.caster_entindex)
 	
-	local damage = caster:THTD_GetStar() * caster:THTD_GetPower() * 3
+	local damage = caster:THTD_GetStar() * caster:THTD_GetPower() * 2
 	if SpawnSystem.IsUnLimited then
 		damage = damage + PlayerResource:GetGold(caster:GetPlayerOwnerID())*caster:THTD_GetStar()*0.02*4
 	else

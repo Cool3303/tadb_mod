@@ -28,17 +28,10 @@ function public:OnAttackLanded(kv)
 			local caster = self:GetCaster()
 			local target = kv.target
 			
-			if target.thtd_is_lock_item_2011_stun ~= true then
-				target.thtd_is_lock_item_2011_stun = true
-	   			UnitStunTarget(caster,target,1.0)
-	   			target:SetContextThink(DoUniqueString("ability_item_2011_stun"), 
-					function()
-						if GameRules:IsGamePaused() then return 0.03 end
-						target.thtd_is_lock_item_2011_stun = false
-						return nil
-					end,
-				2.0)
-	   		end
+			if not target:HasModifier("modifier_item_2011_stun_lock") then
+				target:AddNewModifier(target, nil, "modifier_item_2011_stun_lock", {Duration=2.0})
+			   	UnitStunTarget(caster,target,1.0)			
+	   		end			
 		end
 	end
 end

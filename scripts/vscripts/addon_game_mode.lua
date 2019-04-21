@@ -108,7 +108,7 @@ function CTHTDGameMode:InitGameMode()
 	GameRules:SetSameHeroSelectionEnabled(true)
  	GameRules:SetHeroSelectionTime(10)
  	GameRules:SetPreGameTime(30)
- 	GameRules:SetStrategyTime(1)
+ 	GameRules:SetStrategyTime(0)
  	GameRules:SetShowcaseTime(0)
  	GameRules:SetUseUniversalShopMode(true)
 	GameRules:SetCustomGameTeamMaxPlayers( DOTA_TEAM_GOODGUYS, 4 )
@@ -123,6 +123,7 @@ function CTHTDGameMode:InitGameMode()
   	GameRules:GetGameModeEntity():SetItemAddedToInventoryFilter(Dynamic_Wrap(CTHTDGameMode, 'ItemAddedToInventory'), self)
 	GameRules:GetGameModeEntity():SetDamageFilter(Dynamic_Wrap(CTHTDGameMode, 'DamageFilter'), self)
 	GameRules:GetGameModeEntity():SetModifierGainedFilter(Dynamic_Wrap(CTHTDGameMode, 'ModifierFilter'), self)		
+	GameRules:GetGameModeEntity():SetModifyGoldFilter(Dynamic_Wrap(CTHTDGameMode, 'OnModifyGoldFilter'), self)
 
 	LinkLuaModifier("modifier_magical_armor", "modifiers/modifier_magical_armor", LUA_MODIFIER_MOTION_NONE)
 	LinkLuaModifier("modifier_move_speed", "modifiers/modifier_move_speed", LUA_MODIFIER_MOTION_NONE)
@@ -141,6 +142,7 @@ function CTHTDGameMode:InitGameMode()
 	LinkLuaModifier("modifier_item_2010_magical_penetration", "modifiers/modifier_item_2010_magical_penetration", LUA_MODIFIER_MOTION_NONE)
 	LinkLuaModifier("modifier_item_2010_magical_penetration_effect", "modifiers/modifier_item_2010_magical_penetration_effect", LUA_MODIFIER_MOTION_NONE)
 	LinkLuaModifier("modifier_item_2011_attack_stun", "modifiers/modifier_item_2011_attack_stun", LUA_MODIFIER_MOTION_NONE)
+	LinkLuaModifier("modifier_item_2011_stun_lock", "modifiers/modifier_item_2011_stun_lock", LUA_MODIFIER_MOTION_NONE)
 	LinkLuaModifier("modifier_item_2012_magical_damage_aura", "modifiers/modifier_item_2012_magical_damage_aura", LUA_MODIFIER_MOTION_NONE)
 	LinkLuaModifier("modifier_item_2012_magical_damage_aura_effect", "modifiers/modifier_item_2012_magical_damage_aura_effect", LUA_MODIFIER_MOTION_NONE)
 	LinkLuaModifier("modifier_item_2013_physical_damage_aura", "modifiers/modifier_item_2013_physical_damage_aura", LUA_MODIFIER_MOTION_NONE)
@@ -158,6 +160,8 @@ function CTHTDGameMode:InitGameMode()
 	LinkLuaModifier("modifier_touhoutd_building", "modifiers/modifier_touhoutd_building", LUA_MODIFIER_MOTION_NONE)
 	LinkLuaModifier("modifier_thtd_ss_faith", "modifiers/modifier_thtd_ss_faith", LUA_MODIFIER_MOTION_NONE)
 	LinkLuaModifier("modifier_thtd_ss_kill", "modifiers/modifier_thtd_ss_kill", LUA_MODIFIER_MOTION_NONE)
+	LinkLuaModifier("modifier_touhoutd_luck", "modifiers/modifier_touhoutd_luck", LUA_MODIFIER_MOTION_NONE)
+	LinkLuaModifier("modifier_touhoutd_unluck", "modifiers/modifier_touhoutd_unluck", LUA_MODIFIER_MOTION_NONE)
 
 	LinkLuaModifier("modifier_bosses_alice", "modifiers/bosses/modifier_bosses_alice", LUA_MODIFIER_MOTION_NONE)
 	LinkLuaModifier("modifier_bosses_aya", "modifiers/bosses/modifier_bosses_aya", LUA_MODIFIER_MOTION_NONE)
@@ -171,11 +175,16 @@ function CTHTDGameMode:InitGameMode()
 	LinkLuaModifier("modifier_bosses_rumia", "modifiers/bosses/modifier_bosses_rumia", LUA_MODIFIER_MOTION_NONE)
 	LinkLuaModifier("modifier_bosses_yuugi", "modifiers/bosses/modifier_bosses_yuugi", LUA_MODIFIER_MOTION_NONE)	
 
-	GameRules.game_info = {		
-		ver = "190315",		
-		game_code = "null",		
+	GameRules.game_info = {				
+		ver = "190501",		
+		game_code = "null",	
+		game_msg = "",
+		rank_limit = 1,	
 		max_food = THTD_MAX_FOOD,
-		admin = http.config.admin		
+		admin = http.config.admin,
+		new_card_limit = 0,
+		luck_card = "",
+		crit = 1
 	}	
 	CustomNetTables:SetTableValue("CustomGameInfo", "game_info", GameRules.game_info)
 	CustomNetTables:SetTableValue("CustomGameInfo", "thtd_tower_list", towerNameList)	
@@ -200,23 +209,6 @@ function CTHTDGameMode:SettingExp()
 	return HERO_EXP_TABLE
 end
 
-
-local shopEntitiesOrigin = 
-{
-	[1] = Vector(-2454,2989,142),
-	[2] = Vector(2227,2922,142),
-	[3] = Vector(2259,-2806,142),
-	[4] = Vector(-2454,-2867,142),
-}
-
-local shopEntitiesForward = 
-{
-	[1] = Vector(-math.cos(math.pi/4),-math.sin(math.pi/4),0),
-	[2] = Vector(math.cos(math.pi/4),-math.sin(math.pi/4),0),
-	[3] = Vector(math.cos(math.pi/4),math.sin(math.pi/4),0),
-	[4] = Vector(-math.cos(math.pi/4),math.sin(math.pi/4),0),
-}
-
 local itemReplaceOrigin = 
 {
 	[1] = Vector(-2100,3340,144),
@@ -231,7 +223,7 @@ function CTHTDGameMode:OnDotaItemPickedUp(keys)
 	if item.locked_by_player_id == nil or item.locked_by_player_id == keys.PlayerID or item.card_poor_player_id == keys.PlayerID then return end
 	local heroes = Entities:FindAllByClassname("npc_dota_hero_lina")	
 	for _,hero in pairs(heroes) do	
-		if hero.thtd_player_id == item.locked_by_player_id and (hero.is_game_over or hero:IsStunned()) then return end
+		if hero.thtd_player_id == item.locked_by_player_id and hero.is_game_over == true then return end
 	end
 
 	local picker = nil
@@ -260,11 +252,11 @@ function CTHTDGameMode:OnGameRulesStateChange(keys)
 		[9] = "DOTA_GAMERULES_STATE_DISCONNECT",		
 	}
 	print("-------- Now State: ", stateText[newState])
-	if newState ==  DOTA_GAMERULES_STATE_CUSTOM_GAME_SETUP then		
+	if newState ==  DOTA_GAMERULES_STATE_CUSTOM_GAME_SETUP then	
 		self:GameStateCustomGameSetup()		
 		GameRules:GetGameModeEntity():SetContextThink(DoUniqueString("WaitForUiLoaded"),
 			function()
-				http.api.getGameConfig(GameRules.game_info.admin)
+				http.api.getGameConfig(GameRules.game_info.admin, 5)
 				return nil
 			end,
 		1.0)
@@ -272,6 +264,7 @@ function CTHTDGameMode:OnGameRulesStateChange(keys)
 	elseif newState == DOTA_GAMERULES_STATE_STRATEGY_TIME then	
 		ListenToGameEvent('npc_spawned', Dynamic_Wrap( CTHTDGameMode, 'OnNpcSpawned' ), self )		
 		ListenToGameEvent('dota_item_picked_up', Dynamic_Wrap(CTHTDGameMode, 'OnDotaItemPickedUp'), self)
+		ListenToGameEvent('dota_non_player_used_ability', Dynamic_Wrap(CTHTDGameMode, 'OnDotaNonPlayerUsedAbility'), self)		
 
 		if PlayerResource:GetPlayerCountForTeam(DOTA_TEAM_GOODGUYS) > 1 then 
 			GameRules.is_team_mode = true
@@ -297,23 +290,7 @@ function CTHTDGameMode:OnGameRulesStateChange(keys)
 			if PlayerResource:GetTeam(i) == DOTA_TEAM_GOODGUYS then
 				PlayerResource:ModifyGold(i, math.min(difficulty-1,3)*1000 , true, DOTA_ModifyGold_Unspecified) 
 			end
-		end
-
-		if difficulty == 7 or difficulty == 9 then	
-			for i = 1, 5 do
-				thtd_ability_table["lily"][i]["thtd_lily_01"] = 2
-			end		
-			for i = 1, 5 do
-				thtd_ability_table["daiyousei"][i]["thtd_daiyousei_01"] = 2
-			end		
-			for i = 2, 5 do
-				thtd_ability_minoriko_star_up_table[i] = math.floor(thtd_ability_minoriko_star_up_table[i]*0.7)
-				thtd_ability_sizuha_star_up_table[i] = math.floor(thtd_ability_sizuha_star_up_table[i]*0.7)
-			end
-			for i = 1, 5 do
-				thtd_nazrin_star_bouns_constant[i] = math.floor(thtd_nazrin_star_bouns_constant[i]*1.3)
-			end				
-		end	
+		end		
 
   	elseif newState == DOTA_GAMERULES_STATE_PRE_GAME then 
 		SpawnSystem:PreSpawn()	
@@ -327,14 +304,14 @@ function CTHTDGameMode:OnGameRulesStateChange(keys)
 		GameRules.players_rank_ok = false
 		GameRules.players_rank = {}
 		GameRules.players_rank_data = {}
-		http.api.getRank()
+		http.api.getRank(3)
 
 		GameRules.players_team_rank_ok = false
 		GameRules.players_team_rank = {}
 		GameRules.players_team_rank_data = {}
 		GameRules:GetGameModeEntity():SetContextThink(DoUniqueString("getRankDelay"),
 			function()
-				http.api.getTeamRank()
+				http.api.getTeamRank(3)
 				return nil
 			end,
 		1.0)
@@ -345,7 +322,7 @@ function CTHTDGameMode:OnGameRulesStateChange(keys)
 		GameRules:GetGameModeEntity():SetContextThink(DoUniqueString("GetPlayersWaveData"),
 			function()
 				if PlayerResource:GetTeam(count) == DOTA_TEAM_GOODGUYS then
-					http.api.getWaveData(count)					
+					http.api.getWaveData(count, 5)					
 				end
 				count = count + 1
 				if count >= total then 					
@@ -356,24 +333,30 @@ function CTHTDGameMode:OnGameRulesStateChange(keys)
 			end,
 		2.0)
 
+		-- 解除地图购买上限
+		SendToServerConsole("dota_max_physical_items_purchase_limit 59999")		
+
+
 	elseif newState == DOTA_GAMERULES_STATE_GAME_IN_PROGRESS then  			
 		SpawnSystem:InitSpawn()
-		for i=0, PlayerResource:GetPlayerCount()-1 do
+		for i=0, PlayerResource:GetPlayerCount()-1 do			
 			if PlayerResource:GetTeam(i) == DOTA_TEAM_GOODGUYS then 
-				if GameRules.players_ban_status[i] == true then
-					GameRules:SendCustomMessage("<font color='red'>由于 "..PlayerResource:GetPlayerName(i).." 为作弊玩家，已将其踢出游戏！</font>", DOTA_TEAM_GOODGUYS, 0)	  				
+				if GameRules.players_status[i].ban == 1 then
+					GameRules:SendCustomMessage("<font color='red'>由于 "..PlayerResource:GetPlayerName(i).." 因"..GameRules.players_status[i].reason.."被举报加入黑名单，已将其踢出游戏！</font>", DOTA_TEAM_GOODGUYS, 0)	  				
 					local heroes = Entities:FindAllByClassname("npc_dota_hero_lina")
 					for _,hero in pairs(heroes) do	
 						if hero.thtd_player_id == i then 
 							SpawnSystem:GameOver(hero)
 							break
 						end
-					end					
+					end		
+				elseif GameRules.players_status[i].vip == 1 then
+					GameRules:SendCustomMessage("<font color='yellow'>欢迎贡献者 "..PlayerResource:GetPlayerName(i).."，特别奖励持续到 "..GameRules.players_status[i].end_time.."</font>", DOTA_TEAM_GOODGUYS, 0)	
 				end
 			end			
 		end		
 		-- PrintTable(GameRules.players_max_wave)
-		GameRules:SendCustomMessage("<font color='yellow'>按主键盘数字键 6 至 0 发表情，按字母键 i 切换第一视角</font>", DOTA_TEAM_GOODGUYS, 0)	
+		GameRules:SendCustomMessage("<font color='yellow'>按主键盘数字键 6 至 0 发表情，按字母键 i 切换第一视角，按 F9 暂停/恢复游戏</font>", DOTA_TEAM_GOODGUYS, 0)	
 	end
 	  
 end
@@ -386,26 +369,23 @@ function CTHTDGameMode:GameStateCustomGameSetup()
 		end
 	end
 
-	GameRules.players_ban_status = {
-		[0] = false,
-		[1] = false,
-		[2] = false,
-		[3] = false
-	}
-	GameRules.players_card_group = {
-		[0] = {},
-		[1] = {},
-		[2] = {},
-		[3] = {}
-	}
+	GameRules.players_status = { }
+	GameRules.players_card_group = { }
 
 	local total = PlayerResource:GetPlayerCount()
 	local count = 0
 	GameRules:GetGameModeEntity():SetContextThink(DoUniqueString("WaitForUiLoaded"),
 		function()
 			if PlayerResource:GetTeam(count) == DOTA_TEAM_GOODGUYS then
-				http.api.getBanPlayer(count)
-				http.api.getCardGroup(count)
+				GameRules.players_status[count] = {                        
+					["end_time"] = "",
+					["reason"] = "",					
+					["vip"] = 0,
+					["ban"] = 0         
+				}
+				http.api.getBlackOrWhitePlayer(count, 3)
+				GameRules.players_card_group[count] = { }
+				http.api.getCardGroup(count, 3)
 			end
 			count = count + 1
 			if count >= total then 
@@ -426,8 +406,7 @@ function CTHTDGameMode:OnNpcSpawned(keys)
 		hero.thtd_combo_voice_array = {}		
 		hero.press_key = {}
 		hero.thtd_emoji_effect = nil
-		hero.thtd_has_skin = false
-		hero.is_game_over = false
+		hero.thtd_has_skin = false		
 
 		hero.thtd_game_info = {}		
 		hero.thtd_game_info["creep_count"] = 0
@@ -438,7 +417,9 @@ function CTHTDGameMode:OnNpcSpawned(keys)
 		hero.thtd_game_info["max_wave"] = 0
 		hero.thtd_game_info["is_player_connected"] = 0
 	
-		hero.thtd_chance_count = {}
+		hero.thtd_chance_count = {}		
+		hero.thtd_ai_time = 0
+		hero.is_game_over = false
 		
 		local heroPlayerID = hero:GetPlayerOwnerID()
 		hero.thtd_player_id = heroPlayerID	
@@ -472,7 +453,7 @@ function CTHTDGameMode:OnNpcSpawned(keys)
 
 		local shop = CreateUnitByName(
 			"minoriko_shop", 
-			shopEntitiesOrigin[hero:GetPlayerOwnerID()+1], 
+			SpawnSystem.ShopEntitiesOrigin[hero:GetPlayerOwnerID()+1], 
 			false, 
 			hero, 
 			hero, 
@@ -485,28 +466,27 @@ function CTHTDGameMode:OnNpcSpawned(keys)
 		shop:SetContextThink(DoUniqueString("shop_think"), 
 			function()
 				if GameRules:IsGamePaused() then return 0.03 end
-				shop:MoveToPosition(shop:GetOrigin()+shopEntitiesForward[hero:GetPlayerOwnerID()+1])
+				shop:MoveToPosition(shop:GetOrigin()+SpawnSystem.ShopEntitiesForward[hero:GetPlayerOwnerID()+1])
 				return nil				
 			end,
 		1.0)
 
-		if GameRules:GetCustomGameDifficulty() == 10 then 
+		if GameRules:GetCustomGameDifficulty() == 8 then 
 			hero:SetContextThink(DoUniqueString("SetSpawn") ,
 				function()
 					if GameRules:IsGamePaused() then return 0.1 end	
 					if SpawnSystem.IsUnLimited then return nil end			
-					PlayerResource:ModifyGold(heroPlayerID, math.min(SpawnSystem.CurWave * 20, 500) , true, DOTA_ModifyGold_Unspecified)	
+					THTD_ModifyGoldEx(heroPlayerID, math.min(SpawnSystem.CurWave * 30, 700) , true, DOTA_ModifyGold_Unspecified)	
 					return 1
 				end,
 			10)
-		end
+		end	
 
-		hero.thtd_ai_time = 0
 		hero:SetContextThink(DoUniqueString("thtd_ai_think"), 
-			function()
+			function()					
 				hero.thtd_ai_time = GameRules:GetGameTime()
 				if GameRules:IsGamePaused() then return 0.1 end
-				if hero.is_game_over or hero:IsStunned() then return nil end				
+				if hero.is_game_over == true then return nil end				
 				for k,v in pairs(hero.thtd_hero_tower_list) do
 					if v~=nil and v:IsNull()==false and v:IsAlive() and v:THTD_IsHidden() == false and v.thtd_close_ai ~= true and v:HasModifier("modifier_touhoutd_building") == false then
 						local func = v["THTD_"..v:GetUnitName().."_thtd_ai"]
@@ -553,7 +533,7 @@ function CTHTDGameMode:OnEntityKilled(keys)
 			targets = {}
 
 			local factor = 1
-			if GameRules:GetCustomGameDifficulty() == 10 then 
+			if GameRules:GetCustomGameDifficulty() == 8 then 
 				factor = 1.5
 			end
 			local totalNum = #expUnits
@@ -597,13 +577,17 @@ function CTHTDGameMode:OnEntityKilled(keys)
 end
 
 function CTHTDGameMode:OnPlayerSay(keys)	
-	if tostring(PlayerResource:GetSteamID(keys.playerid)) ~= GameRules.game_info.admin then return end	
+	-- if tostring(PlayerResource:GetSteamID(keys.playerid)) ~= GameRules.game_info.admin then return end	
 
 	local text = keys.text
 
 	if string.sub(text,1,6) == "-color" then
 		local colorValue = string.sub(text, 8, 11)	
 		CustomGameEventManager:Send_ServerToAllClients("show_message", {msg="item_locked_tip", duration=10, params={}, color=colorValue})
+	end	
+
+	if string.sub(text,1,3) == "-id" then
+		GameRules:SendCustomMessage("<font color='yellow'>"..tostring(PlayerResource:GetSteamID(keys.playerid)).."</font>", DOTA_TEAM_GOODGUYS, 0)	
 	end	
 
 	if string.sub(text,1,4) == "-pos" then
@@ -614,6 +598,7 @@ function CTHTDGameMode:OnPlayerSay(keys)
 		print(math.floor(pos.x + 0.5))
 		print(math.floor(pos.y + 0.5))
 		print(math.floor(pos.z + 0.5))
+		GameRules:SendCustomMessage("X: "..tostring(math.floor(pos.x + 0.5)).."，Y："..tostring(math.floor(pos.y + 0.5)).."，Z："..tostring(math.floor(pos.z + 0.5)), DOTA_TEAM_GOODGUYS, 0)
 	end
 
 	if string.sub(text,1,5) == "-wave" then
@@ -621,6 +606,11 @@ function CTHTDGameMode:OnPlayerSay(keys)
 		if num ~= nil and num > -49 then 
 			CustomGameEventManager:Send_ServerToPlayer(PlayerResource:GetPlayer(keys.playerid),"thtd_command", {cmd="wave", param=num})					
 		end			
+	end
+
+	if string.sub(text,1,5) == "-boss" then
+		local num = string.sub(text, 7, 20)		
+		CustomGameEventManager:Send_ServerToPlayer(PlayerResource:GetPlayer(keys.playerid),"thtd_command", {cmd="boss", param=num})	
 	end
 
 	if string.sub(text,1,4) == "-add" then
@@ -637,8 +627,8 @@ function CTHTDGameMode:OnPlayerSay(keys)
 		CustomGameEventManager:Send_ServerToPlayer(PlayerResource:GetPlayer(keys.playerid),"thtd_command", {cmd="clearrank", param={}})
 	end	
 
-	if string.sub(text,1,8) == "-levelup" then		
-		CustomGameEventManager:Send_ServerToPlayer(PlayerResource:GetPlayer(keys.playerid),"thtd_command", {cmd="levelup", param={}})
+	if string.sub(text,1,8) == "-lv" then		
+		CustomGameEventManager:Send_ServerToPlayer(PlayerResource:GetPlayer(keys.playerid),"thtd_command", {cmd="lv", param={}})
 	end	
 end
 
@@ -754,6 +744,7 @@ function CTHTDGameMode:ExecuteOrder( keys )
 						end						
 					end
 					v:SetAbsOrigin(sortedItemPos[itemName])
+					THTD_ItemSetScale(containedItem)
 				end				
 			end	
 			sortedItemPos = {}
@@ -790,6 +781,20 @@ function CTHTDGameMode:ExecuteOrder( keys )
 			end	
 			OnItemDestroyed(EntIndexToHScript(keys.units["0"]), ability, true)
 		end	
+		local gold = ability:GetCost()
+		if gold ~= nil and gold > 0 then
+			gold = math.floor(gold/2)
+			local current_gold = PlayerResource:GetGold(keys.issuer_player_id_const)
+			if gold + current_gold > 99999 then
+				thtd_extra_gold[keys.issuer_player_id_const] = thtd_extra_gold[keys.issuer_player_id_const] + (gold - (99999-current_gold))
+				THTD_RefreshExtraGold(keys.issuer_player_id_const)
+			elseif thtd_extra_gold[keys.issuer_player_id_const] > 0 then
+				local add_gold = math.min(thtd_extra_gold[keys.issuer_player_id_const], 99999-(gold+current_gold))		
+				thtd_extra_gold[keys.issuer_player_id_const] = thtd_extra_gold[keys.issuer_player_id_const] - add_gold			
+				PlayerResource:ModifyGold(keys.issuer_player_id_const, add_gold, true, DOTA_ModifyGold_Unspecified)
+				THTD_RefreshExtraGold(keys.issuer_player_id_const)
+			end
+		end
 		return true
 	end
 
@@ -811,6 +816,33 @@ function CTHTDGameMode:ExecuteOrder( keys )
 			return true
 		end
 	end	
+
+	if order_type == DOTA_UNIT_ORDER_DROP_ITEM then	
+		local item = EntIndexToHScript(keys.entindex_ability)
+		if THTD_HasItemScale(item) then 
+			if item.item_set_scale ~= true then 
+				item.item_set_scale = true
+				local count = 600
+				item:SetContextThink(DoUniqueString("item_set_scale"),
+					function() 
+						if GameRules:IsGamePaused() then return 0.03 end
+						if item:GetContainer() ~= nil then 
+							THTD_ItemSetScale(item)
+							item.item_set_scale = nil			
+							return nil
+						end
+						if count <= 0 then 
+							item.item_set_scale = nil			
+							return nil
+						end
+						count = count - 1
+						return 0.1					
+					end,
+				0.1)
+			end		
+		end
+		return true			
+	end
 
 	return true
 end
@@ -839,7 +871,7 @@ end
 
 function AddGoldPerTick(caster,item)
 	if SpawnSystem.IsUnLimited then return end
-	if GameRules:GetCustomGameDifficulty() == 10 then return end
+	if GameRules:GetCustomGameDifficulty() == 8 then return end
 	if caster==nil or caster:IsNull() then return end
 	if item.thtd_isUsed == true then return end
 	local hero = nil
@@ -851,14 +883,12 @@ function AddGoldPerTick(caster,item)
 	if hero~=nil then		
 		if hero.thtd_pertick_is_open ~= true then
 			hero.thtd_pertick_is_open = true
-			item.thtd_isUsed = true
-			local bonus = 1.0
-			if GameRules:GetCustomGameDifficulty() == 7 or GameRules:GetCustomGameDifficulty() == 9 then bonus = 1.3 end
+			item.thtd_isUsed = true			
 			hero:SetContextThink(DoUniqueString("thtd_pertick_gold_think"), 
 				function()
 					if GameRules:IsGamePaused() then return 0.03 end
 					if SpawnSystem.IsUnLimited then return nil end
-					PlayerResource:ModifyGold(hero:GetPlayerOwnerID(), math.floor(2.5 * SpawnSystem.CurWave * bonus) , true, DOTA_ModifyGold_Unspecified)					
+					THTD_ModifyGoldEx(hero:GetPlayerOwnerID(), math.min(3 * SpawnSystem.CurWave, 120) , true, DOTA_ModifyGold_Unspecified)					
 					return 1.0
 				end,
 			1.0)
@@ -885,9 +915,17 @@ function CheckItemShare(caster,item)
 end
 
 function CTHTDGameMode:ModifierFilter(keys)
+	-- duration: 9
+	-- entindex_ability_const: 108
+	-- entindex_caster_const: 391
+	-- entindex_parent_const: 142
+	-- name_const: modifier_lycan_howl
+
 	if keys.entindex_parent_const == nil then
 		return true
 	end
+
+	local caster = EntIndexToHScript(keys.entindex_caster_const)
 	local unit = EntIndexToHScript(keys.entindex_parent_const)   
 
 	if unit~=nil and unit:IsNull()==false then
@@ -900,6 +938,35 @@ function CTHTDGameMode:ModifierFilter(keys)
 				return true
 			end
 		end
+
+		if modifierName == "modifier_lycan_howl" then
+			local caster = EntIndexToHScript(keys.entindex_caster_const)			
+			if unit:GetPlayerOwnerID() ~= caster:GetPlayerOwnerID() then return false end
+		end
+		if modifierName == "modifier_lycan_shapeshift" then			
+			if not GameRules:IsDaytime() then 
+				keys.duration = keys.duration + caster:FindAbilityByName("lycan_shapeshift"):GetSpecialValueFor("speed")
+			end
+		end
+		
+		if modifierName == "modifier_keeper_of_the_light_will_o_wisp" then 
+			local DamageTable = {
+				ability = caster:FindAbilityByName("keeper_of_the_light_will_o_wisp"),
+				victim = unit, 
+				attacker = caster, 
+				damage = caster:THTD_GetPower() * caster:THTD_GetStar() * caster:FindAbilityByName("keeper_of_the_light_will_o_wisp"):GetSpecialValueFor("hit_count"), 
+				damage_type = DAMAGE_TYPE_PHYSICAL, 
+				damage_flags = DOTA_DAMAGE_FLAG_NONE
+			}				
+			UnitDamageTarget(DamageTable)	
+		end
+
+		if modifierName == "modifier_ogre_magi_bloodlust" then 
+			if caster.thtd_last_cast_unit ~= unit then 
+				caster.thtd_last_cast_unit = unit
+			end
+		end			
+
 	end
 	return true
 end
@@ -908,25 +975,19 @@ function CTHTDGameMode:DamageFilter(keys)
 	-- damage: 24
 	-- damagetype_const: 1
 	-- entindex_attacker_const: 503
-	-- entindex_inflictor_const: 500
-	-- entindex_victim_const: 434
-	if keys.damage <= 0 then
-		return false
-	end
-
-	if keys.entindex_attacker_const == nil or keys.entindex_victim_const == nil then
-		return true
-	end
-
-	local unit = EntIndexToHScript(keys.entindex_attacker_const)	
+	-- entindex_inflictor_const: 500 技能，普通攻击没有这个
+	-- entindex_victim_const: 434	
+	if keys.damage <= 0 then return false end
+	if keys.entindex_attacker_const == nil or keys.entindex_victim_const == nil then return true end
+	
 	local target = EntIndexToHScript(keys.entindex_victim_const)
+	if target.thtd_damage_lock == true then	return false end
+	local unit = EntIndexToHScript(keys.entindex_attacker_const)
+	local ability = nil --普通攻击
+	if keys.entindex_inflictor_const ~= nil then ability = EntIndexToHScript(keys.entindex_inflictor_const) end --技能时
 
 	local unitName = unit:GetUnitName()
 	local health = target:GetHealth()
-
-	if target.thtd_damage_lock == true or keys.damage <= 0 then
-		return false
-	end
 
 	if unitName == "npc_dota_hero_lina" then 
 		if target:HasModifier("modifier_bosses_kaguya") and keys.damage > health then
@@ -950,46 +1011,74 @@ function CTHTDGameMode:DamageFilter(keys)
 		tower.thtd_tower_damage = 0
 	end	
 
-	if unitName == "junko" or unit:HasModifier("modifier_junko_01") then			
-		if unitName == "satori" then
-			keys.damage = math.min(keys.damage, 3768000*0.5)
-		elseif unitName == "yuyuko" then
-			if unit.thtd_yuyuko_02_chance == nil then
-				unit.thtd_yuyuko_02_chance = 5
-			end
-			if unit:FindAbilityByName("thtd_yuyuko_02")~=nil and RandomInt(1,100) <= unit.thtd_yuyuko_02_chance then            
-				keys.damage = math.min(health + 100, unit:THTD_GetPower() * unit:THTD_GetStar() * 100)
-			end		
+	-- dota2自带技能处理
+	if unitName == "alice_falanxi_ningyou" then	
+		-- 上限处理，取双抗为0的伤害	
+		if keys.damage > 180000 and keys.damage > target:GetMaxHealth() * 0.05 then 
+			keys.damage = target:GetMaxHealth() * 0.05
+		end
+	elseif unitName == "kagerou" then			
+		local armor = target:GetPhysicalArmorValue()
+		local damageFactor = 1.0
+		if armor > 0 then 
+			damageFactor = 1 - (0.052 * armor /(0.9 + 0.048 * armor))  -- 7.20版本护甲计算			
+		else			
+			damageFactor = 1 - (0.052 * armor /(0.9 - 0.048 * armor))  -- 7.20版本负护甲计算			
 		end		
-		if target:HasModifier("modifier_bosses_kaguya") and keys.damage > health then
-			target:SetHealth(1)
-			target:RemoveModifierByName("modifier_bosses_kaguya")
-			tower.thtd_tower_damage = tower.thtd_tower_damage + health/100
-			if unitName == "flandre" and keys.damage - health > 300 then  --按无尽减伤后的最小量100，100/（1-0.625）取整
-				THTD_OverDamage(unit, unit:FindAbilityByName("thtd_flandre_02"), keys.damage - health, target:GetOrigin(), 400)
+		local crit = 1
+		if unit:HasModifier("modifier_lycan_shapeshift") and RandomInt(1,100) <= unit:FindAbilityByName("lycan_shapeshift"):GetSpecialValueFor("crit_chance") then 
+			crit = unit:FindAbilityByName("lycan_shapeshift"):GetSpecialValueFor("crit_multiplier") / 100			
+		end
+		if unit:GetAttackTarget() == target then 			
+			keys.damage = keys.damage + crit * damageFactor * unit:THTD_GetPower() * unit:THTD_GetStar() * unit:FindAbilityByName("lycan_feral_impulse"):GetSpecialValueFor("bonus_hp_regen")	
+		else			
+			keys.damage = keys.damage + crit * damageFactor * unit:THTD_GetPower() * unit:THTD_GetStar() * unit:FindAbilityByName("lycan_feral_impulse"):GetSpecialValueFor("bonus_hp_regen") * unit:FindAbilityByName("sven_great_cleave"):GetSpecialValueFor("great_cleave_damage") / 100			
+		end					
+	elseif unitName == "wriggle" then	
+		if ability ~= nil then
+			if ability:GetAbilityName() == "death_prophet_exorcism" then				
+				local armor = target:GetPhysicalArmorValue()
+				local damageFactor = 1.0
+				if armor > 0 then 
+					damageFactor = 1 - (0.052 * armor /(0.9 + 0.048 * armor))  -- 7.20版本护甲计算			
+				else			
+					damageFactor = 1 - (0.052 * armor /(0.9 - 0.048 * armor))  -- 7.20版本负护甲计算			
+				end							
+				keys.damage = keys.damage + damageFactor * unit:THTD_GetPower() * unit:THTD_GetStar() * unit:FindAbilityByName("death_prophet_exorcism"):GetSpecialValueFor("heal_percent")				
 			end
-			return false				
 		end
+	elseif unitName == "inaba" then
+		local armor = target:GetPhysicalArmorValue()
+		local damageFactor = 1.0
+		if armor > 0 then 
+			damageFactor = 1 - (0.052 * armor /(0.9 + 0.048 * armor))  -- 7.20版本护甲计算			
+		else			
+			damageFactor = 1 - (0.052 * armor /(0.9 - 0.048 * armor))  -- 7.20版本负护甲计算			
+		end	
+		keys.damage = keys.damage + damageFactor * unit:THTD_GetPower() * unit:THTD_GetStar()
+		keys.damage = keys.damage + damageFactor * target:GetMaxHealth() * unit:FindAbilityByName("sniper_headshot"):GetSpecialValueFor("slow_duration") / 100		
+	end
+	
+	-- if not unit:THTD_IsTower() then
+	-- 	print("--------------")
+	-- 	print(unit:GetUnitName())
+	-- 	print(unit:GetOwner():GetUnitName())
+	-- end
 
-		tower.thtd_tower_damage = tower.thtd_tower_damage + math.min(keys.damage, health) / 100
-		if unitName == "flandre" and keys.damage - health > 300 then				
-			THTD_OverDamage(unit, unit:FindAbilityByName("thtd_flandre_02"), keys.damage - health, target:GetOrigin(), 400)
-		end
-        return true
+	if unitName == GameRules.game_info.luck_card then
+		keys.damage = keys.damage * (1 + math.max(-90, GameRules.game_info.crit) / 100)
 	end	
-
-	local damage_table = {			
+	
+	local damage_table = {		
+		ability = ability,	
 		victim = target,
 		attacker = unit,
 		damage = keys.damage,
 		damage_type = keys.damagetype_const,			
-	}
-
+	}	
 	keys.damage = ReturnAfterTaxDamage(damage_table, false)
 	damage_table = {}
-	if keys.damage <= 0 then
-		return false
-	end
+	if keys.damage <= 0 then return false end
 
 	if target:HasModifier("modifier_bosses_kaguya") and keys.damage > health then	
 		target:SetHealth(1)
@@ -1001,9 +1090,85 @@ function CTHTDGameMode:DamageFilter(keys)
 		return false
 	end
 
-	tower.thtd_tower_damage = tower.thtd_tower_damage + math.min(keys.damage,health) / 100
+	tower.thtd_tower_damage = tower.thtd_tower_damage + math.min(keys.damage, health) / 100
 	if unitName == "flandre" and keys.damage - health > 300 then				
 		THTD_OverDamage(unit, unit:FindAbilityByName("thtd_flandre_02"), keys.damage - health, target:GetOrigin(), 400)
 	end
 	return true	
+end
+
+function CTHTDGameMode:OnModifyGoldFilter(keys)
+	-- gold: 15
+	-- player_id_const: 0
+	-- reason_const: 13
+	-- reliable: 0
+	
+	-- GameRules:SendCustomMessage("<font color='yellow'>"..tostring(keys.gold).."</font>", DOTA_TEAM_GOODGUYS, 0)
+	-- 出售和接口改变金钱不会触发，当前地图只有杀怪奖励金钱
+
+	if (keys.gold <= 0) then return true end
+	
+	if thtd_extra_gold[keys.player_id_const] == nil then
+		thtd_extra_gold[keys.player_id_const] = 0
+	end
+	local current_gold = PlayerResource:GetGold(keys.player_id_const)
+	if current_gold + keys.gold > 99999 then
+		local add_gold = math.min(keys.gold, 99999-current_gold)
+		thtd_extra_gold[keys.player_id_const] = thtd_extra_gold[keys.player_id_const] + (keys.gold - add_gold)
+		keys.gold = add_gold		
+	elseif thtd_extra_gold[keys.player_id_const] > 0 then
+		local add_gold = math.min(thtd_extra_gold[keys.player_id_const], 99999-(keys.gold+current_gold))
+		keys.gold = keys.gold + add_gold
+		thtd_extra_gold[keys.player_id_const] = thtd_extra_gold[keys.player_id_const] - add_gold
+	end
+
+	THTD_RefreshExtraGold(keys.player_id_const)  
+	return true
+end
+
+function CTHTDGameMode:OnDotaNonPlayerUsedAbility(keys)
+	-- 字段
+	-- abilityname
+	-- caster_entindex
+	
+	local caster = EntIndexToHScript(keys.caster_entindex)
+	-- print(caster:GetUnitName().."  "..keys.abilityname)
+
+	if keys.abilityname == "lycan_howl" then	
+		-- 防止技给buff生效延迟
+		caster:SetContextThink(DoUniqueString("thtd_kagerou03_buff"), 
+			function()
+				if GameRules:IsGamePaused() then return 0.03 end
+				
+				local hero = caster:GetOwner()				
+				for _,tower in pairs(hero.thtd_hero_tower_list) do
+					if tower.thtd_kagerou_03_bonus ~= true and tower:HasModifier("modifier_lycan_howl") then						
+						tower.thtd_kagerou_03_bonus = true
+						local power_bonus = caster:FindAbilityByName(keys.abilityname):GetSpecialValueFor("armor")	
+						local attack_bonus = caster:FindAbilityByName(keys.abilityname):GetSpecialValueFor("hp_regen")						
+						tower:THTD_AddPower(power_bonus)
+						tower:THTD_AddAttack(attack_bonus)
+						tower:SetContextThink(DoUniqueString("thtd_kagerou03_buff_remove"), 
+							function()
+								if GameRules:IsGamePaused() then return 0.03 end
+								if THTD_IsValid(tower) == false or tower:HasModifier("modifier_lycan_howl") == false or caster:THTD_IsHidden() then 
+									if tower ~= nil and tower:IsNull() == false then 
+										tower:THTD_AddPower(-power_bonus)
+										tower:THTD_AddAttack(-attack_bonus)
+										tower.thtd_kagerou_03_bonus = false
+									end									
+									return nil 
+								end						
+								return 0.3
+							end,
+						0)
+					end
+				end
+				
+				return nil 
+			end,
+		0.15)
+		
+		return
+	end
 end

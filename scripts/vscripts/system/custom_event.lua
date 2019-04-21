@@ -103,6 +103,23 @@ CustomEvent.on('custom_game_select_difficulty', function(data)
 	CustomNetTables:SetTableValue("CustomGameInfo", "PlayersSelectedDifficulty", PlayersSelectedDifficulty )
 end)
 
+-- 选择娱乐模式难度
+local PlayersFunnyMode = {}
+CustomEvent.on('custom_game_select_funny_difficulty', function(data)
+	local player = PlayerResource:GetPlayer(data.PlayerID)
+	if player ==nil then return end
+
+	if GameRules.players_card_group[data.PlayerID]["_id"] ~= nil then
+        if GameRules.players_card_group[data.PlayerID]["_id"] ~= "-1" then      
+            http.api.saveGamePoint(data.PlayerID, -66, 5)
+		end		
+		PlayersFunnyMode[data.PlayerID] = 1	
+		CustomNetTables:SetTableValue("CustomGameInfo", "PlayersFunnyMode", PlayersFunnyMode)
+		PlayersSelectedDifficulty[data.PlayerID] = 7
+		CustomNetTables:SetTableValue("CustomGameInfo", "PlayersSelectedDifficulty", PlayersSelectedDifficulty)
+	end	
+end)
+
 
 -- 完成状态
 local PlayersCompleteStatus = {}
@@ -153,7 +170,7 @@ local playerVote =
 	agree_players = {}	
 }
 
-CustomEvent.on('custom_game_kick_vote', function(data)
+CustomEvent.on('custom_game_kick_vote', function(data)	
 	if SpawnSystem.CurWave > 50 + 20 then 
 		GameRules:SendCustomMessage("<font color='red'>无尽20波以后不能发起踢人投票</font>", DOTA_TEAM_GOODGUYS, 1)
 		return 
@@ -161,7 +178,7 @@ CustomEvent.on('custom_game_kick_vote', function(data)
 	local player = PlayerResource:GetPlayer(data.PlayerID)	
 	if player ==nil then return end
 	local hero = player:GetAssignedHero()
-	if hero.is_game_over or hero:IsStunned() then return end	
+	if hero.is_game_over == true then return end	
 	
 	if playerVote.kicked_player ~= - 1 and (math.floor(GameRules:GetGameTime()) - playerVote.vote_time) < 60 then
 		CustomGameEventManager:Send_ServerToPlayer(player, "show_message", {msg="player_in_vote", duration=10, params={count=playerVote.kicked_player+1}, color="#ff0"})
@@ -183,15 +200,15 @@ CustomEvent.on('custom_game_kick_vote', function(data)
 	playerVote.vote_player = data.PlayerID
 	playerVote.kicked_player = kicked_player
 	playerVote.kicked_line = data.line_index
-	playerVote.agree_players = {}	
+	playerVote.agree_players = {}		
 	CustomGameEventManager:Send_ServerToAllClients("kick_player", {vote_player=playerVote.vote_player, kicked_player=playerVote.kicked_player, kicked_line = playerVote.kicked_line})	
 end)
 
-CustomEvent.on('custom_game_kick_accept', function(data)
+CustomEvent.on('custom_game_kick_accept', function(data)	
 	local player = PlayerResource:GetPlayer(data.PlayerID)	
 	if player ==nil then return end
 	local hero = player:GetAssignedHero()
-	if hero.is_game_over or hero:IsStunned() then return end
+	if hero.is_game_over == true then return end
 	if playerVote.kicked_player == -1 then return end
 	
 	if data.accept == 1 then 
@@ -212,8 +229,8 @@ end)
 
 function KickPlayer()
 	local heroes = Entities:FindAllByClassname("npc_dota_hero_lina")
-	for index,hero in pairs(heroes) do
-		if hero~=nil and hero:IsNull()==false and hero:IsAlive() and hero.is_game_over==fasle and hero:IsStunned()==false and hero.thtd_player_id == playerVote.kicked_player then
+	for index,hero in pairs(heroes) do		
+		if hero ~= nil and hero.is_game_over ~= true and hero.thtd_player_id == playerVote.kicked_player then			
 			SpawnSystem:GameOver(hero)	
 			CustomGameEventManager:Send_ServerToAllClients("show_message", {msg="player_vote_pass", duration=10, params={count=playerVote.kicked_player+1}, color="#ff0"})
 			break			
@@ -230,7 +247,7 @@ function GetValidVotePlayerCount()
 	local count = 0
 	local heroes = Entities:FindAllByClassname("npc_dota_hero_lina")
 	for index,hero in pairs(heroes) do
-		if hero~=nil and hero:IsNull()==false and hero:IsAlive() and hero.is_game_over==false and hero:IsStunned() == false and hero.thtd_game_info["is_player_connected"] then
+		if hero~=nil and hero:IsNull()==false and hero:IsAlive() and hero.is_game_over~=true and hero.thtd_game_info["is_player_connected"] then
 			count = count + 1
 		end
 	end
@@ -257,7 +274,12 @@ CustomEvent.on('custom_game_select_start_card', function(data)
 		item.owner_player_id = hero.thtd_player_id
 		item.is_bonus_item = true
 		hero:AddItem(item)
-		if data.ItemName == "item_0003" then hero:AddItem(CreateItem("item_0088", nil, nil)) end
+		if data.ItemName == "item_0003" then 
+			item = CreateItem("item_0088", nil, nil)
+			item.owner_player_id = hero.thtd_player_id
+			item.is_bonus_item = true
+			hero:AddItem(item)
+		end
 		for i=1,5 do
 			hero:HeroLevelUp(false)
 		end
@@ -267,45 +289,53 @@ CustomEvent.on('custom_game_select_start_card', function(data)
 end)
 
 -- 选择初始奖励卡
-CustomEvent.on('custom_game_select_bonus_card', function(data)	
-	local player = PlayerResource:GetPlayer(data.PlayerID)	
-	if player ==nil then return end	
-	local hero = player:GetAssignedHero()
-	if hero:GetLevel() >= 9 then return end		
-	if hero:GetNumItemsInInventory()>=8 then 
-		CustomGameEventManager:Send_ServerToPlayer(player, "select_bonus_card_no_finish", {})
-		CustomGameEventManager:Send_ServerToPlayer(player, "show_message", {msg="not_enough_item_slot", duration=10, params={}, color="#ff0"})
-		return 
-	end
-	local item = CreateItem(data.ItemName, nil, nil)	
-	if item ~= nil then
-		item.owner_player_id = hero.thtd_player_id
-		item.is_bonus_item = true
-		hero:AddItem(item)	
-		local cardName = item:THTD_GetCardName()
-		if item:THTD_IsCardHasVoice() == true then EmitSoundOnClient(THTD_GetVoiceEvent(cardName,"spawn"),player) end	
-		if item:THTD_IsCardHasPortrait() == true then
-			local portraits= item:THTD_GetPortraitPath(cardName)			
-			local effectIndex = ParticleManager:CreateParticle(portraits, PATTACH_WORLDORIGIN, nil)
-			ParticleManager:SetParticleControl(effectIndex, 0, Vector(-58,-80,0))
-			ParticleManager:SetParticleControl(effectIndex, 1, Vector(80,0,0))
-			ParticleManager:DestroyParticleSystemTime(effectIndex,6.0)
-			effectIndex = ParticleManager:CreateParticle("particles/portraits/portraits_ssr_get_screen_effect.vpcf", PATTACH_WORLDORIGIN, nil)
-			ParticleManager:DestroyParticleSystemTime(effectIndex,4.0)
-			hero:EmitSound("Sound_THTD.thtd_draw_ssr")				
-		end	
-		for i=1,3 do
-			hero:HeroLevelUp(false)
-		end		
-		if data.ItemName == "item_2023" or data.ItemName == "item_2024" or data.ItemName == "item_0096" then 
-			local item2004 = CreateItem("item_2004", nil, nil)
-			if item2004 ~= nil then 
-				item2004.owner_player_id = hero.thtd_player_id
-				item2004.is_bonus_item = true
-				hero:AddItem(item2004)
-			end
+CustomEvent.on('custom_game_select_bonus_card', function(data)
+	if tostring(PlayerResource:GetSteamID(data.PlayerID)) == GameRules.game_info.admin or GameRules.players_status[data.PlayerID].vip == 1 or 
+	   GameRules.players_card_group[data.PlayerID]["point"] == 0 or GameRules.players_card_group[data.PlayerID]["point"] > 20 then		
+		local player = PlayerResource:GetPlayer(data.PlayerID)	
+		if player ==nil then return end	
+		local hero = player:GetAssignedHero()
+		if hero:GetLevel() >= 9 then return end		
+		if hero:GetNumItemsInInventory()>=8 then 
+			CustomGameEventManager:Send_ServerToPlayer(player, "select_bonus_card_no_finish", {})
+			CustomGameEventManager:Send_ServerToPlayer(player, "show_message", {msg="not_enough_item_slot", duration=10, params={}, color="#ff0"})
+			return 
 		end
-	end	
+		local item = CreateItem(data.ItemName, nil, nil)	
+		if item ~= nil then
+			item.owner_player_id = hero.thtd_player_id
+			item.is_bonus_item = true
+			hero:AddItem(item)	
+			local cardName = item:THTD_GetCardName()
+			if item:THTD_IsCardHasVoice() == true then EmitSoundOnClient(THTD_GetVoiceEvent(cardName,"spawn"),player) end	
+			if item:THTD_IsCardHasPortrait() == true then
+				local portraits= item:THTD_GetPortraitPath(cardName)			
+				local effectIndex = ParticleManager:CreateParticle(portraits, PATTACH_WORLDORIGIN, nil)
+				ParticleManager:SetParticleControl(effectIndex, 0, Vector(-58,-80,0))
+				ParticleManager:SetParticleControl(effectIndex, 1, Vector(80,0,0))
+				ParticleManager:DestroyParticleSystemTime(effectIndex,6.0)
+				effectIndex = ParticleManager:CreateParticle("particles/portraits/portraits_ssr_get_screen_effect.vpcf", PATTACH_WORLDORIGIN, nil)
+				ParticleManager:DestroyParticleSystemTime(effectIndex,4.0)
+				hero:EmitSound("Sound_THTD.thtd_draw_ssr")				
+			end	
+			for i=1,3 do
+				hero:HeroLevelUp(false)
+			end		
+			if data.ItemName == "item_2023" or data.ItemName == "item_2024" or data.ItemName == "item_0096" then 
+				local item2004 = CreateItem("item_2004", nil, nil)
+				if item2004 ~= nil then 
+					item2004.owner_player_id = hero.thtd_player_id
+					item2004.is_bonus_item = true
+					hero:AddItem(item2004)
+				end
+			end
+		end	
+		if tostring(PlayerResource:GetSteamID(data.PlayerID)) ~= GameRules.game_info.admin and GameRules.players_status[data.PlayerID].vip ~= 1 and GameRules.players_card_group[data.PlayerID]["point"] > 0 then 
+			http.api.saveGamePoint(data.PlayerID, -20, 3)
+		end
+	else
+		GameRules:SendCustomMessage("<font color='yellow'>开局奖励卡需要消耗20积分才能成功（贡献者名单不受限制），"..PlayerResource:GetPlayerName(data.PlayerID).." 当前积分不足。</font>", DOTA_TEAM_GOODGUYS, 0)
+	end
 end)
 
 -- 御币选择卡片
@@ -375,7 +405,7 @@ CustomEvent.on('custom_game_command', function(data)
 		return
 	end
 
-	if data["cmd"] == "levelup" then	
+	if data["cmd"] == "lv" then	
 		local player = PlayerResource:GetPlayer(data["PlayerID"])
 		if player then
 			local hero = player:GetAssignedHero()
@@ -394,6 +424,12 @@ CustomEvent.on('custom_game_command', function(data)
 				end
 			end
 		end
+		return 
+	end
+
+	if data["cmd"] == "boss" then		
+		SpawnSystem.AttackingSpawner[data["PlayerID"]+1].nextBossName = data["param"]
+		return
 	end
 end)
 
@@ -417,7 +453,11 @@ end)
 
 -- 重连时重试获取用户卡组信息
 CustomEvent.on('custom_game_load_cardgroup', function(data)	
-	http.api.getCardGroup(data.PlayerID)
+	http.api.getCardGroup(data.PlayerID, 3)
+end)
+
+CustomEvent.on('custom_game_unlock_cardgroup', function(data)
+	http.api.unlockCardGroup(data.PlayerID, 5)
 end)
 
 CustomEvent.on('custom_game_rank_detail', function(data)	

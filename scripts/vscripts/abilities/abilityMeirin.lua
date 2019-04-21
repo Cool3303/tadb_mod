@@ -18,7 +18,7 @@ local thtd_meirin_01_activity =
 		func = function(keys)
 			local caster = EntIndexToHScript(keys.caster_entindex)
 			local target = keys.target
-			local damage = caster:THTD_GetPower()
+			local damage = caster:THTD_GetPower() * caster:THTD_GetStar() * 1
 			local vecCaster = caster:GetOrigin()
 			local targetPoint = caster:GetOrigin() + caster:GetForwardVector()*800
 			--caster:EmitSoundParams("Hero_KeeperOfTheLight.Illuminate.Discharge",1,0.1,2) 
@@ -61,7 +61,7 @@ local thtd_meirin_01_activity =
 			local caster = EntIndexToHScript(keys.caster_entindex)
 			local vecCaster = caster:GetOrigin()
 			local targetPoint = caster:GetOrigin() + caster:GetForwardVector()*800
-			local damage = caster:THTD_GetPower() * 2
+			local damage = caster:THTD_GetPower() * caster:THTD_GetStar() * 2
 
 			--caster:EmitSoundParams("Hero_Tusk.WalrusPunch.Target",1,0.3,2) 
 
@@ -99,7 +99,7 @@ local thtd_meirin_01_activity =
 			local caster = EntIndexToHScript(keys.caster_entindex)
 			local vecCaster = caster:GetOrigin()
 			local targetPoint = caster:GetOrigin() + caster:GetForwardVector()*400
-			local damage = caster:THTD_GetPower() * caster:THTD_GetStar()
+			local damage = caster:THTD_GetPower() * caster:THTD_GetStar() * 3
 
 			caster:EmitSoundParams("Hero_EarthShaker.EchoSlamSmall",1,0.5,2) 
 
@@ -133,7 +133,7 @@ local thtd_meirin_01_activity =
 			local caster = EntIndexToHScript(keys.caster_entindex)
 			local vecCaster = caster:GetOrigin()
 			local targetPoint = caster:GetOrigin() + caster:GetForwardVector()*800
-			local damage = caster:THTD_GetPower() * caster:THTD_GetStar() * 1.5
+			local damage = caster:THTD_GetPower() * caster:THTD_GetStar() * 6
 
 			--caster:EmitSoundParams("Hero_Tusk.WalrusPunch.Target",1,0.35,2) 
 
@@ -171,7 +171,7 @@ local thtd_meirin_01_activity =
 			local caster = EntIndexToHScript(keys.caster_entindex)
 			local vecCaster = caster:GetOrigin()
 			local targetPoint = caster:GetOrigin() + caster:GetForwardVector()*400
-			local damage = caster:THTD_GetPower() * caster:THTD_GetStar() * 2
+			local damage = caster:THTD_GetPower() * caster:THTD_GetStar() * 12
 
 			--caster:EmitSoundParams("Hero_Tusk.WalrusPunch.Damage",1,0.4,2) 
 
@@ -204,7 +204,7 @@ local thtd_meirin_01_activity =
 		func = function(keys)
 			local caster = EntIndexToHScript(keys.caster_entindex)
 			local target = keys.target
-			local damage = caster:THTD_GetPower() * caster:THTD_GetStar() * 3
+			local damage = caster:THTD_GetPower() * caster:THTD_GetStar() * 24
 			local vecCaster = caster:GetOrigin()
 			local targetPoint = caster:GetOrigin() + caster:GetForwardVector()*800
 
@@ -248,7 +248,7 @@ local thtd_meirin_01_activity =
 			local caster = EntIndexToHScript(keys.caster_entindex)
 			local vecCaster = caster:GetOrigin()
 			local targetPoint = caster:GetOrigin() + caster:GetForwardVector()*400
-			local damage = caster:THTD_GetPower() * caster:THTD_GetStar() * 4
+			local damage = caster:THTD_GetPower() * caster:THTD_GetStar() * 48
 			
 			caster:EmitSoundParams("Hero_ElderTitan.EchoStomp",1,0.45,2) 
 

@@ -102,16 +102,9 @@ function OnFuto01AttackLanded(keys)
 	elseif caster.thtd_futo_01_effct_index == 5 then
 		local targets = THTD_FindUnitsInRadius(caster,target:GetOrigin(),300)
 		for k,v in pairs(targets) do
-			if v.thtd_is_lock_futo_01_stun ~= true then
-				v.thtd_is_lock_futo_01_stun = true
-				UnitStunTarget(caster,v,0.5)
-	   			v:SetContextThink(DoUniqueString("ability_item_futo_01_stun"), 
-					function()
-						if GameRules:IsGamePaused() then return 0.03 end
-						v.thtd_is_lock_futo_01_stun = false
-						return nil
-					end,
-				1.0)
+			if not v:HasModifier("modifier_futo_01_lock") then 
+				keys.ability:ApplyDataDrivenModifier(caster, v, "modifier_futo_01_lock", {Duration = 1.0})				
+				UnitStunTarget(caster,v,0.5)	   			
 	   		end
 		end
 	elseif caster.thtd_futo_01_effct_index == 6 then

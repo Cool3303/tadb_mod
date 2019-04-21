@@ -52,7 +52,7 @@
 		"StatusHealth"				"100"
 		"StatusHealthRegen"			"0.0"
 		"StatusMana"				"100"
-		"StatusManaRegen"			"1.5"	 
+		"StatusManaRegen"			"1.9"	 
 		
 		// Vision
 		//----------------------------------------------------------------
@@ -1807,8 +1807,8 @@
 		//----------------------------------------------------------------
 		"StatusHealth"				"100"	
 		"StatusHealthRegen"			"0.0"
-		"StatusMana"				"0"
-		"StatusManaRegen"			"0"	 
+		"StatusMana"				"80"
+		"StatusManaRegen"			"2.0"	 
 		
 		// Vision
 		//----------------------------------------------------------------
@@ -4145,8 +4145,8 @@
 		//----------------------------------------------------------------
 		"StatusHealth"				"100"	
 		"StatusHealthRegen"			"0.0"
-		"StatusMana"				"0"
-		"StatusManaRegen"			"0"	 
+		"StatusMana"				"20"
+		"StatusManaRegen"			"2.0"	 
 		
 		// Vision
 		//----------------------------------------------------------------
@@ -4658,7 +4658,7 @@
 		"Ability3"					"thtd_alice_01"
 		"Ability4"					"thtd_alice_02"
 		"Ability5"					"thtd_alice_03"
-		"Ability6"					"thtd_alice_04"
+		"Ability6"					""
 		"Ability7"					"ability_common_power_buff"
 		"Ability8"					"ability_common_attack_buff"
 
@@ -4839,6 +4839,220 @@
 		//----------------------------------------------------------------
 		"VisionDaytimeRange"		"1000"
 		"VisionNighttimeRange"		"1000"
+
+		// Team
+		//----------------------------------------------------------------
+		"TeamName"					"DOTA_TEAM_NEUTRALS"
+		
+		"CombatClassDefend"			"DOTA_COMBAT_CLASS_DEFEND_BASIC"
+		"UnitRelationshipClass"		"DOTA_NPC_UNIT_RELATIONSHIP_TYPE_DEFAULT"
+
+		"ConsideredHero"			"1"
+	}
+
+	"kagerou"
+	{
+		// General
+		//----------------------------------------------------------------
+		"Model"						"models/thd_hero/kagerou/kagerou.vmdl"
+		"BaseClass"					"npc_dota_creature"
+		"Level"						"1"
+		"ModelScale" 				"1.0"
+		"IsAncient"					"1"
+		"SoundSet"					"Hero_Lycan"
+		"GameSoundsFile"			"soundevents/game_sounds_heroes/game_sounds_lycan.vsndevts"
+
+		// Abilities
+		//----------------------------------------------------------------
+		"Ability1"					"ability_touhoutd_star_up"
+		"Ability2"					"ability_touhoutd_exp_up"
+		"Ability3"					"lycan_feral_impulse"
+		"Ability4"					"sven_great_cleave"
+		"Ability5"					"lycan_howl"
+		"Ability6"					"lycan_shapeshift"
+		"Ability7"					"ability_common_attack_speed_buff"
+		"Ability8"					"ability_common_attack_buff"
+
+		// Armor
+		//----------------------------------------------------------------
+		"ArmorPhysical"				"0"
+
+		// Attack
+		//----------------------------------------------------------------
+		"AttackCapabilities"		"DOTA_UNIT_CAP_MELEE_ATTACK"
+		"AttackDamageMin"			"2"
+		"AttackDamageMax"			"2"
+		"AttackRate"				"0.9"
+		"AttackAnimationPoint"		"0.4"		
+		"AttackAcquisitionRange"	"800"
+		"AttackRange"				"800"
+
+		// Bounds
+		//----------------------------------------------------------------
+		"RingRadius"				"100"
+		"HealthBarOffset"			"128"
+
+		// Movement
+		//----------------------------------------------------------------
+		"MovementCapabilities"		"DOTA_UNIT_CAP_MOVE_GROUND"
+		"MovementSpeed"				"0"	
+
+		// Status
+		//----------------------------------------------------------------
+		"StatusHealth"				"100"	
+		"StatusHealthRegen"			"0.0"
+		"StatusMana"				"80"
+		"StatusManaRegen"			"2.0"	 
+		
+		// Vision
+		//----------------------------------------------------------------
+		"VisionDaytimeRange"		"800"
+		"VisionNighttimeRange"		"800"
+
+		// Team
+		//----------------------------------------------------------------
+		"TeamName"					"DOTA_TEAM_NEUTRALS"
+		
+		"CombatClassDefend"			"DOTA_COMBAT_CLASS_DEFEND_BASIC"
+		"UnitRelationshipClass"		"DOTA_NPC_UNIT_RELATIONSHIP_TYPE_DEFAULT"
+
+		"ConsideredHero"			"1"
+
+		"precache"
+		{
+			"model"		"models/heroes/lycan/lycan_wolf.vmdl"
+		}
+	}
+
+	"wriggle"
+	{
+		// General
+		//----------------------------------------------------------------
+		"Model"						"models/thd_hero/wiggle/wriggle.vmdl"
+		"BaseClass"					"npc_dota_creature"
+		"Level"						"1"
+		"ModelScale"				"1.4"
+		"IsAncient"					"1"
+		"SoundSet"					"Hero_Weaver"
+		"GameSoundsFile"		"soundevents/game_sounds_heroes/game_sounds_weaver.vsndevts"		
+
+		// Abilities
+		//----------------------------------------------------------------
+		"Ability1"					"ability_touhoutd_star_up"
+		"Ability2"					"ability_touhoutd_exp_up"
+		"Ability3"					"death_prophet_exorcism"
+		"Ability4"					"keeper_of_the_light_will_o_wisp"
+		"Ability5"					""
+		"Ability6"					""
+		"Ability7"					"ability_common_power_buff"
+		"Ability8"					"ability_common_attack_buff"
+
+		// Armor
+		//----------------------------------------------------------------
+		"ArmorPhysical"				"0"
+
+		// Attack
+		//----------------------------------------------------------------
+		"AttackCapabilities"		"DOTA_UNIT_CAP_MELEE_ATTACK"
+		"AttackDamageMin"			"2"
+		"AttackDamageMax"			"2"
+		"AttackRate"				"1.0"
+		"AttackAnimationPoint"		"0.4"		
+		"AttackAcquisitionRange"	"1000"
+		"AttackRange"				"1000"
+
+		// Bounds
+		//----------------------------------------------------------------
+		"RingRadius"				"100"
+		"HealthBarOffset"			"128"
+
+		// Movement
+		//----------------------------------------------------------------
+		"MovementCapabilities"		"DOTA_UNIT_CAP_MOVE_GROUND"
+		"MovementSpeed"				"0"	
+
+		// Status
+		//----------------------------------------------------------------
+		"StatusHealth"				"100"	
+		"StatusHealthRegen"			"0.0"
+		"StatusMana"				"50"
+		"StatusManaRegen"			"1.5"	 
+		
+		// Vision
+		//----------------------------------------------------------------
+		"VisionDaytimeRange"		"800"
+		"VisionNighttimeRange"		"800"
+
+		// Team
+		//----------------------------------------------------------------
+		"TeamName"					"DOTA_TEAM_NEUTRALS"
+		
+		"CombatClassDefend"			"DOTA_COMBAT_CLASS_DEFEND_BASIC"
+		"UnitRelationshipClass"		"DOTA_NPC_UNIT_RELATIONSHIP_TYPE_DEFAULT"
+
+		"ConsideredHero"			"1"
+	}
+
+	"inaba"
+	{
+		// General
+		//----------------------------------------------------------------
+		"Model"						"models/thd_hero/tewi/tewi.vmdl"		
+		"BaseClass"					"npc_dota_creature"
+		"Level"						"1"
+		"ModelScale" 				"1.0"
+		"IsAncient"					"1"
+		"SoundSet"					"Hero_Sniper"
+		"GameSoundsFile"		"soundevents/game_sounds_heroes/game_sounds_sniper.vsndevts"
+		"ProjectileModel"		"particles/units/heroes/hero_sniper/sniper_base_attack.vpcf"
+		"ProjectileSpeed"		"3000"
+
+		// Abilities
+		//----------------------------------------------------------------
+		"Ability1"					"ability_touhoutd_star_up"
+		"Ability2"					"ability_touhoutd_exp_up"
+		"Ability3"					"sniper_headshot"
+		"Ability4"					"ogre_magi_bloodlust"
+		"Ability5"					""
+		"Ability6"					""
+		"Ability7"					"ability_common_power_buff"
+		"Ability8"					"ability_common_attack_buff"
+
+		// Armor
+		//----------------------------------------------------------------
+		"ArmorPhysical"				"0"
+
+		// Attack
+		//----------------------------------------------------------------
+		"AttackCapabilities"		"DOTA_UNIT_CAP_MELEE_ATTACK"
+		"AttackDamageMin"			"2"
+		"AttackDamageMax"			"2"
+		"AttackRate"				"0.7"
+		"AttackAnimationPoint"		"0.4"		
+		"AttackAcquisitionRange"	"1000"
+		"AttackRange"				"1000"
+
+		// Bounds
+		//----------------------------------------------------------------
+		"RingRadius"				"100"
+		"HealthBarOffset"			"128"
+
+		// Movement
+		//----------------------------------------------------------------
+		"MovementCapabilities"		"DOTA_UNIT_CAP_MOVE_GROUND"
+		"MovementSpeed"				"0"	
+
+		// Status
+		//----------------------------------------------------------------
+		"StatusHealth"				"100"	
+		"StatusHealthRegen"			"0.0"
+		"StatusMana"				"50"
+		"StatusManaRegen"			"1.5"	 
+		
+		// Vision
+		//----------------------------------------------------------------
+		"VisionDaytimeRange"		"800"
+		"VisionNighttimeRange"		"800"
 
 		// Team
 		//----------------------------------------------------------------

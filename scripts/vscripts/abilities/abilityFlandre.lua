@@ -70,7 +70,7 @@ function OnFlandre02AttackLanded(keys)
 	local damage = caster:THTD_GetStar() * caster:THTD_GetPower() * 2
 
 	if caster:FindAbilityByName("thtd_flandre_03"):GetLevel()>0 then
-		damage = damage * (2 - target:GetHealth()/target:GetMaxHealth())
+		damage = damage * (2 - target:GetHealthPercent() / 100)
 	end
 
 	local oldHealth = target:GetHealth()
@@ -136,9 +136,9 @@ function OnFlandre04SpellStart(keys)
 	-- target:StartGesture(ACT_DOTA_DIE)
 	caster:EmitSound("Hero_DoomBringer.LvlDeath")
 
-	local damage = caster:THTD_GetStar() * caster:THTD_GetPower() * 5 * 4
+	local damage = caster:THTD_GetStar() * caster:THTD_GetPower() * 7 * 4
 	if caster:FindAbilityByName("thtd_flandre_03"):GetLevel()>0 then
-		damage = damage * (2 - target:GetHealth()/target:GetMaxHealth())
+		damage = damage * (2 - target:GetHealthPercent()/100)
 	end		
 	local DamageTable = {
 		ability = keys.ability,

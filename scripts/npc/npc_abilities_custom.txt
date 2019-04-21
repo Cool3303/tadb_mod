@@ -168,6 +168,15 @@
 				"Target"			"TARGET"
 			}
 		}
+		
+		"Modifiers"
+		{
+			"modifier_touhoutd_extra_gold"
+			{
+				"TextureName"     "gold"
+				
+			}
+		}
 	}
 
 	"ability_touhoutd_ex_up"

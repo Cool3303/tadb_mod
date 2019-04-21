@@ -35,18 +35,28 @@ function OnMedicine01AttackLanded(keys)
 
 		if target.thtd_is_fearing ~= true then			
 			target.thtd_is_fearing = true
-			local current_next_move_point = target.next_move_point
-			local current_next_move_forward = target.next_move_forward		
+			local current_next_move_point = target.next_move_point					
 			target.next_move_point = RotatePosition(target:GetOrigin(), QAngle(0,RandomInt(-70, 70),0), target:GetOrigin() - target:GetForwardVector() * 500)
+			local count = 10
 			target:SetContextThink(DoUniqueString("modifier_medicine_01_debuff"), 
 				function()
 					if GameRules:IsGamePaused() then return 0.03 end
-					target.next_move_point = current_next_move_point
-					target.next_move_forward = current_next_move_forward					
-					target.thtd_is_fearing = false
-					return nil
+					count = count - 1
+					if count < 0 or THTD_IsValid(target) == false then
+						if target ~= nil and target:IsNull() == false then 
+							if GetDistanceBetweenTwoVec2D(target:GetAbsOrigin(), current_next_move_point) < 100 then 
+								target.next_move_point = THTD_GetNextPathForUnit(target,target.thtd_next_corner)
+							else
+								target.next_move_point = current_next_move_point										
+							end																	
+							target.thtd_is_fearing = false
+						end
+						return nil
+					else
+						return 0.1
+					end
 				end, 
-			1.0)
+			0)
 		end
 	else
 		modifier:SetDuration(10.0,false)
@@ -86,19 +96,29 @@ function OnMedicine02SpellStart(keys)
 					v.thtd_is_fearing = true
 
 					v.thtd_poison_buff = v.thtd_poison_buff + 1
-					local current_next_move_point = v.next_move_point
-					local current_next_move_forward = v.next_move_forward
+					local current_next_move_point = v.next_move_point					
 
 					v.next_move_point = targetPoint	
 
+					local count = time * 10
 					v:SetContextThink(DoUniqueString("modifier_medicine_02_debuff"), 
 						function()
 							if GameRules:IsGamePaused() then return 0.03 end
-							v.next_move_point = current_next_move_point
-							v.next_move_forward = current_next_move_forward							
-							v.thtd_is_fearing = false
-							v.thtd_poison_buff = v.thtd_poison_buff - 1
-							return nil
+							count = count - 1
+							if count < 0 or THTD_IsValid(v) == false then
+								if v ~= nil and v:IsNull() == false then 
+									if GetDistanceBetweenTwoVec2D(v:GetAbsOrigin(), current_next_move_point) < 100 then 
+										v.next_move_point = THTD_GetNextPathForUnit(v,v.thtd_next_corner)
+									else
+										v.next_move_point = current_next_move_point										
+									end																							
+									v.thtd_is_fearing = false
+									v.thtd_poison_buff = v.thtd_poison_buff - 1
+								end
+								return nil
+							else 
+								return 0.1
+							end
 						end, 
 					time)
 				end

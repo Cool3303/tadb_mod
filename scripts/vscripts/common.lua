@@ -196,9 +196,60 @@ function THTD_GetSpawnIdFromPlayerId(playerid)
     return nil      
 end
 
+-- PlayerResource:ModifyGold 强化版，超出金钱将保存
+thtd_extra_gold = {[0] = 0,[1] = 0,[2] = 0,[3] = 0}
+function THTD_ModifyGoldEx(playerid, gold, reliable, flag)
+    if flag == nil then flag = DOTA_ModifyGold_Unspecified end
+    if reliable ~= true then reliable = false end
+
+    if thtd_extra_gold[playerid] == nil then
+		thtd_extra_gold[playerid] = 0
+    end
+    
+    local current_gold = PlayerResource:GetGold(playerid)
+    local add_gold = gold
+	if current_gold + gold > 99999 then
+		add_gold = math.min(gold, 99999-current_gold)
+		thtd_extra_gold[playerid] = thtd_extra_gold[playerid] + (gold - add_gold)		
+	elseif thtd_extra_gold[playerid] > 0 then
+		add_gold = math.min(thtd_extra_gold[playerid], 99999-(gold+current_gold))		
+		thtd_extra_gold[playerid] = thtd_extra_gold[playerid] - add_gold
+    end
+    PlayerResource:ModifyGold(playerid, add_gold, reliable, flag)
+
+	THTD_RefreshExtraGold(playerid)     
+end
+
+-- 刷新超出上限金钱显示
+function THTD_RefreshExtraGold(playerid)
+	local hero = THTD_GetHeroFromPlayerId(playerid)
+    if thtd_extra_gold[playerid] > 1000 then	
+        if not hero:HasModifier("modifier_touhoutd_extra_gold") then 
+            local player = hero:GetPlayerOwner()
+            if player then 
+                CustomGameEventManager:Send_ServerToPlayer(player, "show_message", {msg="gold_over_tip", duration=10, params={}, color="#ff0"})
+            end
+        end
+		hero:FindAbilityByName("ability_touhoutd_kill"):ApplyDataDrivenModifier(hero, hero, "modifier_touhoutd_extra_gold", nil)		
+		hero:SetModifierStackCount("modifier_touhoutd_extra_gold", hero, math.floor(thtd_extra_gold[playerid] / 1000))
+	elseif hero:HasModifier("modifier_touhoutd_extra_gold") then
+		hero:FindModifierByName("modifier_touhoutd_extra_gold"):Destroy()
+    end       
+end
+
+
 function THTD_IsTempleOfGodTower(unit)
     local unitName = unit:GetUnitName()
     if unitName == "miko" or unitName == "soga" or unitName == "futo" or unitName == "yoshika" or unitName == "seiga" then
+        return true
+    else
+        return false
+    end    
+end
+
+function THTD_IsTempleOfGodCanBuffedTower(unit)
+    local unitName = unit:GetUnitName()
+    if unitName == "soga" or unitName == "futo" or unitName == "yoshika" or unitName == "seiga" then
         return true
     else
         return false
@@ -212,7 +263,7 @@ function THTD_GetTempleOfGodBuffedTowerStarCount(caster)
     local star = 0
     for k,v in pairs(hero.thtd_hero_tower_list) do
         if THTD_IsValid(v) and THTD_IsTempleOfGodTower(v) then            
-            if v:HasModifier("modifier_miko_02_buff") then
+            if v:HasModifier("modifier_miko_02_buff") or v:GetUnitName() == "miko" then
                 star = star + v:THTD_GetStar()
             end            
         end
@@ -431,6 +482,14 @@ function THTD_IsUnitInGroup(unit,group)
     return false
 end
 
+
+-- 单位固有增减伤百分比更新
+function ModifyDamageSpecialPercentage(unit, percentage)
+    if unit.thtd_damage_special_incoming == nil then
+        unit.thtd_damage_special_incoming = 0
+    end    
+    unit.thtd_damage_special_incoming = unit.thtd_damage_special_incoming + percentage
+end
 
 -- 单位全局增减伤百分比更新
 function ModifyDamageIncomingPercentage(unit, percentage)
@@ -1603,6 +1662,19 @@ function THTD_Kill(caster, target, maxDamage)
     end
 end
 
+-- 本地图的各卡技能秒杀，统一上限
+function THTD_Ability_Kill(caster, target) 
+    if SpawnSystem.CurWave > 120 then	
+        local max_damage = caster:THTD_GetPower() * caster:THTD_GetStar() * 125
+        if GameRules.game_info.luck_card == caster:GetUnitName() then
+            max_damage = max_damage * (1 + math.max(-90, GameRules.game_info.crit) / 100)
+        end							
+        THTD_Kill(caster, target, max_damage)
+    else					
+        THTD_Kill(caster, target, nil)
+    end
+end
+
 -- 造成溢出伤害
 function THTD_OverDamage(caster, ability, damage, point, range)
     if not THTD_IsValid(caster) then return end
@@ -1638,6 +1710,17 @@ function THTD_OverDamage(caster, ability, damage, point, range)
     0.1)
 end
 
+-- 判断当前时间是否超过了指定时间，格式必须为 2019-04-19 10:00:00
+function IsEndByDateTime(endDateTime)
+    local date = GetSystemDate() --04/12/19  月 日 年
+    local time = GetSystemTime() --00:10:43  时 分 秒
+    local currentDateTime = "20"..string.sub(date,7,8).."-"..string.sub(date,1,2).."-"..string.sub(date,4,5).." "..time  
+    if currentDateTime > endDateTime then     
+        return true       
+    else
+        return false
+    end     
+end
 
 -- http 发送函数
 
@@ -1645,15 +1728,7 @@ server_key = GetDedicatedServerKeyV2("mydota")   -- 不能泄露到客户端，�
 
 http = {}
 
-http.config = table.fromstring(string.decode(table.concat({
-    "33310DCFDD5C9D5076807960786F91CAF7335F656C119A60C7C6BFEAAD588A44E900ACFF7FB26FA808927359C9D264702E151D4BAABC78A963F094323962AF16A5E730C92A209C28BD61B34F875343228921A9715AADAA6ED7ABB79765C2264F0FE49E41F9847168D7E839A37EAD06D3C5149C8F9BB7D3F2956D13E1C570B21",
-    "41C43B57A6590C05212D46A9465303F832FC073CFEC309B121FDBCF124FABD78C71C9659F95A71E0FC7BA93375C58112B582120878C8B72E3E4EC338F8B5EE4A150645E70820AF9EB5AA167E2D3ABE434CB35E9AFE3C1A4BAD2946107F01D4B2EB5AD3EF762E2EB8620F8F3D517394768F6EBF2E3603488A41C7332F11BD25A",
-    "7E90DD9FCC66DC87888CDD1E504C91F5CF7BEF68A3EAECBDC60B3B3D6C366AFCB3943FE7D59DD5F599816FA08E2C47D0D89C641EAA375DA7C18083105A682954F5F3B3E6EA903A11B62DC44E77F2CDC046117657B9057A1F79F24483FEF57E4EED6070EA1BCCE6059FBA3FECAAF3BFD2FD1EFFDE6A86A3210F0D1F7498A5F77",
-    "386583DA21ABB5EA52543260BA781717035792FDA3844264A53000BBA243867A310A43AA748F991269C376CB3C08658279EDA79B7A1F8193FD9FE76264B2DE624199BF0F3DCBBC67744300B15A995D2118F83FB426E5F1C16AF9E996C09EF8809A66EC1788E00A01A1C673A96EE581AE9A262BEFF2CF245A05A57329EEEC84A",
-    "EA2510E0660EB0AFC7A3ED264BBCCE4A77067B3CE37F2B4E6DD54D9497C104585AC194A1017FC38AFAA14DD65094A38EDF4981B00C9B5EAAD3EE1314054770661A925F98A7CD5378D78E354396DC17AA60BBC2D39ACF59BF77F5865347A34B23BA5E57B61C08854420B06B3CCBB2F58FE234D0FEA71C62E1C9DF8214E301955",
-    "2DB8E84C79287ADCB7C31D4E44E0F8DCFC9B084C707944FF68A1CDAFCAD84A46A947C6D5095DB3D25E938342CFDF54C0C12F5D1B4F2DD08A68D4B27A4AF8A59399CD333D678D68DCC70CEED2D93CA7D66A150034947229994BE7A737ED0E9DB484C140FA1754F1B0DAE8748BD856E38E8A0A14974EFDCC9647F7ED2BBB9DEE3",
-    "76605A0D0EC0D71A4BFB86385E7C2889EDD43025BA6039CBD2A79E928634857309B6F5F659A3BF7F"
-}), server_key))
+http.config = table.loadkv("scripts/npc/config.txt")
 
 function http.request(method, url, params, func)
     local req = CreateHTTPRequestScriptVM(method, url)  -- 需要放在Load阶段后，即DOTA_GAMERULES_STATE_CUSTOM_GAME_SETUP及以后阶段
@@ -1663,7 +1738,7 @@ function http.request(method, url, params, func)
         end
     end
     req:SetHTTPRequestGetOrPostParameter("serverkey", server_key)
-    req:SetHTTPRequestAbsoluteTimeoutMS(20 * 1000)
+    req:SetHTTPRequestAbsoluteTimeoutMS(60 * 1000)
     req:Send(func)
 
     -- req:Send(function(result)
@@ -1695,7 +1770,7 @@ end
 
 -- 获取游戏配置
 -- 如果没有保存服务器返回 {"count":"0","info":"OK","infocode":"10000","status":1,"datas":[]}	
-function http.api.getGameConfig(steamid_config) 
+function http.api.getGameConfig(steamid_config, retryCount) 
     print("---- get data gameconfig start time : ", tostring(math.floor(GameRules:GetGameTime()*100 + 0.5)/100))
     http.get(
         http.config.urlDataSearch,    
@@ -1713,17 +1788,24 @@ function http.api.getGameConfig(steamid_config)
                 local data = json.decode(ret.Body)
                 -- print("------body table :")
                 -- PrintTable(data)
-                if data and data.datas and data.datas[1] then
-                    local gameCode = data.datas[1].game_code or ""                          
-                    CustomGameEventManager:Send_ServerToAllClients("thtd_game_code", {game_code = gameCode, game_msg = data.datas[1].game_msg, text = ""})
-                    GameRules.game_info.game_code = gameCode
+                if data and data.datas and data.datas[1] then                                         
+                    CustomGameEventManager:Send_ServerToAllClients("thtd_game_code", {game_code = data.datas[1].game_code, game_msg = data.datas[1].game_msg, rank_limit = data.datas[1].rank_limit, text = ""})
+                    GameRules.game_info.game_code = data.datas[1].game_code
                     GameRules.game_info.game_msg = data.datas[1].game_msg
+                    GameRules.game_info.new_card_limit = data.datas[1].new_card_limit
+                    GameRules.game_info.rank_limit = data.datas[1].rank_limit
+                    GameRules.game_info.luck_card = data.datas[1].luck_card
+                    GameRules.game_info.crit = data.datas[1].crit            
                     CustomNetTables:SetTableValue("CustomGameInfo", "game_info", GameRules.game_info)
                 else
                     CustomGameEventManager:Send_ServerToAllClients("thtd_game_code", {game_code = "null", text = "服务器游戏配置数据不正确！"})
                 end               					
             else
-                CustomGameEventManager:Send_ServerToAllClients("thtd_game_code", {game_code = "null", text = "无法连接服务器，StatusCode: "..tostring(ret.StatusCode)})
+                if retryCount == nil or retryCount <= 1 then
+                    CustomGameEventManager:Send_ServerToAllClients("thtd_game_code", {game_code = "null", text = "无法连接服务器，StatusCode: "..tostring(ret.StatusCode)})
+                else                   
+                    http.api.getGameConfig(steamid_config, retryCount-1)
+                end 
             end
         end
     )
@@ -1731,7 +1813,7 @@ end
 
 -- 获取黑名单信息
 -- 如果没有保存服务器返回 {"count":"0","info":"OK","infocode":"10000","status":1,"datas":[]}	
-function http.api.getBanPlayer(playerid) 
+function http.api.getBlackOrWhitePlayer(playerid, retryCount) 
     if not PlayerResource:IsValidPlayerID(playerid) then return end
 
     print("---- get data banplayer start time : ", tostring(math.floor(GameRules:GetGameTime()*100 + 0.5)/100))
@@ -1751,16 +1833,33 @@ function http.api.getBanPlayer(playerid)
                 -- print("------body text : ", ret.Body)
                 local data = json.decode(ret.Body)                
                 if data and data.datas and #data.datas > 0 then
-                    GameRules.players_ban_status[playerid] = true
-                    CustomNetTables:SetTableValue("CustomGameInfo", "PlayersBanStatus", GameRules.players_ban_status)                   
-                end            
+                    GameRules.players_status[playerid].end_time = data.datas[1]["end_time"] 
+                    GameRules.players_status[playerid].reason = data.datas[1]["_address"]                     
+                    if IsEndByDateTime(GameRules.players_status[playerid]["end_time"]) then                      
+                        GameRules.players_status[playerid].ban = 0
+                        GameRules.players_status[playerid].vip = 0
+                    elseif data.datas[1]["type"] == "ban" then 
+                        GameRules.players_status[playerid].ban = 1
+                        GameRules.players_status[playerid].vip = 0
+                    elseif data.datas[1]["type"] == "vip" then 
+                        GameRules.players_status[playerid].ban = 0
+                        GameRules.players_status[playerid].vip = 1
+                    end
+                    CustomNetTables:SetTableValue("CustomGameInfo", "PlayersBlackAndWhiteList", GameRules.players_status)                   
+                end
+            else
+                if retryCount == nil or retryCount <= 1 then
+                    print("---- get data banplayer error: StatusCode ", ret.StatusCode)
+                else                   
+                    http.api.getBlackOrWhitePlayer(playerid, retryCount-1)
+                end 
             end
         end
     )
 end
 
 -- 获取用户卡组数据
-function http.api.getCardGroup(playerid) 
+function http.api.getCardGroup(playerid, retryCount) 
     if not PlayerResource:IsValidPlayerID(playerid) then return end
 
     print("---- get data cardgroup start time : ", tostring(math.floor(GameRules:GetGameTime()*100 + 0.5)/100))
@@ -1782,18 +1881,45 @@ function http.api.getCardGroup(playerid)
                 -- print("------body table :")
                 -- PrintTable(data)
                 if data and data.datas and #data.datas > 0 then
-                    local sourceData = data.datas[1] or {}
+                    local maxPoint = 0
+                    local maxIndex = 0
+                    local ids = ""                    
+                    for i = 1, #data.datas do
+                        if maxIndex == 0 or (data.datas[i].point ~= nil and data.datas[i].point ~= "" and maxPoint < data.datas[i].point) then
+                            maxPoint = data.datas[i].point
+                            maxIndex = i
+                        else
+                            if ids == "" then 
+                                ids = tostring(data.datas[i]._id)
+                            else
+                                ids = ids..","..tostring(data.datas[i]._id)
+                            end
+                        end                        
+                    end
+                    if ids ~= "" then
+                        http.api.delete(http.config.tableGroup, ids)
+                    end                   
+
+                    local sourceData = data.datas[maxIndex]                    
                     local groupData = {}
                     groupData["_name"] = sourceData["_name"]
                     groupData["_id"] = sourceData["_id"]
-                    groupData["point"] = sourceData["point"]
+                    groupData["point"] = sourceData["point"]  
+                    groupData["group_max"] = sourceData["group_max"]
                     for k,v in pairs(sourceData) do 
                         if string.find(tostring(k), "cardgroup") ~= nil then
                             groupData[k] = http.api.decodeCardGroup(v)
                         end
                     end
+                    if groupData["point"] == "" or tonumber(groupData["point"]) == nil then
+                        groupData["point"] = 0           -- ""与空字符"\0"不相等
+                    end
+                    if groupData["group_max"] == "" or tonumber(groupData["group_max"]) == nil then                       
+                        groupData["group_max"] = 3
+                    end                    
+                    
                     groupData["error"] = ""
-                    GameRules.players_card_group[playerid] = groupData 
+                    GameRules.players_card_group[playerid] = groupData                   
                     CustomNetTables:SetTableValue("CustomGameInfo", "PlayerCardGroup"..steamid, groupData)                
                 else
                     -- 新用户
@@ -1801,14 +1927,19 @@ function http.api.getCardGroup(playerid)
                     groupData["_name"] = steamid
                     groupData["_id"] = "-1" --以此判定是否为新玩家
                     groupData["point"] = 0
+                    groupData["group_max"] = 3
                     groupData["error"] = ""
                     GameRules.players_card_group[playerid] = groupData
                     CustomNetTables:SetTableValue("CustomGameInfo", "PlayerCardGroup"..steamid, groupData)        
                 end               					
             else
-                local groupData = {["_name"] = steamid, ["error"] = "无法连接服务器获取卡组，请断开重连以重新获取，StatusCode: "..tostring(ret.StatusCode)}
-                GameRules.players_card_group[playerid] = groupData
-                CustomNetTables:SetTableValue("CustomGameInfo", "PlayerCardGroup"..steamid, groupData)
+                if retryCount == nil or retryCount <= 1 then
+                    local groupData = {["_name"] = steamid, ["point"] = 0, ["group_max"] = 3, ["error"] = "无法连接服务器获取卡组，请断开重连以重新获取，StatusCode: "..tostring(ret.StatusCode)}
+                    GameRules.players_card_group[playerid] = groupData
+                    CustomNetTables:SetTableValue("CustomGameInfo", "PlayerCardGroup"..steamid, groupData)
+                else                   
+                    http.api.getCardGroup(playerid, retryCount-1) 
+                end                 
             end
         end
     )
@@ -1842,6 +1973,53 @@ function http.api.saveCardGroup(playerid, groupkey, groupdata)
                 end               					
             else              
                 CustomGameEventManager:Send_ServerToPlayer(PlayerResource:GetPlayer(playerid), "thtd_save_cardgroup", {code = 0, msg = "无法连接服务器，StatusCode: "..tostring(ret.StatusCode)})
+            end
+        end
+    )
+end
+
+-- 保存老用户解锁的卡组位及扣除积分
+function http.api.unlockCardGroup(playerid, retryCount)
+    print("---- save data cardgroup unlock start time : ", tostring(math.floor(GameRules:GetGameTime()*100 + 0.5)/100)) 
+    local steamid = tostring(PlayerResource:GetSteamID(playerid))
+    local index = GameRules.players_card_group[playerid]["group_max"] + 1
+    local point =  index * 500
+    if GameRules.players_card_group[playerid]["point"] < point then return end
+    local savedata = {}
+    savedata["_id"] = GameRules.players_card_group[playerid]["_id"]
+    savedata["point"] = GameRules.players_card_group[playerid]["point"] - point
+    savedata["group_max"] = index
+
+    http.post(
+        http.config.urlDataUpdate,    
+        {
+            ['key'] = http.config.key,
+            ['tableid'] = http.config.tableGroup,
+            ['data'] = json.encode(savedata)
+        },
+        function(ret)       
+            print("---- save data cardgroup unlock end time : ", tostring(math.floor(GameRules:GetGameTime()*100 + 0.5)/100))
+            if ret.StatusCode == 200 then  
+                local data = json.decode(ret.Body)
+                -- print("------body text : ", ret.Body)
+                -- print("------body table :")
+                -- PrintTable(data)
+                if data and data.info == "OK" then
+                    -- 成功返回 {"info":"OK","infocode":"10000","status":1}
+                    GameRules.players_card_group[playerid]["point"] = savedata["point"]
+                    GameRules.players_card_group[playerid]["group_max"] = savedata["group_max"]
+                    CustomNetTables:SetTableValue("CustomGameInfo", "PlayerCardGroup"..steamid, GameRules.players_card_group[playerid])       
+                    CustomGameEventManager:Send_ServerToPlayer(PlayerResource:GetPlayer(playerid), "thtd_update_gamepoint", {point = savedata["point"]})
+                    CustomGameEventManager:Send_ServerToPlayer(PlayerResource:GetPlayer(playerid), "thtd_unlock_cardgroup", {code = 1, msg = ""})             
+                else                                
+                    CustomGameEventManager:Send_ServerToPlayer(PlayerResource:GetPlayer(playerid), "thtd_unlock_cardgroup", {code = 0, msg = "返回信息："..ret.Body})
+                end               					
+            else      
+                if retryCount == nil or retryCount <= 1 then
+                    CustomGameEventManager:Send_ServerToPlayer(PlayerResource:GetPlayer(playerid), "thtd_unlock_cardgroup", {code = 0, msg = "无法连接服务器，StatusCode: "..tostring(ret.StatusCode)})
+                else                   
+                    http.api.unlockCardGroup(playerid, retryCount-1)
+                end 
             end
         end
     )
@@ -1916,11 +2094,12 @@ function http.api.encodeCardGroup(cardGroup)
 end
 
 -- 保存老用户游戏积分
-function http.api.saveGamePoint(playerid, point)  
+function http.api.saveGamePoint(playerid, point, retryCount)
     print("---- save data game point start time : ", tostring(math.floor(GameRules:GetGameTime()*100 + 0.5)/100)) 
     local savedata = {}
     savedata["_id"] = GameRules.players_card_group[playerid]["_id"]
     savedata["point"] = GameRules.players_card_group[playerid]["point"] + point
+
     http.post(
         http.config.urlDataUpdate,    
         {
@@ -1936,20 +2115,32 @@ function http.api.saveGamePoint(playerid, point)
                 -- print("------body table :")
                 -- PrintTable(data)
                 if data and data.info == "OK" then
-                    -- 成功返回 {"info":"OK","infocode":"10000","status":1} 
-                    CustomGameEventManager:Send_ServerToPlayer(PlayerResource:GetPlayer(playerid), "thtd_save_gamepoint", {code = 1, point = point, msg = ""})             
-                else                                
-                    CustomGameEventManager:Send_ServerToPlayer(PlayerResource:GetPlayer(playerid), "thtd_save_gamepoint", {code = 0, point = point, msg = "返回信息："..ret.Body})
+                    -- 成功返回 {"info":"OK","infocode":"10000","status":1}
+                    GameRules.players_card_group[playerid]["point"] = savedata["point"]
+                    CustomGameEventManager:Send_ServerToPlayer(PlayerResource:GetPlayer(playerid), "thtd_update_gamepoint", {point = savedata["point"]})
+                    if point > 0 then 
+                        CustomGameEventManager:Send_ServerToPlayer(PlayerResource:GetPlayer(playerid), "thtd_save_gamepoint", {code = 1, point = point, msg = ""})             
+                    end
+                else       
+                    if point > 0 then                          
+                        CustomGameEventManager:Send_ServerToPlayer(PlayerResource:GetPlayer(playerid), "thtd_save_gamepoint", {code = 0, point = point, msg = "返回信息："..ret.Body})
+                    end
                 end               					
-            else              
-                CustomGameEventManager:Send_ServerToPlayer(PlayerResource:GetPlayer(playerid), "thtd_save_gamepoint", {code = 0, point = point, msg = "无法连接服务器，StatusCode: "..tostring(ret.StatusCode)})
+            else      
+                if retryCount == nil or retryCount <= 1 then
+                    if point > 0 then 
+                        CustomGameEventManager:Send_ServerToPlayer(PlayerResource:GetPlayer(playerid), "thtd_save_gamepoint", {code = 0, point = point, msg = "无法连接服务器，StatusCode: "..tostring(ret.StatusCode)})
+                    end
+                else                   
+                    http.api.saveGamePoint(playerid, point, retryCount-1)
+                end 
             end
         end
     )
 end
 
 -- 保存新用户游戏积分
-function http.api.saveFirstGamePoint(playerid, point)  
+function http.api.saveFirstGamePoint(playerid, point, retryCount)  
     print("---- save data game point start time : ", tostring(math.floor(GameRules:GetGameTime()*100 + 0.5)/100)) 
     local steamid = tostring(PlayerResource:GetSteamID(playerid))
     local savedata = {}
@@ -1974,13 +2165,19 @@ function http.api.saveFirstGamePoint(playerid, point)
                 if data and data.info == "OK" then
                     -- 成功返回 { "info":"OK", "status":1, "_id":"283"}                   
                     GameRules.players_card_group[playerid]["_id"] = data["_id"]
-		            CustomNetTables:SetTableValue("CustomGameInfo", "PlayerCardGroup"..steamid, GameRules.players_card_group[playerid])
+                    GameRules.players_card_group[playerid]["point"] = savedata["point"]
+                    CustomNetTables:SetTableValue("CustomGameInfo", "PlayerCardGroup"..steamid, GameRules.players_card_group[playerid])
+                    CustomGameEventManager:Send_ServerToPlayer(PlayerResource:GetPlayer(playerid), "thtd_update_gamepoint", {point = savedata["point"]})
                     CustomGameEventManager:Send_ServerToPlayer(PlayerResource:GetPlayer(playerid), "thtd_save_gamepoint", {code = 1, point = point, msg = ""})             
                 else                                
                     CustomGameEventManager:Send_ServerToPlayer(PlayerResource:GetPlayer(playerid), "thtd_save_gamepoint", {code = 0, point = point, msg = "返回信息："..ret.Body})
                 end               					
-            else              
-                CustomGameEventManager:Send_ServerToPlayer(PlayerResource:GetPlayer(playerid), "thtd_save_gamepoint", {code = 0, point = point, msg = "无法连接服务器，StatusCode: "..tostring(ret.StatusCode)})
+            else 
+                if retryCount == nil or retryCount <= 1 then
+                    CustomGameEventManager:Send_ServerToPlayer(PlayerResource:GetPlayer(playerid), "thtd_save_gamepoint", {code = 0, point = point, msg = "无法连接服务器，StatusCode: "..tostring(ret.StatusCode)})
+                else                   
+                    http.api.saveFirstGamePoint(playerid, point, retryCount-1)  
+                end 
             end
         end
     )
@@ -2001,26 +2198,27 @@ function http.api.giveGamePoint(hero)
                 end
                 if GameRules.players_card_group[hero.thtd_player_id]["_id"] ~= nil then
                     if GameRules.players_card_group[hero.thtd_player_id]["_id"] == "-1" then
-                        http.api.saveFirstGamePoint(hero.thtd_player_id, 10*difficulty)
+                        http.api.saveFirstGamePoint(hero.thtd_player_id, 5*difficulty, 5)
                     else 
-                        http.api.saveGamePoint(hero.thtd_player_id, 10*difficulty)
+                        http.api.saveGamePoint(hero.thtd_player_id, 5*difficulty, 5)
                     end
                 end                
             end
         end       
-        GameRules:SendCustomMessage("<font color='yellow'>通关奖励游戏积分："..tostring(10*difficulty).." ，通关玩家："..names.."</font>", DOTA_TEAM_GOODGUYS, 0)	  				
+        GameRules:SendCustomMessage("<font color='yellow'>通关奖励游戏积分："..tostring(5*difficulty).." ，通关玩家："..names.."</font>", DOTA_TEAM_GOODGUYS, 0)	  				
         return
     end
    
     if hero.thtd_game_info["max_wave"] < 70 then return end
-    if GameRules:GetCustomGameDifficulty() > 7 and hero.thtd_game_info["max_wave"] < 98 then return end
-    local point = 50 + (hero.thtd_game_info["max_wave"] - 70) * 2
+    if GameRules:GetCustomGameDifficulty() == 7 and hero.thtd_game_info["max_wave"] < 98 then return end
+    if GameRules:GetCustomGameDifficulty() == 8 and hero.thtd_game_info["max_wave"] < 128 then return end
+    local point = 25 + math.max(math.min(math.floor(1.05^(hero.thtd_game_info["max_wave"] - 70)), 1000), hero.thtd_game_info["max_wave"] - 70)
     GameRules:SendCustomMessage("<font color='yellow'>"..PlayerResource:GetPlayerName(hero:GetPlayerID()).."本次已成功通过的有效波数："..tostring(hero.thtd_game_info["max_wave"]).."，该波伤害总量："..tostring(hero.thtd_game_info["max_wave_damage"]).." 万，奖励游戏积分："..tostring(point).."。</font>", DOTA_TEAM_GOODGUYS, 0)
     if GameRules.players_card_group[hero.thtd_player_id]["_id"] ~= nil then
         if GameRules.players_card_group[hero.thtd_player_id]["_id"] == "-1" then
-            http.api.saveFirstGamePoint(hero.thtd_player_id, point)
+            http.api.saveFirstGamePoint(hero.thtd_player_id, point, 5)
         else 
-            http.api.saveGamePoint(hero.thtd_player_id, point)
+            http.api.saveGamePoint(hero.thtd_player_id, point, 5)
         end
     end       
 end
@@ -2044,7 +2242,7 @@ function http.api.getRankCommon(table, page, limit, func)
 end
 
 -- 获取单人排行榜数据
-function http.api.getRank()     
+function http.api.getRank(retryCount)     
     print("---- get data rank start time : ", tostring(math.floor(GameRules:GetGameTime()*100 + 0.5)/100))
     http.api.getRankCommon(http.config.tableToplist, 1, 100, function(ret)       
         print("---- get data rank end time : ", tostring(math.floor(GameRules:GetGameTime()*100 + 0.5)/100))
@@ -2066,7 +2264,7 @@ function http.api.getRank()
                             ['wave'] = data.datas[i].wave,
                             ['damage'] = data.datas[i].damage,
                             ['updatetime'] = data.datas[i]._updatetime,
-                            ['version'] = data.datas[i].version                                       
+                            ['version'] = data.datas[i].version                                                 
                         }
                         for k,v in pairs(data.datas[i]) do
                             if string.sub(k,1,4) == "card" then
@@ -2085,15 +2283,19 @@ function http.api.getRank()
                 end
             end               					
         else
-            if not GameRules.is_team_mode then
-                CustomGameEventManager:Send_ServerToPlayer(PlayerResource:GetPlayer(playerid), "thtd_http_error", {code = 201, msg = "获取排行榜数据失败，本次游戏将无法上传排行榜，无法连接服务器，StatusCode: "..tostring(ret.StatusCode)})            
-            end
+            if retryCount == nil or retryCount <= 1 then
+                if not GameRules.is_team_mode then
+                    CustomGameEventManager:Send_ServerToPlayer(PlayerResource:GetPlayer(playerid), "thtd_http_error", {code = 201, msg = "获取排行榜数据失败，本次游戏将无法上传排行榜，无法连接服务器，StatusCode: "..tostring(ret.StatusCode)})            
+                end
+            else                   
+                http.api.getRank(retryCount-1) 
+            end            
         end
     end)  
 end
 
 -- 获取组队排行榜数据
-function http.api.getTeamRank()     
+function http.api.getTeamRank(retryCount)     
     print("---- get data team rank start time : ", tostring(math.floor(GameRules:GetGameTime()*100 + 0.5)/100))
     http.api.getRankCommon(http.config.tableTeamToplist, 1, 100, function(ret)       
         print("---- get data team rank end time : ", tostring(math.floor(GameRules:GetGameTime()*100 + 0.5)/100))
@@ -2115,7 +2317,7 @@ function http.api.getTeamRank()
                             ['wave'] = data.datas[i].wave,
                             ['damage'] = data.datas[i].damage,
                             ['updatetime'] = data.datas[i]._updatetime,
-                            ['version'] = data.datas[i].version                                       
+                            ['version'] = data.datas[i].version                                                           
                         }
                         for k,v in pairs(data.datas[i]) do
                             if string.sub(k,1,4) == "card" then
@@ -2134,9 +2336,13 @@ function http.api.getTeamRank()
                 end
             end               					
         else
-            if GameRules.is_team_mode then
-                CustomGameEventManager:Send_ServerToPlayer(PlayerResource:GetPlayer(playerid), "thtd_http_error", {code = 201, msg = "获取组队排行榜数据失败，本次游戏将无法上传排行榜，无法连接服务器，StatusCode: "..tostring(ret.StatusCode)})            
-            end
+            if retryCount == nil or retryCount <= 1 then
+                if GameRules.is_team_mode then
+                    CustomGameEventManager:Send_ServerToPlayer(PlayerResource:GetPlayer(playerid), "thtd_http_error", {code = 201, msg = "获取组队排行榜数据失败，本次游戏将无法上传排行榜，无法连接服务器，StatusCode: "..tostring(ret.StatusCode)})            
+                end
+            else                   
+                http.api.getTeamRank(retryCount-1)  
+            end              
         end
     end)  
 end
@@ -2164,7 +2370,7 @@ function http.api.resetRankCommon(table, index, isInTeam, func)
 end
 
 -- 重置单人排行榜
-function http.api.resetRank(index, playerid)     
+function http.api.resetRank(index, playerid, retryCount)     
     print("---- save data reset rank start time : ", tostring(math.floor(GameRules:GetGameTime()*100 + 0.5)/100))
     http.api.resetRankCommon(http.config.tableToplist, index, false, function(ret)
         print("---- save data reset rank end time : ", tostring(math.floor(GameRules:GetGameTime()*100 + 0.5)/100))
@@ -2182,13 +2388,17 @@ function http.api.resetRank(index, playerid)
                 if playerid then CustomGameEventManager:Send_ServerToPlayer(PlayerResource:GetPlayer(playerid), "thtd_reset_rank", {index = index, msg = "重置失败，返回信息："..ret.Body}) end
             end                         					
         else
-            if playerid then CustomGameEventManager:Send_ServerToPlayer(PlayerResource:GetPlayer(playerid), "thtd_reset_rank", {index = index, msg = "重置失败，无法连接服务器，StatusCode: "..tostring(ret.StatusCode)}) end        
+            if retryCount == nil or retryCount <= 1 then
+                if playerid then CustomGameEventManager:Send_ServerToPlayer(PlayerResource:GetPlayer(playerid), "thtd_reset_rank", {index = index, msg = "重置失败，无法连接服务器，StatusCode: "..tostring(ret.StatusCode)}) end 
+            else                   
+                http.api.resetRank(index, playerid, retryCount-1)   
+            end                    
         end
     end)  
 end
 
 -- 重置组队排行榜
-function http.api.resetTeamRank(index, playerid)     
+function http.api.resetTeamRank(index, playerid, retryCount)      
     print("---- save data reset team rank start time : ", tostring(math.floor(GameRules:GetGameTime()*100 + 0.5)/100))
     http.api.resetRankCommon(http.config.tableTeamToplist, index, true, function(ret)
         print("---- save data reset team rank end time : ", tostring(math.floor(GameRules:GetGameTime()*100 + 0.5)/100))
@@ -2205,8 +2415,12 @@ function http.api.resetTeamRank(index, playerid)
             else                                
                 if playerid then CustomGameEventManager:Send_ServerToPlayer(PlayerResource:GetPlayer(playerid), "thtd_reset_team_rank", {index = index, msg = "重置失败，返回信息："..ret.Body}) end
             end                         					
-        else
-            if playerid then CustomGameEventManager:Send_ServerToPlayer(PlayerResource:GetPlayer(playerid), "thtd_reset_team_rank", {index = index, msg = "重置失败，无法连接服务器，StatusCode: "..tostring(ret.StatusCode)}) end          
+        else                   
+            if retryCount == nil or retryCount <= 1 then
+                if playerid then CustomGameEventManager:Send_ServerToPlayer(PlayerResource:GetPlayer(playerid), "thtd_reset_team_rank", {index = index, msg = "重置失败，无法连接服务器，StatusCode: "..tostring(ret.StatusCode)}) end   
+            else                   
+                http.api.resetTeamRank(index, playerid, retryCount-1) 
+            end  
         end
     end)  
 end
@@ -2214,7 +2428,7 @@ end
 
 -- 获取玩家最佳记录，如果为组队取组队记录，如果为单人则取单人记录
 -- 如果没有保存服务器返回 {"count":"0","info":"OK","infocode":"10000","status":1,"datas":[]}	
-function http.api.getWaveData(playerid) 
+function http.api.getWaveData(playerid, retryCount) 
     if not PlayerResource:IsValidPlayerID(playerid) then return end
     
     local tableName = http.config.tableToplist
@@ -2240,7 +2454,7 @@ function http.api.getWaveData(playerid)
                     local maxWaveId = ""
                     local ids = ""                    
                     for i = 1, #data.datas do
-                        if maxWave < data.datas[i].wave then
+                        if maxWaveId == "" or (data.datas[i].wave ~= nil and data.datas[i].wave ~= "" and maxWave < data.datas[i].wave) then
                             maxWave = data.datas[i].wave
                             maxWaveId = data.datas[i]._id
                         else
@@ -2250,22 +2464,29 @@ function http.api.getWaveData(playerid)
                                 ids = ids..","..tostring(data.datas[i]._id)
                             end
                         end                        
-                    end                    
+                    end
+                    if maxWave == "" then maxWave = 0 end    
                     GameRules.players_max_wave[playerid] = {
                         id = maxWaveId, 
                         wave = maxWave
                     }
                     if ids ~= "" then
-                        http.api.delete(ids)
-                    end
+                        http.api.delete(tableName, ids)                        
+                    end                    
                 else
                     GameRules.players_max_wave[playerid] = {
                         id = "-1",  --新玩家
                         wave = 0
                     }           
                 end 
+                print("---- history wave : ")
+                PrintTable(GameRules.players_max_wave[playerid])
             else
-                CustomGameEventManager:Send_ServerToPlayer(PlayerResource:GetPlayer(playerid), "thtd_http_error", {code = 201, msg = "获取个人最佳历史数据失败，本次游戏将无法上传排行榜，无法连接服务器，StatusCode: "..tostring(ret.StatusCode)})            
+                if retryCount == nil or retryCount <= 1 then
+                    CustomGameEventManager:Send_ServerToPlayer(PlayerResource:GetPlayer(playerid), "thtd_http_error", {code = 201, msg = "获取个人最佳历史数据失败，本次游戏将无法上传排行榜，无法连接服务器，StatusCode: "..tostring(ret.StatusCode)})    
+                else                   
+                    http.api.getWaveData(playerid, retryCount-1) 
+                end                          
             end
         end
     )
@@ -2302,7 +2523,7 @@ function http.api.delete(tablename, ids)
 end
 
 -- 保存玩家最佳记录，首次保存，如果为组队取组队记录，如果为单人则取单人记录	
-function http.api.saveFirstWaveData(playerid, wavedata) 
+function http.api.saveFirstWaveData(playerid, wavedata, retryCount) 
     if not PlayerResource:IsValidPlayerID(playerid) then return end
     
     local tableName = http.config.tableToplist
@@ -2337,20 +2558,32 @@ function http.api.saveFirstWaveData(playerid, wavedata)
                 local data = json.decode(ret.Body)                
                 if data and data.info == "OK" then
                     CustomGameEventManager:Send_ServerToPlayer(PlayerResource:GetPlayer(playerid), "thtd_upload_rank", {code = 1, msg = "恭喜！你的最高波数上传排行榜成功!"})	
-                    http.api.clearSameRank()
+                    if SpawnSystem:GetCount() == 0 then http.api.clearSameRank() end
                 else
                     CustomGameEventManager:Send_ServerToPlayer(PlayerResource:GetPlayer(playerid), "thtd_http_error", {code = 505, msg = "上传排行榜失败，返回信息："..ret.Body})  
                 end 
             else
-                CustomGameEventManager:Send_ServerToPlayer(PlayerResource:GetPlayer(playerid), "thtd_http_error", {code = 201, msg = "上传排行榜失败，无法连接服务器，StatusCode: "..tostring(ret.StatusCode)})            
+                if retryCount == nil or retryCount <= 1 then
+                    CustomGameEventManager:Send_ServerToPlayer(PlayerResource:GetPlayer(playerid), "thtd_http_error", {code = 201, msg = "上传排行榜失败，无法连接服务器，StatusCode: "..tostring(ret.StatusCode)})      
+                else                   
+                    http.api.saveFirstWaveData(playerid, wavedata, retryCount-1) 
+                end                           
             end
         end
     )
 end
 
 -- 保存玩家最佳记录，如果为组队取组队记录，如果为单人则取单人记录	
-function http.api.saveWaveData(playerid, wavedata) 
+function http.api.saveWaveData(playerid, wavedata, retryCount) 
     if not PlayerResource:IsValidPlayerID(playerid) then return end
+
+    local ver = GameRules.game_info.ver
+    for i=1,6 do
+        if towerNameList[wavedata["card"..tostring(i)]["itemname"]]["cardname"] == GameRules.game_info.luck_card then 
+           ver = ver.."EX"
+           break  
+        end
+	end
     
     local tableName = http.config.tableToplist
     if GameRules.is_team_mode then tableName = http.config.tableTeamToplist end
@@ -2361,10 +2594,10 @@ function http.api.saveWaveData(playerid, wavedata)
     savedata["_location"] = http.api.GetWaveLocation(wavedata["wave"])
     savedata["wave"] = wavedata["wave"]
     savedata["damage"] = wavedata["damage"]
-    savedata["version"] = GameRules.game_info.ver
+    savedata["version"] = ver
     savedata["username"] = string.tohex(wavedata["username"])
     for k,v in pairs(wavedata) do
-        if string.sub(k,1,4) == "card" then
+        if string.sub(k,1,4) == "card" then            
             savedata[k] = string.tohex(json.encode(v))
         end
     end
@@ -2384,12 +2617,16 @@ function http.api.saveWaveData(playerid, wavedata)
                 local data = json.decode(ret.Body)                
                 if data and data.info == "OK" then
                     CustomGameEventManager:Send_ServerToPlayer(PlayerResource:GetPlayer(playerid), "thtd_upload_rank", {code = 1, msg = "恭喜！你打破了历史记录，达到了新的最高波数，上传"..teamText.."排行榜成功!"})	
-                    http.api.clearSameRank()
+                    if SpawnSystem:GetCount() == 0 then http.api.clearSameRank() end
                 else
                     CustomGameEventManager:Send_ServerToPlayer(PlayerResource:GetPlayer(playerid), "thtd_http_error", {code = 505, msg = "上传"..teamText.."排行榜失败，返回信息："..ret.Body})  
                 end 
             else
-                CustomGameEventManager:Send_ServerToPlayer(PlayerResource:GetPlayer(playerid), "thtd_http_error", {code = 201, msg = "上传"..teamText.."排行榜失败，无法连接服务器，StatusCode: "..tostring(ret.StatusCode)})            
+                if retryCount == nil or retryCount <= 1 then
+                    CustomGameEventManager:Send_ServerToPlayer(PlayerResource:GetPlayer(playerid), "thtd_http_error", {code = 201, msg = "上传"..teamText.."排行榜失败，无法连接服务器，StatusCode: "..tostring(ret.StatusCode)})     
+                else                   
+                    http.api.saveWaveData(playerid, wavedata, retryCount-1) 
+                end                          
             end
         end
     )
@@ -2407,66 +2644,53 @@ function http.api.clearSameRank()
     end
     if #toplist == 0 then return end
 
-    local toDelList = {}
-    local SameRankDps = 6  --阵容前几相同即为同阵容
-    for i=1,#toplist do		
+    local toDelList = {}   
+    for i=1,#toplist-1 do		
         local wavedata = toplist[i]
-        if table.hasvalue(toDelList, i) == false and i < #toplist then 
+        if table.hasvalue(toDelList, i) == false then 
             for j=i+1,#toplist do
-                local topdata = toplist[j]              
-                local sameCount = 0
-                local usedIndex = ""
-                for x=1,SameRankDps do
-					for y=1,SameRankDps do
-						if string.find(usedIndex,tostring(y)) == nil and wavedata["card"..tostring(x)] ~= "" and topdata["card"..tostring(y)] ~= "" and topdata["card"..tostring(y)] ~= nil and wavedata["card"..tostring(x)]["itemname"] == topdata["card"..tostring(y)]["itemname"] then
-							sameCount = sameCount + 1
-							usedIndex = usedIndex..tostring(y)
-							break
-						end					
-					end
-				end
+                local topdata = toplist[j]  
+                local isSameRank = false                
 
-                if sameCount ~= SameRankDps then
-					if wavedata["card1"] ~= "" and topdata["card1"] ~= "" and topdata["card1"] ~= nil and wavedata["card1"]["itemname"] == topdata["card1"]["itemname"] then
-						if wavedata["card1"]["damage"] / (10000 * wavedata["damage"]) >= 0.7 and topdata["card1"]["damage"] / (10000 * topdata["damage"]) >= 0.7 then
-							sameCount = SameRankDps
-						end						
-					end
-				end
+                if wavedata["card1"] ~= "" and wavedata["card1"] ~= nil and topdata["card1"] ~= "" and topdata["card1"] ~= nil and wavedata["card1"]["itemname"] == topdata["card1"]["itemname"] then
+                    if wavedata["card1"]["damage"] / (10000 * wavedata["damage"]) >= 0.6 and topdata["card1"]["damage"] / (10000 * topdata["damage"]) >= 0.6 then
+                        isSameRank = true
+                    end						
+                end
 
-				if sameCount ~= SameRankDps then
+                if isSameRank == false then                    
 					local topDamage1 = 0
 					local topDamage2 = 0
 					local topNum = 0
 					for x=1,12 do
-						if wavedata["card"..tostring(x)] ~= "" then
+						if wavedata["card"..tostring(x)] ~= "" and wavedata["card"..tostring(x)] ~= nil then
 							topDamage1 = topDamage1 + wavedata["card"..tostring(x)]["damage"]
 						end
 						if topdata["card"..tostring(x)] ~= "" and topdata["card"..tostring(x)] ~= nil then
 							topDamage2 = topDamage2 + topdata["card"..tostring(x)]["damage"]
 						end						
-						if topDamage1 / (10000 * wavedata["damage"]) >= 0.9 and topDamage2 / (10000 * topdata["damage"]) >= 0.9 then
+						if topDamage1 / (10000 * wavedata["damage"]) >= 0.8 and topDamage2 / (10000 * topdata["damage"]) >= 0.8 then
 							topNum = x
 							break
 						end					
 					end
 					if topNum > 0 then
-						usedIndex = ""
-						sameCount = 0
+						local sameCount = 0
+                        local usedIndex = ""
 						for x=1,topNum do
 							for y=1,topNum do
 								if string.find(usedIndex,tostring(y)) == nil and wavedata["card"..tostring(x)] ~= "" and topdata["card"..tostring(y)] ~= "" and topdata["card"..tostring(y)] ~= nil and wavedata["card"..tostring(x)]["itemname"] == topdata["card"..tostring(y)]["itemname"] then
 									sameCount = sameCount + 1
-									usedIndex = usedIndex..tostring(y)
+									usedIndex = usedIndex..tostring(y)..","
 									break
 								end					
 							end
 						end	
-						if sameCount == topNum then sameCount = SameRankDps end
+						if sameCount == topNum then isSameRank = true end
 					end
                 end 
 
-                if sameCount == SameRankDps then
+                if isSameRank == true then
                     table.insert(toDelList, j)				
                 end 
             end	
